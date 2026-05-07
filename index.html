@@ -4,9 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>AgentOS – Real Estate Command Centre</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -29,787 +28,3519 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
-const{useState,useMemo,useCallback}=React;
-const{BarChart,Bar,LineChart,Line,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer}=Recharts;
+<script>
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useMemo = _React.useMemo,
+  useCallback = _React.useCallback;
+var _Recharts = Recharts,
+  BarChart = _Recharts.BarChart,
+  Bar = _Recharts.Bar,
+  LineChart = _Recharts.LineChart,
+  Line = _Recharts.Line,
+  PieChart = _Recharts.PieChart,
+  Pie = _Recharts.Pie,
+  Cell = _Recharts.Cell,
+  XAxis = _Recharts.XAxis,
+  YAxis = _Recharts.YAxis,
+  CartesianGrid = _Recharts.CartesianGrid,
+  Tooltip = _Recharts.Tooltip,
+  Legend = _Recharts.Legend,
+  ResponsiveContainer = _Recharts.ResponsiveContainer;
 
 // ── CONSTANTS ───────────────────────────────────────────────
-const ME='Zaviér', WIFE='Maré';
-const STATUSES=['Lead','Mandate Signed','Under Offer','Sold','Registered','Paid'];
-const SOURCES=['Referral','Walk-in','Cold Call','Social Media','Website','Previous Client','Other'];
-const C={dark:'#1C1C1E',gold:'#C9A84C',goldLt:'#F2E9D0',bg:'#F4F2ED',card:'#FFFFFF',
-         border:'#E5E0D5',muted:'#6B6866',success:'#2D6A4F',warn:'#B5451B',info:'#1A3A5C',danger:'#8B1C1C'};
-const SC={'Lead':'#9CA3AF','Mandate Signed':'#1A3A5C','Under Offer':'#B5451B',
-          'Sold':'#2D6A4F','Registered':'#C9A84C','Paid':'#1C1C1E'};
+var ME = 'Zaviér',
+  WIFE = 'Maré';
+var STATUSES = ['Lead', 'Mandate Signed', 'Under Offer', 'Sold', 'Registered', 'Paid'];
+var SOURCES = ['Referral', 'Walk-in', 'Cold Call', 'Social Media', 'Website', 'Previous Client', 'Other'];
+var C = {
+  dark: '#1C1C1E',
+  gold: '#C9A84C',
+  goldLt: '#F2E9D0',
+  bg: '#F4F2ED',
+  card: '#FFFFFF',
+  border: '#E5E0D5',
+  muted: '#6B6866',
+  success: '#2D6A4F',
+  warn: '#B5451B',
+  info: '#1A3A5C',
+  danger: '#8B1C1C'
+};
+var SC = {
+  'Lead': '#9CA3AF',
+  'Mandate Signed': '#1A3A5C',
+  'Under Offer': '#B5451B',
+  'Sold': '#2D6A4F',
+  'Registered': '#C9A84C',
+  'Paid': '#1C1C1E'
+};
 
 // ── SAMPLE DATA ─────────────────────────────────────────────
-const SD=[
-  {id:1,addr:'12 Vineyard Estate Drive, Stellenbosch',seller:'Johan van der Berg',buyer:'Michael Thompson',sale:4500000,list:4750000,offer:'2026-01-15',reg:'2026-02-28',status:'Paid',who:'me',name:ME,comm:5,split:50,notes:'Smooth transaction.'},
-  {id:2,addr:'7 De Waal Drive, Fresnaye, Cape Town',seller:'Susan Adams',buyer:'André Pretorius',sale:8200000,list:8500000,offer:'2026-02-03',reg:'2026-03-20',status:'Registered',who:'wife',name:WIFE,comm:4.5,split:50,notes:'Luxury sea-facing property.'},
-  {id:3,addr:'34 Constantia Valley Road, Constantia',seller:'Peter Botha',buyer:'Sarah Johnson',sale:6800000,list:7200000,offer:'2026-03-10',reg:'',status:'Sold',who:'me',name:ME,comm:5,split:50,notes:'In transfer process.'},
-  {id:4,addr:'22 Atlantic Boulevard, Sea Point',seller:'Elize Swart',buyer:'James Harrington',sale:3200000,list:3400000,offer:'2026-03-22',reg:'',status:'Under Offer',who:'wife',name:WIFE,comm:5,split:50,notes:''},
-  {id:5,addr:'5 Bishopscourt Avenue, Bishopscourt',seller:'Mark Visser',buyer:'',sale:0,list:12500000,offer:'',reg:'',status:'Mandate Signed',who:'me',name:ME,comm:5,split:50,notes:'Ultra-luxury sole mandate.'},
-  {id:6,addr:'18 Kloof Street, Gardens, Cape Town',seller:'Thabo Molefe',buyer:'Lisa van Wyk',sale:2100000,list:2250000,offer:'2026-01-08',reg:'2026-02-14',status:'Paid',who:'wife',name:WIFE,comm:5,split:50,notes:'First-time buyer.'},
-  {id:7,addr:'9 Oranjezicht Crescent, Oranjezicht',seller:'David Nkosi',buyer:'Emma Fitzgerald',sale:3750000,list:3900000,offer:'2026-04-01',reg:'',status:'Sold',who:'me',name:ME,comm:5,split:50,notes:''},
-  {id:8,addr:'45 Hout Bay Harbour Road, Hout Bay',seller:'Riana du Toit',buyer:'',sale:0,list:5800000,offer:'',reg:'',status:'Lead',who:'wife',name:WIFE,comm:5,split:50,notes:'Viewing scheduled next week.'},
-  {id:9,addr:'3 Camps Bay Terrace, Camps Bay',seller:'Greg Patel',buyer:'Natasha Oberholzer',sale:9100000,list:9500000,offer:'2025-11-20',reg:'2026-01-10',status:'Paid',who:'me',name:ME,comm:5,split:50,notes:'Exceptional sea-view.'},
-  {id:10,addr:'77 Newlands Avenue, Newlands',seller:'Caroline Smith',buyer:'Ryan de Beer',sale:4200000,list:4400000,offer:'2025-12-05',reg:'2026-01-28',status:'Paid',who:'wife',name:WIFE,comm:5,split:50,notes:''},
-];
-const SP=[
-  {id:1,addr:'88 Camps Bay Drive, Camps Bay',src:'Referral',price:9500000,prob:75,close:'2026-06',follow:'2026-05-05',notes:'Owner motivated. Second viewing done.'},
-  {id:2,addr:'3 Somerset Road, Green Point',src:'Website',price:2800000,prob:50,close:'2026-07',follow:'2026-05-10',notes:'Needs to sell existing home first.'},
-  {id:3,addr:'15 Newlands Forest Drive, Newlands',src:'Previous Client',price:6200000,prob:85,close:'2026-05',follow:'2026-04-30',notes:'Verbal agreement. Drawing up mandate.'},
-  {id:4,addr:'27 Sunset Beach Drive, Bloubergstrand',src:'Social Media',price:4100000,prob:30,close:'2026-08',follow:'2026-05-20',notes:'Early-stage enquiry.'},
-  {id:5,addr:'61 Main Road, Claremont',src:'Cold Call',price:3300000,prob:60,close:'2026-06',follow:'2026-05-03',notes:'Considering selling for 6 months.'},
-];
-const TARGETS={mc:150000,yc:1800000,md:3,yd:36};
+var SD = [{
+  id: 1,
+  addr: '12 Vineyard Estate Drive, Stellenbosch',
+  seller: 'Johan van der Berg',
+  buyer: 'Michael Thompson',
+  sale: 4500000,
+  list: 4750000,
+  offer: '2026-01-15',
+  reg: '2026-02-28',
+  status: 'Paid',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: 'Smooth transaction.'
+}, {
+  id: 2,
+  addr: '7 De Waal Drive, Fresnaye, Cape Town',
+  seller: 'Susan Adams',
+  buyer: 'André Pretorius',
+  sale: 8200000,
+  list: 8500000,
+  offer: '2026-02-03',
+  reg: '2026-03-20',
+  status: 'Registered',
+  who: 'wife',
+  name: WIFE,
+  comm: 4.5,
+  split: 50,
+  notes: 'Luxury sea-facing property.'
+}, {
+  id: 3,
+  addr: '34 Constantia Valley Road, Constantia',
+  seller: 'Peter Botha',
+  buyer: 'Sarah Johnson',
+  sale: 6800000,
+  list: 7200000,
+  offer: '2026-03-10',
+  reg: '',
+  status: 'Sold',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: 'In transfer process.'
+}, {
+  id: 4,
+  addr: '22 Atlantic Boulevard, Sea Point',
+  seller: 'Elize Swart',
+  buyer: 'James Harrington',
+  sale: 3200000,
+  list: 3400000,
+  offer: '2026-03-22',
+  reg: '',
+  status: 'Under Offer',
+  who: 'wife',
+  name: WIFE,
+  comm: 5,
+  split: 50,
+  notes: ''
+}, {
+  id: 5,
+  addr: '5 Bishopscourt Avenue, Bishopscourt',
+  seller: 'Mark Visser',
+  buyer: '',
+  sale: 0,
+  list: 12500000,
+  offer: '',
+  reg: '',
+  status: 'Mandate Signed',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: 'Ultra-luxury sole mandate.'
+}, {
+  id: 6,
+  addr: '18 Kloof Street, Gardens, Cape Town',
+  seller: 'Thabo Molefe',
+  buyer: 'Lisa van Wyk',
+  sale: 2100000,
+  list: 2250000,
+  offer: '2026-01-08',
+  reg: '2026-02-14',
+  status: 'Paid',
+  who: 'wife',
+  name: WIFE,
+  comm: 5,
+  split: 50,
+  notes: 'First-time buyer.'
+}, {
+  id: 7,
+  addr: '9 Oranjezicht Crescent, Oranjezicht',
+  seller: 'David Nkosi',
+  buyer: 'Emma Fitzgerald',
+  sale: 3750000,
+  list: 3900000,
+  offer: '2026-04-01',
+  reg: '',
+  status: 'Sold',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: ''
+}, {
+  id: 8,
+  addr: '45 Hout Bay Harbour Road, Hout Bay',
+  seller: 'Riana du Toit',
+  buyer: '',
+  sale: 0,
+  list: 5800000,
+  offer: '',
+  reg: '',
+  status: 'Lead',
+  who: 'wife',
+  name: WIFE,
+  comm: 5,
+  split: 50,
+  notes: 'Viewing scheduled next week.'
+}, {
+  id: 9,
+  addr: '3 Camps Bay Terrace, Camps Bay',
+  seller: 'Greg Patel',
+  buyer: 'Natasha Oberholzer',
+  sale: 9100000,
+  list: 9500000,
+  offer: '2025-11-20',
+  reg: '2026-01-10',
+  status: 'Paid',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: 'Exceptional sea-view.'
+}, {
+  id: 10,
+  addr: '77 Newlands Avenue, Newlands',
+  seller: 'Caroline Smith',
+  buyer: 'Ryan de Beer',
+  sale: 4200000,
+  list: 4400000,
+  offer: '2025-12-05',
+  reg: '2026-01-28',
+  status: 'Paid',
+  who: 'wife',
+  name: WIFE,
+  comm: 5,
+  split: 50,
+  notes: ''
+}];
+var SP = [{
+  id: 1,
+  addr: '88 Camps Bay Drive, Camps Bay',
+  src: 'Referral',
+  price: 9500000,
+  prob: 75,
+  close: '2026-06',
+  follow: '2026-05-05',
+  notes: 'Owner motivated. Second viewing done.'
+}, {
+  id: 2,
+  addr: '3 Somerset Road, Green Point',
+  src: 'Website',
+  price: 2800000,
+  prob: 50,
+  close: '2026-07',
+  follow: '2026-05-10',
+  notes: 'Needs to sell existing home first.'
+}, {
+  id: 3,
+  addr: '15 Newlands Forest Drive, Newlands',
+  src: 'Previous Client',
+  price: 6200000,
+  prob: 85,
+  close: '2026-05',
+  follow: '2026-04-30',
+  notes: 'Verbal agreement. Drawing up mandate.'
+}, {
+  id: 4,
+  addr: '27 Sunset Beach Drive, Bloubergstrand',
+  src: 'Social Media',
+  price: 4100000,
+  prob: 30,
+  close: '2026-08',
+  follow: '2026-05-20',
+  notes: 'Early-stage enquiry.'
+}, {
+  id: 5,
+  addr: '61 Main Road, Claremont',
+  src: 'Cold Call',
+  price: 3300000,
+  prob: 60,
+  close: '2026-06',
+  follow: '2026-05-03',
+  notes: 'Considering selling for 6 months.'
+}];
+var TARGETS = {
+  mc: 150000,
+  yc: 1800000,
+  md: 3,
+  yd: 36
+};
 
 // ── UTILS ───────────────────────────────────────────────────
-const R=n=>`R ${Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:0,maximumFractionDigits:0})}`;
-const FD=s=>s?new Date(s).toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'}):'—';
-const FM=s=>{if(!s)return'—';const[y,m]=s.split('-');return new Date(y,m-1).toLocaleString('en',{month:'short',year:'2-digit'})};
-function calc(d){
-  const sp=Number(d.sale||0),cp=Number(d.comm||5),ap=Number(d.split||50);
-  const tot=sp*(cp/100),ag=tot*(ap/100),agent=tot-ag;
-  return{tot,ag,agent,me:d.who==='me'?agent:0,wife:d.who==='wife'?agent:0};
+var R = function R(n) {
+  return "R ".concat(Number(n || 0).toLocaleString('en-ZA', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }));
+};
+var FD = function FD(s) {
+  return s ? new Date(s).toLocaleDateString('en-ZA', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }) : '—';
+};
+var FM = function FM(s) {
+  if (!s) return '—';
+  var _s$split = s.split('-'),
+    _s$split2 = _slicedToArray(_s$split, 2),
+    y = _s$split2[0],
+    m = _s$split2[1];
+  return new Date(y, m - 1).toLocaleString('en', {
+    month: 'short',
+    year: '2-digit'
+  });
+};
+function calc(d) {
+  var sp = Number(d.sale || 0),
+    cp = Number(d.comm || 5),
+    ap = Number(d.split || 50);
+  var tot = sp * (cp / 100),
+    ag = tot * (ap / 100),
+    agent = tot - ag;
+  return {
+    tot: tot,
+    ag: ag,
+    agent: agent,
+    me: d.who === 'me' ? agent : 0,
+    wife: d.who === 'wife' ? agent : 0
+  };
 }
 
 // ── ICONS ────────────────────────────────────────────────────
-const ICONS={
-  dashboard:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
-  deals:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/></svg>,
-  pipeline:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>,
-  calc:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h2m4 0h2M8 16h2m4 0h2"/></svg>,
-  income:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>,
-  reports:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>,
-  plus:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M12 4v16M4 12h16"/></svg>,
-  edit:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
-  trash:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>,
-  x:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>,
-  home:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-  menu:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
-  search:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>,
-  target:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  trend:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+var ICONS = {
+  dashboard: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "3",
+    width: "7",
+    height: "7",
+    rx: "1.5"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "14",
+    y: "3",
+    width: "7",
+    height: "7",
+    rx: "1.5"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "14",
+    width: "7",
+    height: "7",
+    rx: "1.5"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "14",
+    y: "14",
+    width: "7",
+    height: "7",
+    rx: "1.5"
+  })),
+  deals: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"
+  })),
+  pipeline: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 6h18M3 12h18M3 18h18"
+  })),
+  calc: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "4",
+    y: "2",
+    width: "16",
+    height: "20",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 6h8M8 11h2m4 0h2M8 16h2m4 0h2"
+  })),
+  income: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "9",
+    cy: "7",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+  })),
+  reports: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+  })),
+  plus: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.2"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 4v16M4 12h16"
+  })),
+  edit: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"
+  })),
+  trash: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "3 6 5 6 21 6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"
+  })),
+  x: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.2"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18 6L6 18M6 6l12 12"
+  })),
+  home: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "9 22 9 12 15 12 15 22"
+  })),
+  menu: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2"
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: "3",
+    y1: "6",
+    x2: "21",
+    y2: "6"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "3",
+    y1: "12",
+    x2: "21",
+    y2: "12"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "3",
+    y1: "18",
+    x2: "21",
+    y2: "18"
+  })),
+  search: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "11",
+    r: "8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 21l-4.35-4.35"
+  })),
+  target: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "10"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "2"
+  })),
+  trend: /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8"
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "23 6 13.5 15.5 8.5 10.5 1 18"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "17 6 23 6 23 12"
+  }))
 };
-const I=({n,s=18})=><span style={{display:'inline-flex',alignItems:'center',width:s,height:s,flexShrink:0}}>{React.cloneElement(ICONS[n]||ICONS.home,{style:{width:s,height:s}})}</span>;
+var I = function I(_ref) {
+  var n = _ref.n,
+    _ref$s = _ref.s,
+    s = _ref$s === void 0 ? 18 : _ref$s;
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      width: s,
+      height: s,
+      flexShrink: 0
+    }
+  }, React.cloneElement(ICONS[n] || ICONS.home, {
+    style: {
+      width: s,
+      height: s
+    }
+  }));
+};
 
 // ── SHARED UI ───────────────────────────────────────────────
-const Card=({children,style={}})=>(
-  <div style={{background:C.card,borderRadius:14,padding:22,boxShadow:'0 1px 4px rgba(0,0,0,0.07)',border:`1px solid ${C.border}`,...style}}>{children}</div>
-);
-const Stat=({label,val,sub,icon})=>(
-  <Card style={{display:'flex',flexDirection:'column',gap:7}}>
-    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-      <span style={{fontSize:10,color:C.muted,textTransform:'uppercase',letterSpacing:1.2,fontWeight:700}}>{label}</span>
-      {icon&&<span style={{color:C.gold,opacity:.8}}><I n={icon} s={16}/></span>}
-    </div>
-    <div style={{fontSize:24,fontWeight:800,color:C.dark,letterSpacing:-.5,lineHeight:1}}>{val}</div>
-    {sub&&<div style={{fontSize:11,color:C.muted}}>{sub}</div>}
-  </Card>
-);
-const Badge=({status})=>(
-  <span style={{display:'inline-block',padding:'3px 9px',borderRadius:20,fontSize:11,fontWeight:700,
-    background:SC[status]+'1A',color:SC[status],border:`1px solid ${SC[status]}44`,whiteSpace:'nowrap'}}>{status}</span>
-);
-const Prog=({label,cur,tgt,fmt})=>{
-  const p=Math.min((cur/tgt)*100,100);
-  return(
-    <div style={{marginBottom:16}}>
-      <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
-        <span style={{fontSize:13,fontWeight:600}}>{label}</span>
-        <span style={{fontSize:12,color:C.muted}}>{fmt?fmt(cur):cur} / {fmt?fmt(tgt):tgt}</span>
-      </div>
-      <div style={{height:6,background:C.border,borderRadius:3,overflow:'hidden'}}>
-        <div style={{height:'100%',width:`${p}%`,background:p>=100?C.success:C.gold,borderRadius:3,transition:'width .6s'}}/>
-      </div>
-      <div style={{fontSize:11,color:C.muted,marginTop:3}}>{p.toFixed(1)}% of target</div>
-    </div>
-  );
+var Card = function Card(_ref2) {
+  var children = _ref2.children,
+    _ref2$style = _ref2.style,
+    style = _ref2$style === void 0 ? {} : _ref2$style;
+  return /*#__PURE__*/React.createElement("div", {
+    style: _objectSpread({
+      background: C.card,
+      borderRadius: 14,
+      padding: 22,
+      boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+      border: "1px solid ".concat(C.border)
+    }, style)
+  }, children);
 };
-const Modal=({open,onClose,title,children,w=700})=>{
-  if(!open)return null;
-  return(
-    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:14}} onClick={onClose}>
-      <div style={{background:C.card,borderRadius:16,width:'100%',maxWidth:w,maxHeight:'92vh',overflowY:'auto',boxShadow:'0 24px 70px rgba(0,0,0,0.22)'}} onClick={e=>e.stopPropagation()}>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'18px 24px',borderBottom:`1px solid ${C.border}`,position:'sticky',top:0,background:C.card,zIndex:2,borderRadius:'16px 16px 0 0'}}>
-          <h2 style={{fontSize:16,fontWeight:800,color:C.dark}}>{title}</h2>
-          <button onClick={onClose} style={{background:'none',border:'none',cursor:'pointer',color:C.muted,display:'flex',padding:4}}><I n="x" s={19}/></button>
-        </div>
-        <div style={{padding:24}}>{children}</div>
-      </div>
-    </div>
-  );
+var Stat = function Stat(_ref3) {
+  var label = _ref3.label,
+    val = _ref3.val,
+    sub = _ref3.sub,
+    icon = _ref3.icon;
+  return /*#__PURE__*/React.createElement(Card, {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 7
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: C.muted,
+      textTransform: 'uppercase',
+      letterSpacing: 1.2,
+      fontWeight: 700
+    }
+  }, label), icon && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: C.gold,
+      opacity: .8
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: icon,
+    s: 16
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      color: C.dark,
+      letterSpacing: -.5,
+      lineHeight: 1
+    }
+  }, val), sub && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: C.muted
+    }
+  }, sub));
+};
+var Badge = function Badge(_ref4) {
+  var status = _ref4.status;
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'inline-block',
+      padding: '3px 9px',
+      borderRadius: 20,
+      fontSize: 11,
+      fontWeight: 700,
+      background: SC[status] + '1A',
+      color: SC[status],
+      border: "1px solid ".concat(SC[status], "44"),
+      whiteSpace: 'nowrap'
+    }
+  }, status);
+};
+var Prog = function Prog(_ref5) {
+  var label = _ref5.label,
+    cur = _ref5.cur,
+    tgt = _ref5.tgt,
+    fmt = _ref5.fmt;
+  var p = Math.min(cur / tgt * 100, 100);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: 5
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      fontWeight: 600
+    }
+  }, label), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: C.muted
+    }
+  }, fmt ? fmt(cur) : cur, " / ", fmt ? fmt(tgt) : tgt)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 6,
+      background: C.border,
+      borderRadius: 3,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: '100%',
+      width: "".concat(p, "%"),
+      background: p >= 100 ? C.success : C.gold,
+      borderRadius: 3,
+      transition: 'width .6s'
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: C.muted,
+      marginTop: 3
+    }
+  }, p.toFixed(1), "% of target"));
+};
+var Modal = function Modal(_ref6) {
+  var open = _ref6.open,
+    onClose = _ref6.onClose,
+    title = _ref6.title,
+    children = _ref6.children,
+    _ref6$w = _ref6.w,
+    w = _ref6$w === void 0 ? 700 : _ref6$w;
+  if (!open) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0,0,0,0.5)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 14
+    },
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.card,
+      borderRadius: 16,
+      width: '100%',
+      maxWidth: w,
+      maxHeight: '92vh',
+      overflowY: 'auto',
+      boxShadow: '0 24px 70px rgba(0,0,0,0.22)'
+    },
+    onClick: function onClick(e) {
+      return e.stopPropagation();
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '18px 24px',
+      borderBottom: "1px solid ".concat(C.border),
+      position: 'sticky',
+      top: 0,
+      background: C.card,
+      zIndex: 2,
+      borderRadius: '16px 16px 0 0'
+    }
+  }, /*#__PURE__*/React.createElement("h2", {
+    style: {
+      fontSize: 16,
+      fontWeight: 800,
+      color: C.dark
+    }
+  }, title), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    style: {
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: C.muted,
+      display: 'flex',
+      padding: 4
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "x",
+    s: 19
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: 24
+    }
+  }, children)));
 };
 
 // ── FORM HELPERS ─────────────────────────────────────────────
-const L={fontSize:11,fontWeight:700,color:C.muted,textTransform:'uppercase',letterSpacing:.6,marginBottom:5,display:'block'};
-const IN={width:'100%',padding:'10px 12px',border:`1px solid ${C.border}`,borderRadius:8,fontSize:14,color:C.dark,background:'#FAFAF8',outline:'none'};
-const FLD={marginBottom:14};
-const G2={display:'grid',gridTemplateColumns:'1fr 1fr',gap:14};
+var L = {
+  fontSize: 11,
+  fontWeight: 700,
+  color: C.muted,
+  textTransform: 'uppercase',
+  letterSpacing: .6,
+  marginBottom: 5,
+  display: 'block'
+};
+var IN = {
+  width: '100%',
+  padding: '10px 12px',
+  border: "1px solid ".concat(C.border),
+  borderRadius: 8,
+  fontSize: 14,
+  color: C.dark,
+  background: '#FAFAF8',
+  outline: 'none'
+};
+var FLD = {
+  marginBottom: 14
+};
+var G2 = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: 14
+};
 
 // ── DEAL FORM ────────────────────────────────────────────────
-const ED={addr:'',seller:'',buyer:'',sale:'',list:'',offer:'',reg:'',status:'Lead',who:'me',name:ME,comm:5,split:50,notes:''};
-function DealForm({deal,onSave,onClose}){
-  const[f,sF]=useState(deal||ED);
-  const set=(k,v)=>sF(p=>({...p,[k]:v}));
-  const c=useMemo(()=>calc(f),[f]);
-  return(
-    <form onSubmit={e=>{e.preventDefault();onSave({...f,id:deal?.id||Date.now()});}}>
-      <div style={FLD}><label style={L}>Property Address *</label>
-        <input style={IN} value={f.addr} onChange={e=>set('addr',e.target.value)} required placeholder="12 Example Street, Suburb, City"/>
-      </div>
-      <div style={G2}>
-        <div style={FLD}><label style={L}>Seller Name</label><input style={IN} value={f.seller} onChange={e=>set('seller',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Buyer Name</label><input style={IN} value={f.buyer} onChange={e=>set('buyer',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Listing Price (R)</label><input style={IN} type="number" value={f.list} onChange={e=>set('list',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Sale Price (R)</label><input style={IN} type="number" value={f.sale} onChange={e=>set('sale',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Date Offer Accepted</label><input style={IN} type="date" value={f.offer} onChange={e=>set('offer',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Date Registered</label><input style={IN} type="date" value={f.reg} onChange={e=>set('reg',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Status</label>
-          <select style={IN} value={f.status} onChange={e=>set('status',e.target.value)}>
-            {STATUSES.map(s=><option key={s}>{s}</option>)}
-          </select>
-        </div>
-        <div style={FLD}><label style={L}>Assigned To</label>
-          <select style={IN} value={f.who} onChange={e=>{set('who',e.target.value);set('name',e.target.value==='me'?ME:WIFE);}}>
-            <option value="me">{ME}</option><option value="wife">{WIFE}</option>
-          </select>
-        </div>
-        <div style={FLD}><label style={L}>Commission %</label><input style={IN} type="number" step=".1" min="0" max="20" value={f.comm} onChange={e=>set('comm',parseFloat(e.target.value)||0)}/></div>
-        <div style={FLD}><label style={L}>Agency Split % (E&amp;V keeps)</label><input style={IN} type="number" step="1" min="0" max="100" value={f.split} onChange={e=>set('split',parseFloat(e.target.value)||0)}/></div>
-      </div>
-      {Number(f.sale)>0&&(
-        <div style={{background:C.bg,borderRadius:10,padding:14,marginBottom:14,border:`1px solid ${C.border}`}}>
-          <div style={{fontSize:10,fontWeight:800,textTransform:'uppercase',letterSpacing:1.2,color:C.gold,marginBottom:8}}>Live Commission Preview</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10}}>
-            <div><div style={{fontSize:10,color:C.muted,marginBottom:2}}>Total Commission</div><div style={{fontWeight:800}}>{R(c.tot)}</div></div>
-            <div><div style={{fontSize:10,color:C.muted,marginBottom:2}}>Agency (E&amp;V)</div><div style={{fontWeight:700,color:C.muted}}>{R(c.ag)}</div></div>
-            <div><div style={{fontSize:10,color:C.muted,marginBottom:2}}>Your Gross</div><div style={{fontWeight:800,color:C.gold}}>{R(c.agent)}</div></div>
-          </div>
-          <div style={{fontSize:11,color:C.muted,marginTop:8}}>→ Allocated to <strong>{f.who==='me'?ME:WIFE}</strong></div>
-        </div>
-      )}
-      <div style={FLD}><label style={L}>Notes</label><textarea style={{...IN,minHeight:72,resize:'vertical'}} value={f.notes} onChange={e=>set('notes',e.target.value)}/></div>
-      <div style={{display:'flex',gap:10,justifyContent:'flex-end',paddingTop:6}}>
-        <button type="button" onClick={onClose} style={{padding:'10px 20px',borderRadius:8,border:`1px solid ${C.border}`,background:'none',cursor:'pointer',fontWeight:700,fontSize:13}}>Cancel</button>
-        <button type="submit" style={{padding:'10px 24px',borderRadius:8,border:'none',background:C.dark,color:'#fff',cursor:'pointer',fontWeight:800,fontSize:13}}>Save Deal</button>
-      </div>
-    </form>
-  );
+var ED = {
+  addr: '',
+  seller: '',
+  buyer: '',
+  sale: '',
+  list: '',
+  offer: '',
+  reg: '',
+  status: 'Lead',
+  who: 'me',
+  name: ME,
+  comm: 5,
+  split: 50,
+  notes: ''
+};
+function DealForm(_ref7) {
+  var deal = _ref7.deal,
+    onSave = _ref7.onSave,
+    onClose = _ref7.onClose;
+  var _useState = useState(deal || ED),
+    _useState2 = _slicedToArray(_useState, 2),
+    f = _useState2[0],
+    sF = _useState2[1];
+  var set = function set(k, v) {
+    return sF(function (p) {
+      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
+    });
+  };
+  var c = useMemo(function () {
+    return calc(f);
+  }, [f]);
+  return /*#__PURE__*/React.createElement("form", {
+    onSubmit: function onSubmit(e) {
+      e.preventDefault();
+      onSave(_objectSpread(_objectSpread({}, f), {}, {
+        id: (deal === null || deal === void 0 ? void 0 : deal.id) || Date.now()
+      }));
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Property Address *"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    value: f.addr,
+    onChange: function onChange(e) {
+      return set('addr', e.target.value);
+    },
+    required: true,
+    placeholder: "12 Example Street, Suburb, City"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: G2
+  }, /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Seller Name"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    value: f.seller,
+    onChange: function onChange(e) {
+      return set('seller', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Buyer Name"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    value: f.buyer,
+    onChange: function onChange(e) {
+      return set('buyer', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Listing Price (R)"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "number",
+    value: f.list,
+    onChange: function onChange(e) {
+      return set('list', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "number",
+    value: f.sale,
+    onChange: function onChange(e) {
+      return set('sale', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Date Offer Accepted"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "date",
+    value: f.offer,
+    onChange: function onChange(e) {
+      return set('offer', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Date Registered"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "date",
+    value: f.reg,
+    onChange: function onChange(e) {
+      return set('reg', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Status"), /*#__PURE__*/React.createElement("select", {
+    style: IN,
+    value: f.status,
+    onChange: function onChange(e) {
+      return set('status', e.target.value);
+    }
+  }, STATUSES.map(function (s) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: s
+    }, s);
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Assigned To"), /*#__PURE__*/React.createElement("select", {
+    style: IN,
+    value: f.who,
+    onChange: function onChange(e) {
+      set('who', e.target.value);
+      set('name', e.target.value === 'me' ? ME : WIFE);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "me"
+  }, ME), /*#__PURE__*/React.createElement("option", {
+    value: "wife"
+  }, WIFE))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Commission %"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "number",
+    step: ".1",
+    min: "0",
+    max: "20",
+    value: f.comm,
+    onChange: function onChange(e) {
+      return set('comm', parseFloat(e.target.value) || 0);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Agency Split % (E&V keeps)"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "number",
+    step: "1",
+    min: "0",
+    max: "100",
+    value: f.split,
+    onChange: function onChange(e) {
+      return set('split', parseFloat(e.target.value) || 0);
+    }
+  }))), Number(f.sale) > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: C.bg,
+      borderRadius: 10,
+      padding: 14,
+      marginBottom: 14,
+      border: "1px solid ".concat(C.border)
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      fontWeight: 800,
+      textTransform: 'uppercase',
+      letterSpacing: 1.2,
+      color: C.gold,
+      marginBottom: 8
+    }
+  }, "Live Commission Preview"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: C.muted,
+      marginBottom: 2
+    }
+  }, "Total Commission"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800
+    }
+  }, R(c.tot))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: C.muted,
+      marginBottom: 2
+    }
+  }, "Agency (E&V)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      color: C.muted
+    }
+  }, R(c.ag))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: C.muted,
+      marginBottom: 2
+    }
+  }, "Your Gross"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      color: C.gold
+    }
+  }, R(c.agent)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: C.muted,
+      marginTop: 8
+    }
+  }, "\u2192 Allocated to ", /*#__PURE__*/React.createElement("strong", null, f.who === 'me' ? ME : WIFE))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Notes"), /*#__PURE__*/React.createElement("textarea", {
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      minHeight: 72,
+      resize: 'vertical'
+    }),
+    value: f.notes,
+    onChange: function onChange(e) {
+      return set('notes', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      justifyContent: 'flex-end',
+      paddingTop: 6
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: onClose,
+    style: {
+      padding: '10px 20px',
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      background: 'none',
+      cursor: 'pointer',
+      fontWeight: 700,
+      fontSize: 13
+    }
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    style: {
+      padding: '10px 24px',
+      borderRadius: 8,
+      border: 'none',
+      background: C.dark,
+      color: '#fff',
+      cursor: 'pointer',
+      fontWeight: 800,
+      fontSize: 13
+    }
+  }, "Save Deal")));
 }
 
 // ── DASHBOARD ────────────────────────────────────────────────
-function Dashboard({deals,pipe}){
-  const now=new Date();
-  const mKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const yKey=String(now.getFullYear());
-  const sold=deals.filter(d=>['Sold','Registered','Paid'].includes(d.status)&&d.sale>0);
-  const paid=deals.filter(d=>d.status==='Paid'&&d.sale>0);
-  const pend=deals.filter(d=>['Sold','Registered'].includes(d.status)&&d.sale>0);
-  const mo=sold.filter(d=>(d.offer||'').startsWith(mKey));
-  const yr=sold.filter(d=>(d.offer||'').startsWith(yKey));
-  const mComm=mo.reduce((s,d)=>s+calc(d).agent,0);
-  const yComm=yr.reduce((s,d)=>s+calc(d).agent,0);
-  const pComm=paid.reduce((s,d)=>s+calc(d).agent,0);
-  const eComm=pend.reduce((s,d)=>s+calc(d).agent,0);
-  const avg=sold.length>0?sold.reduce((s,d)=>s+d.sale,0)/sold.length:0;
-  const bars=[];
-  for(let i=5;i>=0;i--){
-    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    const m=d.toLocaleString('en',{month:'short'});
-    const c=sold.filter(x=>(x.offer||'').startsWith(k)).reduce((s,x)=>s+calc(x).agent,0);
-    bars.push({m,v:Math.round(c/1000)});
+function Dashboard(_ref8) {
+  var deals = _ref8.deals,
+    pipe = _ref8.pipe;
+  var now = new Date();
+  var mKey = "".concat(now.getFullYear(), "-").concat(String(now.getMonth() + 1).padStart(2, '0'));
+  var yKey = String(now.getFullYear());
+  var sold = deals.filter(function (d) {
+    return ['Sold', 'Registered', 'Paid'].includes(d.status) && d.sale > 0;
+  });
+  var paid = deals.filter(function (d) {
+    return d.status === 'Paid' && d.sale > 0;
+  });
+  var pend = deals.filter(function (d) {
+    return ['Sold', 'Registered'].includes(d.status) && d.sale > 0;
+  });
+  var mo = sold.filter(function (d) {
+    return (d.offer || '').startsWith(mKey);
+  });
+  var yr = sold.filter(function (d) {
+    return (d.offer || '').startsWith(yKey);
+  });
+  var mComm = mo.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var yComm = yr.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var pComm = paid.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var eComm = pend.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var avg = sold.length > 0 ? sold.reduce(function (s, d) {
+    return s + d.sale;
+  }, 0) / sold.length : 0;
+  var bars = [];
+  var _loop = function _loop() {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var k = "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'));
+    var m = d.toLocaleString('en', {
+      month: 'short'
+    });
+    var c = sold.filter(function (x) {
+      return (x.offer || '').startsWith(k);
+    }).reduce(function (s, x) {
+      return s + calc(x).agent;
+    }, 0);
+    bars.push({
+      m: m,
+      v: Math.round(c / 1000)
+    });
+  };
+  for (var i = 5; i >= 0; i--) {
+    _loop();
   }
-  const pie=STATUSES.map(s=>({n:s,v:deals.filter(d=>d.status===s).length})).filter(x=>x.v>0);
-  return(
-    <div>
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Dashboard</h1>
-        <p style={{color:C.muted,fontSize:13,marginTop:3}}>Welcome back, {ME}. Here's your overview.</p>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))',gap:13,marginBottom:20}} className="g3">
-        <Stat label="This Month Commission" val={R(mComm)} sub={`${mo.length} deal${mo.length!==1?'s':''}`} icon="trend"/>
-        <Stat label="This Year Commission"  val={R(yComm)} sub={`${yr.length} deals`}   icon="target"/>
-        <Stat label="Commission Paid"       val={R(pComm)} sub={`${paid.length} paid`}  icon="home"/>
-        <Stat label="Commission Pending"    val={R(eComm)} sub={`${pend.length} deals`} icon="deals"/>
-        <Stat label="Houses Sold"           val={sold.length} sub="all time"            icon="home"/>
-        <Stat label="Avg Selling Price"     val={R(avg)}   sub="all sold deals"         icon="trend"/>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:20}} className="g2">
-        <Card><h3 style={{fontSize:13,fontWeight:800,marginBottom:16}}>Monthly Targets</h3>
-          <Prog label="Commission" cur={mComm} tgt={TARGETS.mc} fmt={R}/>
-          <Prog label="Deals" cur={mo.length} tgt={TARGETS.md}/>
-        </Card>
-        <Card><h3 style={{fontSize:13,fontWeight:800,marginBottom:16}}>Yearly Targets</h3>
-          <Prog label="Commission" cur={yComm} tgt={TARGETS.yc} fmt={R}/>
-          <Prog label="Deals" cur={yr.length} tgt={TARGETS.yd}/>
-        </Card>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:14}} className="g2">
-        <Card>
-          <h3 style={{fontSize:13,fontWeight:800,marginBottom:16}}>Commission Trend — 6 Months (R'000)</h3>
-          <ResponsiveContainer width="100%" height={210}>
-            <BarChart data={bars}><CartesianGrid strokeDasharray="3 3" stroke={C.border}/>
-              <XAxis dataKey="m" tick={{fontSize:11,fill:C.muted}}/><YAxis tick={{fontSize:11,fill:C.muted}}/>
-              <Tooltip formatter={v=>[`R ${v}k`,'Commission']} contentStyle={{borderRadius:8,border:`1px solid ${C.border}`,fontSize:12}}/>
-              <Bar dataKey="v" fill={C.gold} radius={[5,5,0,0]}/>
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-        <Card>
-          <h3 style={{fontSize:13,fontWeight:800,marginBottom:12}}>Deals by Status</h3>
-          <ResponsiveContainer width="100%" height={175}>
-            <PieChart><Pie data={pie} dataKey="v" cx="50%" cy="50%" outerRadius={70} innerRadius={30}>
-              {pie.map((e,i)=><Cell key={i} fill={SC[e.n]}/>)}
-            </Pie><Tooltip contentStyle={{borderRadius:8,border:`1px solid ${C.border}`,fontSize:11}}/></PieChart>
-          </ResponsiveContainer>
-          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:6}}>
-            {pie.map(s=><div key={s.n} style={{display:'flex',alignItems:'center',gap:4,fontSize:10}}>
-              <div style={{width:7,height:7,borderRadius:'50%',background:SC[s.n]}}/>
-              <span style={{color:C.muted}}>{s.n} ({s.v})</span>
-            </div>)}
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
+  var pie = STATUSES.map(function (s) {
+    return {
+      n: s,
+      v: deals.filter(function (d) {
+        return d.status === s;
+      }).length
+    };
+  }).filter(function (x) {
+    return x.v > 0;
+  });
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 22
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Dashboard"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, "Welcome back, ", ME, ". Here's your overview.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill,minmax(185px,1fr))',
+      gap: 13,
+      marginBottom: 20
+    },
+    className: "g3"
+  }, /*#__PURE__*/React.createElement(Stat, {
+    label: "This Month Commission",
+    val: R(mComm),
+    sub: "".concat(mo.length, " deal").concat(mo.length !== 1 ? 's' : ''),
+    icon: "trend"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "This Year Commission",
+    val: R(yComm),
+    sub: "".concat(yr.length, " deals"),
+    icon: "target"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Commission Paid",
+    val: R(pComm),
+    sub: "".concat(paid.length, " paid"),
+    icon: "home"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Commission Pending",
+    val: R(eComm),
+    sub: "".concat(pend.length, " deals"),
+    icon: "deals"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Houses Sold",
+    val: sold.length,
+    sub: "all time",
+    icon: "home"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Avg Selling Price",
+    val: R(avg),
+    sub: "all sold deals",
+    icon: "trend"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 14,
+      marginBottom: 20
+    },
+    className: "g2"
+  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 16
+    }
+  }, "Monthly Targets"), /*#__PURE__*/React.createElement(Prog, {
+    label: "Commission",
+    cur: mComm,
+    tgt: TARGETS.mc,
+    fmt: R
+  }), /*#__PURE__*/React.createElement(Prog, {
+    label: "Deals",
+    cur: mo.length,
+    tgt: TARGETS.md
+  })), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 16
+    }
+  }, "Yearly Targets"), /*#__PURE__*/React.createElement(Prog, {
+    label: "Commission",
+    cur: yComm,
+    tgt: TARGETS.yc,
+    fmt: R
+  }), /*#__PURE__*/React.createElement(Prog, {
+    label: "Deals",
+    cur: yr.length,
+    tgt: TARGETS.yd
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '2fr 1fr',
+      gap: 14
+    },
+    className: "g2"
+  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 16
+    }
+  }, "Commission Trend \u2014 6 Months (R'000)"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 210
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: bars
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: C.border
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "m",
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    formatter: function formatter(v) {
+      return ["R ".concat(v, "k"), 'Commission'];
+    },
+    contentStyle: {
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      fontSize: 12
+    }
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "v",
+    fill: C.gold,
+    radius: [5, 5, 0, 0]
+  })))), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 12
+    }
+  }, "Deals by Status"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 175
+  }, /*#__PURE__*/React.createElement(PieChart, null, /*#__PURE__*/React.createElement(Pie, {
+    data: pie,
+    dataKey: "v",
+    cx: "50%",
+    cy: "50%",
+    outerRadius: 70,
+    innerRadius: 30
+  }, pie.map(function (e, i) {
+    return /*#__PURE__*/React.createElement(Cell, {
+      key: i,
+      fill: SC[e.n]
+    });
+  })), /*#__PURE__*/React.createElement(Tooltip, {
+    contentStyle: {
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      fontSize: 11
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 6,
+      marginTop: 6
+    }
+  }, pie.map(function (s) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: s.n,
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        fontSize: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 7,
+        height: 7,
+        borderRadius: '50%',
+        background: SC[s.n]
+      }
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, s.n, " (", s.v, ")"));
+  })))));
 }
 
 // ── DEALS TRACKER ────────────────────────────────────────────
-function Deals({deals,onAdd,onEdit,onDel}){
-  const[q,sQ]=useState('');const[sf,sSf]=useState('All');const[af,sAf]=useState('All');
-  const[modal,sModal]=useState(false);const[edit,sEdit]=useState(null);const[del,sDel]=useState(null);const[exp,sExp]=useState(null);
-  const list=useMemo(()=>deals.filter(d=>{
-    const m=d.addr.toLowerCase().includes(q.toLowerCase())||d.seller.toLowerCase().includes(q.toLowerCase())||d.buyer.toLowerCase().includes(q.toLowerCase());
-    return m&&(sf==='All'||d.status===sf)&&(af==='All'||d.who===af);
-  }),[deals,q,sf,af]);
-  const save=d=>{edit?onEdit(d):onAdd({...d,id:Date.now()});sModal(false);sEdit(null);};
-  const SI={...IN,width:'auto',fontSize:13};
-  const TH=({t})=><th style={{padding:'11px 15px',textAlign:'left',fontWeight:700,fontSize:10,textTransform:'uppercase',letterSpacing:.8,color:C.muted,borderBottom:`1px solid ${C.border}`,whiteSpace:'nowrap',background:C.bg}}>{t}</th>;
-  return(
-    <div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20,flexWrap:'wrap',gap:10}}>
-        <div><h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Deals &amp; Sales</h1>
-          <p style={{color:C.muted,fontSize:13,marginTop:3}}>{deals.length} total · {list.length} showing</p>
-        </div>
-        <button onClick={()=>{sEdit(null);sModal(true);}} style={{display:'flex',alignItems:'center',gap:7,padding:'10px 18px',background:C.dark,color:'#fff',border:'none',borderRadius:9,cursor:'pointer',fontWeight:800,fontSize:13}}>
-          <I n="plus" s={14}/> Add Deal
-        </button>
-      </div>
-      <div style={{display:'flex',gap:9,marginBottom:16,flexWrap:'wrap'}}>
-        <div style={{position:'relative',flex:1,minWidth:190}}>
-          <span style={{position:'absolute',left:10,top:'50%',transform:'translateY(-50%)',color:C.muted,pointerEvents:'none'}}><I n="search" s={14}/></span>
-          <input style={{...IN,paddingLeft:32,width:'100%',fontSize:13}} placeholder="Search address, buyer, seller…" value={q} onChange={e=>sQ(e.target.value)}/>
-        </div>
-        <select style={SI} value={sf} onChange={e=>sSf(e.target.value)}>
-          <option value="All">All Statuses</option>{STATUSES.map(s=><option key={s}>{s}</option>)}
-        </select>
-        <select style={SI} value={af} onChange={e=>sAf(e.target.value)}>
-          <option value="All">All Agents</option><option value="me">{ME}</option><option value="wife">{WIFE}</option>
-        </select>
-      </div>
-      <Card style={{padding:0,overflow:'hidden'}}>
-        <div style={{overflowX:'auto'}}>
-          <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-            <thead><tr><TH t="Property"/><TH t="Agent"/><TH t="Sale Price"/><TH t="Gross Commission"/><TH t="Status"/><TH t="Offer Date"/><TH t=""/></tr></thead>
-            <tbody>
-              {list.map((d,i)=>{
-                const c=calc(d);const isMe=d.who==='me';
-                return(
-                  <React.Fragment key={d.id}>
-                    <tr style={{borderBottom:`1px solid ${C.border}`,background:i%2===0?'#fff':'#FAFAF8',cursor:'pointer'}} onClick={()=>sExp(exp===d.id?null:d.id)}>
-                      <td style={{padding:'12px 15px'}}><div style={{fontWeight:700,maxWidth:250,lineHeight:1.3}}>{d.addr}</div></td>
-                      <td style={{padding:'12px 15px'}}>
-                        <span style={{fontWeight:700,fontSize:11,color:isMe?C.info:'#7B4F2C',background:(isMe?C.info:'#7B4F2C')+'15',padding:'3px 8px',borderRadius:10}}>{d.name}</span>
-                      </td>
-                      <td style={{padding:'12px 15px',fontWeight:700}}>{d.sale>0?R(d.sale):'—'}</td>
-                      <td style={{padding:'12px 15px'}}>
-                        {d.sale>0?<div><div style={{fontWeight:800,color:C.gold}}>{R(c.agent)}</div><div style={{fontSize:10,color:C.muted,marginTop:1}}>{d.comm}% × {100-d.split}%</div></div>:'—'}
-                      </td>
-                      <td style={{padding:'12px 15px'}}><Badge status={d.status}/></td>
-                      <td style={{padding:'12px 15px',color:C.muted,whiteSpace:'nowrap'}}>{FD(d.offer)}</td>
-                      <td style={{padding:'12px 15px'}}>
-                        <div style={{display:'flex',gap:5}} onClick={e=>e.stopPropagation()}>
-                          <button onClick={()=>{sEdit(d);sModal(true);}} style={{background:'none',border:'none',cursor:'pointer',padding:5,borderRadius:6,display:'flex'}}><I n="edit" s={14}/></button>
-                          <button onClick={()=>sDel(d.id)} style={{background:'none',border:'none',cursor:'pointer',color:C.danger,padding:5,borderRadius:6,display:'flex'}}><I n="trash" s={14}/></button>
-                        </div>
-                      </td>
-                    </tr>
-                    {exp===d.id&&(
-                      <tr style={{background:'#F7F5F0'}}>
-                        <td colSpan={7} style={{padding:'13px 18px'}}>
-                          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(155px,1fr))',gap:10,fontSize:12}}>
-                            <div><span style={{color:C.muted}}>Seller: </span><strong>{d.seller||'—'}</strong></div>
-                            <div><span style={{color:C.muted}}>Buyer: </span><strong>{d.buyer||'—'}</strong></div>
-                            <div><span style={{color:C.muted}}>Listing: </span><strong>{R(d.list)}</strong></div>
-                            <div><span style={{color:C.muted}}>Total Comm: </span><strong>{R(c.tot)}</strong></div>
-                            <div><span style={{color:C.muted}}>Agency: </span><strong>{R(c.ag)}</strong></div>
-                            <div><span style={{color:C.muted}}>Registered: </span><strong>{FD(d.reg)}</strong></div>
-                          </div>
-                          {d.notes&&<div style={{marginTop:8,fontSize:12,color:C.muted}}><strong>Notes:</strong> {d.notes}</div>}
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-              {list.length===0&&<tr><td colSpan={7} style={{padding:'44px',textAlign:'center',color:C.muted}}>No deals match your filters.</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-      <Modal open={modal} onClose={()=>{sModal(false);sEdit(null);}} title={edit?'Edit Deal':'Add New Deal'} w={730}>
-        <DealForm deal={edit} onSave={save} onClose={()=>{sModal(false);sEdit(null);}}/>
-      </Modal>
-      <Modal open={!!del} onClose={()=>sDel(null)} title="Delete Deal?" w={420}>
-        <p style={{color:C.muted,marginBottom:22,fontSize:14}}>This deal will be permanently removed.</p>
-        <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
-          <button onClick={()=>sDel(null)} style={{padding:'10px 20px',border:`1px solid ${C.border}`,borderRadius:8,background:'none',cursor:'pointer',fontWeight:700}}>Cancel</button>
-          <button onClick={()=>{onDel(del);sDel(null);}} style={{padding:'10px 22px',border:'none',borderRadius:8,background:C.danger,color:'#fff',cursor:'pointer',fontWeight:800}}>Delete</button>
-        </div>
-      </Modal>
-    </div>
-  );
+function Deals(_ref9) {
+  var deals = _ref9.deals,
+    onAdd = _ref9.onAdd,
+    onEdit = _ref9.onEdit,
+    onDel = _ref9.onDel;
+  var _useState3 = useState(''),
+    _useState4 = _slicedToArray(_useState3, 2),
+    q = _useState4[0],
+    sQ = _useState4[1];
+  var _useState5 = useState('All'),
+    _useState6 = _slicedToArray(_useState5, 2),
+    sf = _useState6[0],
+    sSf = _useState6[1];
+  var _useState7 = useState('All'),
+    _useState8 = _slicedToArray(_useState7, 2),
+    af = _useState8[0],
+    sAf = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    modal = _useState0[0],
+    sModal = _useState0[1];
+  var _useState1 = useState(null),
+    _useState10 = _slicedToArray(_useState1, 2),
+    edit = _useState10[0],
+    sEdit = _useState10[1];
+  var _useState11 = useState(null),
+    _useState12 = _slicedToArray(_useState11, 2),
+    del = _useState12[0],
+    sDel = _useState12[1];
+  var _useState13 = useState(null),
+    _useState14 = _slicedToArray(_useState13, 2),
+    exp = _useState14[0],
+    sExp = _useState14[1];
+  var list = useMemo(function () {
+    return deals.filter(function (d) {
+      var m = d.addr.toLowerCase().includes(q.toLowerCase()) || d.seller.toLowerCase().includes(q.toLowerCase()) || d.buyer.toLowerCase().includes(q.toLowerCase());
+      return m && (sf === 'All' || d.status === sf) && (af === 'All' || d.who === af);
+    });
+  }, [deals, q, sf, af]);
+  var save = function save(d) {
+    edit ? onEdit(d) : onAdd(_objectSpread(_objectSpread({}, d), {}, {
+      id: Date.now()
+    }));
+    sModal(false);
+    sEdit(null);
+  };
+  var SI = _objectSpread(_objectSpread({}, IN), {}, {
+    width: 'auto',
+    fontSize: 13
+  });
+  var TH = function TH(_ref0) {
+    var t = _ref0.t;
+    return /*#__PURE__*/React.createElement("th", {
+      style: {
+        padding: '11px 15px',
+        textAlign: 'left',
+        fontWeight: 700,
+        fontSize: 10,
+        textTransform: 'uppercase',
+        letterSpacing: .8,
+        color: C.muted,
+        borderBottom: "1px solid ".concat(C.border),
+        whiteSpace: 'nowrap',
+        background: C.bg
+      }
+    }, t);
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 20,
+      flexWrap: 'wrap',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Deals & Sales"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, deals.length, " total \xB7 ", list.length, " showing")), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      sEdit(null);
+      sModal(true);
+    },
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 7,
+      padding: '10px 18px',
+      background: C.dark,
+      color: '#fff',
+      border: 'none',
+      borderRadius: 9,
+      cursor: 'pointer',
+      fontWeight: 800,
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "plus",
+    s: 14
+  }), " Add Deal")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 9,
+      marginBottom: 16,
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      flex: 1,
+      minWidth: 190
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: 'absolute',
+      left: 10,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: C.muted,
+      pointerEvents: 'none'
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "search",
+    s: 14
+  })), /*#__PURE__*/React.createElement("input", {
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      paddingLeft: 32,
+      width: '100%',
+      fontSize: 13
+    }),
+    placeholder: "Search address, buyer, seller\u2026",
+    value: q,
+    onChange: function onChange(e) {
+      return sQ(e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("select", {
+    style: SI,
+    value: sf,
+    onChange: function onChange(e) {
+      return sSf(e.target.value);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "All"
+  }, "All Statuses"), STATUSES.map(function (s) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: s
+    }, s);
+  })), /*#__PURE__*/React.createElement("select", {
+    style: SI,
+    value: af,
+    onChange: function onChange(e) {
+      return sAf(e.target.value);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "All"
+  }, "All Agents"), /*#__PURE__*/React.createElement("option", {
+    value: "me"
+  }, ME), /*#__PURE__*/React.createElement("option", {
+    value: "wife"
+  }, WIFE))), /*#__PURE__*/React.createElement(Card, {
+    style: {
+      padding: 0,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
+    t: "Property"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Agent"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Sale Price"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Gross Commission"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Status"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Offer Date"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: ""
+  }))), /*#__PURE__*/React.createElement("tbody", null, list.map(function (d, i) {
+    var c = calc(d);
+    var isMe = d.who === 'me';
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: d.id
+    }, /*#__PURE__*/React.createElement("tr", {
+      style: {
+        borderBottom: "1px solid ".concat(C.border),
+        background: i % 2 === 0 ? '#fff' : '#FAFAF8',
+        cursor: 'pointer'
+      },
+      onClick: function onClick() {
+        return sExp(exp === d.id ? null : d.id);
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 700,
+        maxWidth: 250,
+        lineHeight: 1.3
+      }
+    }, d.addr)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontWeight: 700,
+        fontSize: 11,
+        color: isMe ? C.info : '#7B4F2C',
+        background: (isMe ? C.info : '#7B4F2C') + '15',
+        padding: '3px 8px',
+        borderRadius: 10
+      }
+    }, d.name)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        fontWeight: 700
+      }
+    }, d.sale > 0 ? R(d.sale) : '—'), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, d.sale > 0 ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 800,
+        color: C.gold
+      }
+    }, R(c.agent)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: C.muted,
+        marginTop: 1
+      }
+    }, d.comm, "% \xD7 ", 100 - d.split, "%")) : '—'), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement(Badge, {
+      status: d.status
+    })), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        color: C.muted,
+        whiteSpace: 'nowrap'
+      }
+    }, FD(d.offer)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        gap: 5
+      },
+      onClick: function onClick(e) {
+        return e.stopPropagation();
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        sEdit(d);
+        sModal(true);
+      },
+      style: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 5,
+        borderRadius: 6,
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(I, {
+      n: "edit",
+      s: 14
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return sDel(d.id);
+      },
+      style: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        color: C.danger,
+        padding: 5,
+        borderRadius: 6,
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(I, {
+      n: "trash",
+      s: 14
+    }))))), exp === d.id && /*#__PURE__*/React.createElement("tr", {
+      style: {
+        background: '#F7F5F0'
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      colSpan: 7,
+      style: {
+        padding: '13px 18px'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill,minmax(155px,1fr))',
+        gap: 10,
+        fontSize: 12
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Seller: "), /*#__PURE__*/React.createElement("strong", null, d.seller || '—')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Buyer: "), /*#__PURE__*/React.createElement("strong", null, d.buyer || '—')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Listing: "), /*#__PURE__*/React.createElement("strong", null, R(d.list))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Total Comm: "), /*#__PURE__*/React.createElement("strong", null, R(c.tot))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Agency: "), /*#__PURE__*/React.createElement("strong", null, R(c.ag))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted
+      }
+    }, "Registered: "), /*#__PURE__*/React.createElement("strong", null, FD(d.reg)))), d.notes && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 8,
+        fontSize: 12,
+        color: C.muted
+      }
+    }, /*#__PURE__*/React.createElement("strong", null, "Notes:"), " ", d.notes))));
+  }), list.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 7,
+    style: {
+      padding: '44px',
+      textAlign: 'center',
+      color: C.muted
+    }
+  }, "No deals match your filters.")))))), /*#__PURE__*/React.createElement(Modal, {
+    open: modal,
+    onClose: function onClose() {
+      sModal(false);
+      sEdit(null);
+    },
+    title: edit ? 'Edit Deal' : 'Add New Deal',
+    w: 730
+  }, /*#__PURE__*/React.createElement(DealForm, {
+    deal: edit,
+    onSave: save,
+    onClose: function onClose() {
+      sModal(false);
+      sEdit(null);
+    }
+  })), /*#__PURE__*/React.createElement(Modal, {
+    open: !!del,
+    onClose: function onClose() {
+      return sDel(null);
+    },
+    title: "Delete Deal?",
+    w: 420
+  }, /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      marginBottom: 22,
+      fontSize: 14
+    }
+  }, "This deal will be permanently removed."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return sDel(null);
+    },
+    style: {
+      padding: '10px 20px',
+      border: "1px solid ".concat(C.border),
+      borderRadius: 8,
+      background: 'none',
+      cursor: 'pointer',
+      fontWeight: 700
+    }
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      onDel(del);
+      sDel(null);
+    },
+    style: {
+      padding: '10px 22px',
+      border: 'none',
+      borderRadius: 8,
+      background: C.danger,
+      color: '#fff',
+      cursor: 'pointer',
+      fontWeight: 800
+    }
+  }, "Delete"))));
 }
 
 // ── PIPELINE ─────────────────────────────────────────────────
-const EP={addr:'',src:'Referral',price:'',prob:50,close:'',follow:'',notes:''};
-function PipeForm({item,onSave,onClose}){
-  const[f,sF]=useState(item||EP);const set=(k,v)=>sF(p=>({...p,[k]:v}));
-  const ec=(Number(f.price)*0.05*0.5)||0;
-  return(
-    <form onSubmit={e=>{e.preventDefault();onSave({...f,id:item?.id||Date.now()});}}>
-      <div style={FLD}><label style={L}>Property Address *</label><input style={IN} value={f.addr} onChange={e=>set('addr',e.target.value)} required/></div>
-      <div style={G2}>
-        <div style={FLD}><label style={L}>Lead Source</label><select style={IN} value={f.src} onChange={e=>set('src',e.target.value)}>{SOURCES.map(s=><option key={s}>{s}</option>)}</select></div>
-        <div style={FLD}><label style={L}>Est. Sale Price (R)</label><input style={IN} type="number" value={f.price} onChange={e=>set('price',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Probability: {f.prob}%</label>
-          <input type="range" style={{width:'100%',accentColor:C.gold}} min="0" max="100" step="5" value={f.prob} onChange={e=>set('prob',Number(e.target.value))}/>
-        </div>
-        <div style={FLD}><label style={L}>Est. Commission (5%, 50%)</label>
-          <div style={{...IN,fontWeight:800,color:C.gold,background:C.goldLt,border:`1px solid ${C.border}`}}>{R(ec)}</div>
-        </div>
-        <div style={FLD}><label style={L}>Expected Close Month</label><input style={IN} type="month" value={f.close} onChange={e=>set('close',e.target.value)}/></div>
-        <div style={FLD}><label style={L}>Next Follow-up</label><input style={IN} type="date" value={f.follow} onChange={e=>set('follow',e.target.value)}/></div>
-      </div>
-      <div style={FLD}><label style={L}>Notes</label><textarea style={{...IN,minHeight:70,resize:'vertical'}} value={f.notes} onChange={e=>set('notes',e.target.value)}/></div>
-      <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
-        <button type="button" onClick={onClose} style={{padding:'10px 20px',border:`1px solid ${C.border}`,borderRadius:8,background:'none',cursor:'pointer',fontWeight:700,fontSize:13}}>Cancel</button>
-        <button type="submit" style={{padding:'10px 24px',border:'none',borderRadius:8,background:C.dark,color:'#fff',cursor:'pointer',fontWeight:800,fontSize:13}}>Save</button>
-      </div>
-    </form>
-  );
+var EP = {
+  addr: '',
+  src: 'Referral',
+  price: '',
+  prob: 50,
+  close: '',
+  follow: '',
+  notes: ''
+};
+function PipeForm(_ref1) {
+  var item = _ref1.item,
+    onSave = _ref1.onSave,
+    onClose = _ref1.onClose;
+  var _useState15 = useState(item || EP),
+    _useState16 = _slicedToArray(_useState15, 2),
+    f = _useState16[0],
+    sF = _useState16[1];
+  var set = function set(k, v) {
+    return sF(function (p) {
+      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
+    });
+  };
+  var ec = Number(f.price) * 0.05 * 0.5 || 0;
+  return /*#__PURE__*/React.createElement("form", {
+    onSubmit: function onSubmit(e) {
+      e.preventDefault();
+      onSave(_objectSpread(_objectSpread({}, f), {}, {
+        id: (item === null || item === void 0 ? void 0 : item.id) || Date.now()
+      }));
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Property Address *"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    value: f.addr,
+    onChange: function onChange(e) {
+      return set('addr', e.target.value);
+    },
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    style: G2
+  }, /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Lead Source"), /*#__PURE__*/React.createElement("select", {
+    style: IN,
+    value: f.src,
+    onChange: function onChange(e) {
+      return set('src', e.target.value);
+    }
+  }, SOURCES.map(function (s) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: s
+    }, s);
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Est. Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "number",
+    value: f.price,
+    onChange: function onChange(e) {
+      return set('price', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Probability: ", f.prob, "%"), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    style: {
+      width: '100%',
+      accentColor: C.gold
+    },
+    min: "0",
+    max: "100",
+    step: "5",
+    value: f.prob,
+    onChange: function onChange(e) {
+      return set('prob', Number(e.target.value));
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Est. Commission (5%, 50%)"), /*#__PURE__*/React.createElement("div", {
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      fontWeight: 800,
+      color: C.gold,
+      background: C.goldLt,
+      border: "1px solid ".concat(C.border)
+    })
+  }, R(ec))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Expected Close Month"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "month",
+    value: f.close,
+    onChange: function onChange(e) {
+      return set('close', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Next Follow-up"), /*#__PURE__*/React.createElement("input", {
+    style: IN,
+    type: "date",
+    value: f.follow,
+    onChange: function onChange(e) {
+      return set('follow', e.target.value);
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Notes"), /*#__PURE__*/React.createElement("textarea", {
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      minHeight: 70,
+      resize: 'vertical'
+    }),
+    value: f.notes,
+    onChange: function onChange(e) {
+      return set('notes', e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: onClose,
+    style: {
+      padding: '10px 20px',
+      border: "1px solid ".concat(C.border),
+      borderRadius: 8,
+      background: 'none',
+      cursor: 'pointer',
+      fontWeight: 700,
+      fontSize: 13
+    }
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    style: {
+      padding: '10px 24px',
+      border: 'none',
+      borderRadius: 8,
+      background: C.dark,
+      color: '#fff',
+      cursor: 'pointer',
+      fontWeight: 800,
+      fontSize: 13
+    }
+  }, "Save")));
 }
-function Pipeline({pipe,onAdd,onEdit,onDel}){
-  const[modal,sM]=useState(false);const[edit,sE]=useState(null);const[del,sD]=useState(null);
-  const raw=pipe.reduce((s,p)=>s+Number(p.price||0),0);
-  const wt=pipe.reduce((s,p)=>s+Number(p.price||0)*p.prob/100,0);
-  const ec=pipe.reduce((s,p)=>s+Number(p.price||0)*0.05*0.5*p.prob/100,0);
-  const save=x=>{edit?onEdit(x):onAdd({...x,id:Date.now()});sM(false);sE(null);};
-  const PC=({p})=>{const col=p>=75?C.success:p>=50?C.warn:C.muted;return<span style={{fontSize:12,fontWeight:800,color:col,background:col+'18',padding:'3px 8px',borderRadius:10}}>{p}%</span>;};
-  const TH=({t})=><th style={{padding:'11px 15px',textAlign:'left',fontWeight:700,fontSize:10,textTransform:'uppercase',letterSpacing:.8,color:C.muted,borderBottom:`1px solid ${C.border}`,whiteSpace:'nowrap',background:C.bg}}>{t}</th>;
-  return(
-    <div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20,flexWrap:'wrap',gap:10}}>
-        <div><h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Pipeline</h1>
-          <p style={{color:C.muted,fontSize:13,marginTop:3}}>Weighted: {R(wt)} · Est. Commission: {R(ec)}</p>
-        </div>
-        <button onClick={()=>{sE(null);sM(true);}} style={{display:'flex',alignItems:'center',gap:7,padding:'10px 18px',background:C.dark,color:'#fff',border:'none',borderRadius:9,cursor:'pointer',fontWeight:800,fontSize:13}}>
-          <I n="plus" s={14}/> Add Lead
-        </button>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(175px,1fr))',gap:13,marginBottom:20}} className="g3">
-        <Stat label="Active Leads"    val={pipe.length}   icon="pipeline"/>
-        <Stat label="Pipeline Value"  val={R(raw)}  sub="gross"  icon="trend"/>
-        <Stat label="Weighted Value"  val={R(wt)}   sub="by probability" icon="target"/>
-        <Stat label="Est. Commission" val={R(ec)}   sub="weighted 5%·50%" icon="calc"/>
-      </div>
-      <Card style={{padding:0,overflow:'hidden'}}>
-        <div style={{overflowX:'auto'}}>
-          <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-            <thead><tr><TH t="Property"/><TH t="Source"/><TH t="Est. Price"/><TH t="Est. Commission"/><TH t="Probability"/><TH t="Close"/><TH t="Follow-up"/><TH t=""/></tr></thead>
-            <tbody>
-              {pipe.map((p,i)=>{
-                const ec2=Number(p.price)*0.05*0.5;
-                return(
-                  <tr key={p.id} style={{borderBottom:`1px solid ${C.border}`,background:i%2===0?'#fff':'#FAFAF8'}}>
-                    <td style={{padding:'12px 15px'}}><div style={{fontWeight:700,maxWidth:210}}>{p.addr}</div>{p.notes&&<div style={{fontSize:10,color:C.muted,marginTop:1}}>{p.notes.slice(0,50)}{p.notes.length>50?'…':''}</div>}</td>
-                    <td style={{padding:'12px 15px',color:C.muted}}>{p.src}</td>
-                    <td style={{padding:'12px 15px',fontWeight:700}}>{R(p.price)}</td>
-                    <td style={{padding:'12px 15px',color:C.gold,fontWeight:800}}>{R(ec2)}</td>
-                    <td style={{padding:'12px 15px'}}><PC p={Number(p.prob)}/></td>
-                    <td style={{padding:'12px 15px',color:C.muted,whiteSpace:'nowrap'}}>{FM(p.close)}</td>
-                    <td style={{padding:'12px 15px',color:C.muted,whiteSpace:'nowrap'}}>{FD(p.follow)}</td>
-                    <td style={{padding:'12px 15px'}}>
-                      <div style={{display:'flex',gap:5}}>
-                        <button onClick={()=>{sE(p);sM(true);}} style={{background:'none',border:'none',cursor:'pointer',padding:5,borderRadius:6,display:'flex'}}><I n="edit" s={14}/></button>
-                        <button onClick={()=>sD(p.id)} style={{background:'none',border:'none',cursor:'pointer',color:C.danger,padding:5,borderRadius:6,display:'flex'}}><I n="trash" s={14}/></button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {pipe.length===0&&<tr><td colSpan={8} style={{padding:'44px',textAlign:'center',color:C.muted}}>No pipeline leads yet.</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-      <Modal open={modal} onClose={()=>{sM(false);sE(null);}} title={edit?'Edit Lead':'Add Pipeline Lead'}>
-        <PipeForm item={edit} onSave={save} onClose={()=>{sM(false);sE(null);}}/>
-      </Modal>
-      <Modal open={!!del} onClose={()=>sD(null)} title="Remove Lead?" w={420}>
-        <p style={{color:C.muted,marginBottom:22,fontSize:14}}>Remove this lead from your pipeline?</p>
-        <div style={{display:'flex',gap:10,justifyContent:'flex-end'}}>
-          <button onClick={()=>sD(null)} style={{padding:'10px 20px',border:`1px solid ${C.border}`,borderRadius:8,background:'none',cursor:'pointer',fontWeight:700}}>Cancel</button>
-          <button onClick={()=>{onDel(del);sD(null);}} style={{padding:'10px 22px',border:'none',borderRadius:8,background:C.danger,color:'#fff',cursor:'pointer',fontWeight:800}}>Remove</button>
-        </div>
-      </Modal>
-    </div>
-  );
+function Pipeline(_ref10) {
+  var pipe = _ref10.pipe,
+    onAdd = _ref10.onAdd,
+    onEdit = _ref10.onEdit,
+    onDel = _ref10.onDel;
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    modal = _useState18[0],
+    sM = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    edit = _useState20[0],
+    sE = _useState20[1];
+  var _useState21 = useState(null),
+    _useState22 = _slicedToArray(_useState21, 2),
+    del = _useState22[0],
+    sD = _useState22[1];
+  var raw = pipe.reduce(function (s, p) {
+    return s + Number(p.price || 0);
+  }, 0);
+  var wt = pipe.reduce(function (s, p) {
+    return s + Number(p.price || 0) * p.prob / 100;
+  }, 0);
+  var ec = pipe.reduce(function (s, p) {
+    return s + Number(p.price || 0) * 0.05 * 0.5 * p.prob / 100;
+  }, 0);
+  var save = function save(x) {
+    edit ? onEdit(x) : onAdd(_objectSpread(_objectSpread({}, x), {}, {
+      id: Date.now()
+    }));
+    sM(false);
+    sE(null);
+  };
+  var PC = function PC(_ref11) {
+    var p = _ref11.p;
+    var col = p >= 75 ? C.success : p >= 50 ? C.warn : C.muted;
+    return /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        fontWeight: 800,
+        color: col,
+        background: col + '18',
+        padding: '3px 8px',
+        borderRadius: 10
+      }
+    }, p, "%");
+  };
+  var TH = function TH(_ref12) {
+    var t = _ref12.t;
+    return /*#__PURE__*/React.createElement("th", {
+      style: {
+        padding: '11px 15px',
+        textAlign: 'left',
+        fontWeight: 700,
+        fontSize: 10,
+        textTransform: 'uppercase',
+        letterSpacing: .8,
+        color: C.muted,
+        borderBottom: "1px solid ".concat(C.border),
+        whiteSpace: 'nowrap',
+        background: C.bg
+      }
+    }, t);
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 20,
+      flexWrap: 'wrap',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Pipeline"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, "Weighted: ", R(wt), " \xB7 Est. Commission: ", R(ec))), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      sE(null);
+      sM(true);
+    },
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 7,
+      padding: '10px 18px',
+      background: C.dark,
+      color: '#fff',
+      border: 'none',
+      borderRadius: 9,
+      cursor: 'pointer',
+      fontWeight: 800,
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "plus",
+    s: 14
+  }), " Add Lead")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill,minmax(175px,1fr))',
+      gap: 13,
+      marginBottom: 20
+    },
+    className: "g3"
+  }, /*#__PURE__*/React.createElement(Stat, {
+    label: "Active Leads",
+    val: pipe.length,
+    icon: "pipeline"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Pipeline Value",
+    val: R(raw),
+    sub: "gross",
+    icon: "trend"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Weighted Value",
+    val: R(wt),
+    sub: "by probability",
+    icon: "target"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Est. Commission",
+    val: R(ec),
+    sub: "weighted 5%\xB750%",
+    icon: "calc"
+  })), /*#__PURE__*/React.createElement(Card, {
+    style: {
+      padding: 0,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
+    t: "Property"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Source"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Est. Price"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Est. Commission"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Probability"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Close"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Follow-up"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: ""
+  }))), /*#__PURE__*/React.createElement("tbody", null, pipe.map(function (p, i) {
+    var ec2 = Number(p.price) * 0.05 * 0.5;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.id,
+      style: {
+        borderBottom: "1px solid ".concat(C.border),
+        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 700,
+        maxWidth: 210
+      }
+    }, p.addr), p.notes && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: C.muted,
+        marginTop: 1
+      }
+    }, p.notes.slice(0, 50), p.notes.length > 50 ? '…' : '')), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        color: C.muted
+      }
+    }, p.src), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        fontWeight: 700
+      }
+    }, R(p.price)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        color: C.gold,
+        fontWeight: 800
+      }
+    }, R(ec2)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement(PC, {
+      p: Number(p.prob)
+    })), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        color: C.muted,
+        whiteSpace: 'nowrap'
+      }
+    }, FM(p.close)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px',
+        color: C.muted,
+        whiteSpace: 'nowrap'
+      }
+    }, FD(p.follow)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '12px 15px'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        gap: 5
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        sE(p);
+        sM(true);
+      },
+      style: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 5,
+        borderRadius: 6,
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(I, {
+      n: "edit",
+      s: 14
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return sD(p.id);
+      },
+      style: {
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        color: C.danger,
+        padding: 5,
+        borderRadius: 6,
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(I, {
+      n: "trash",
+      s: 14
+    })))));
+  }), pipe.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 8,
+    style: {
+      padding: '44px',
+      textAlign: 'center',
+      color: C.muted
+    }
+  }, "No pipeline leads yet.")))))), /*#__PURE__*/React.createElement(Modal, {
+    open: modal,
+    onClose: function onClose() {
+      sM(false);
+      sE(null);
+    },
+    title: edit ? 'Edit Lead' : 'Add Pipeline Lead'
+  }, /*#__PURE__*/React.createElement(PipeForm, {
+    item: edit,
+    onSave: save,
+    onClose: function onClose() {
+      sM(false);
+      sE(null);
+    }
+  })), /*#__PURE__*/React.createElement(Modal, {
+    open: !!del,
+    onClose: function onClose() {
+      return sD(null);
+    },
+    title: "Remove Lead?",
+    w: 420
+  }, /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      marginBottom: 22,
+      fontSize: 14
+    }
+  }, "Remove this lead from your pipeline?"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10,
+      justifyContent: 'flex-end'
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return sD(null);
+    },
+    style: {
+      padding: '10px 20px',
+      border: "1px solid ".concat(C.border),
+      borderRadius: 8,
+      background: 'none',
+      cursor: 'pointer',
+      fontWeight: 700
+    }
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      onDel(del);
+      sD(null);
+    },
+    style: {
+      padding: '10px 22px',
+      border: 'none',
+      borderRadius: 8,
+      background: C.danger,
+      color: '#fff',
+      cursor: 'pointer',
+      fontWeight: 800
+    }
+  }, "Remove"))));
 }
 
 // ── COMMISSION CALCULATOR ────────────────────────────────────
-function CommCalc(){
-  const[sp,sP]=useState('5000000');const[cp,sC]=useState('5');const[as,sA]=useState('50');const[who,sW]=useState('me');
-  const SP=Number(sp)||0,CP=Number(cp)||0,AS=Number(as)||50;
-  const tot=SP*(CP/100),ag=tot*(AS/100),agent=tot-ag,pct=100-AS;
-  const Box=({label,val,big,gold,dark})=>(
-    <div style={{textAlign:'center',padding:'16px 12px',background:dark?C.dark:gold?C.goldLt:C.bg,borderRadius:10,border:`1px solid ${dark?'transparent':C.border}`}}>
-      <div style={{fontSize:10,textTransform:'uppercase',letterSpacing:1,fontWeight:700,marginBottom:5,color:dark?'rgba(255,255,255,0.55)':C.muted}}>{label}</div>
-      <div style={{fontSize:big?28:18,fontWeight:800,color:dark?C.gold:C.dark,lineHeight:1}}>{val}</div>
-    </div>
-  );
-  return(
-    <div>
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Commission Calculator</h1>
-        <p style={{color:C.muted,fontSize:13,marginTop:3}}>Real-time Engel &amp; Völkers split calculator.</p>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:22,maxWidth:900}} className="g2">
-        <Card>
-          <h3 style={{fontWeight:800,marginBottom:20,fontSize:14}}>Deal Details</h3>
-          <div style={FLD}><label style={L}>Sale Price (R)</label>
-            <input style={{...IN,fontSize:17,fontWeight:700}} type="number" value={sp} onChange={e=>sP(e.target.value)}/>
-          </div>
-          <div style={FLD}><label style={L}>Commission Rate: <strong style={{color:C.gold}}>{cp}%</strong></label>
-            <input type="range" style={{width:'100%',accentColor:C.gold,marginBottom:3}} min="1" max="10" step=".5" value={cp} onChange={e=>sC(e.target.value)}/>
-            <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:C.muted}}><span>1%</span><span>10%</span></div>
-          </div>
-          <div style={FLD}><label style={L}>E&amp;V keeps: <strong style={{color:C.gold}}>{as}%</strong> · You keep: <strong style={{color:C.gold}}>{pct}%</strong></label>
-            <input type="range" style={{width:'100%',accentColor:C.gold,marginBottom:3}} min="0" max="100" step="5" value={as} onChange={e=>sA(e.target.value)}/>
-            <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:C.muted}}><span>0%</span><span>100%</span></div>
-          </div>
-          <div><label style={L}>Assign to</label>
-            <div style={{display:'flex',gap:10}}>
-              {[['me',ME],['wife',WIFE]].map(([v,lbl])=>(
-                <button key={v} type="button" onClick={()=>sW(v)} style={{flex:1,padding:'10px',borderRadius:8,fontWeight:800,fontSize:14,cursor:'pointer',
-                  border:who===v?`2px solid ${C.gold}`:`1px solid ${C.border}`,
-                  background:who===v?C.goldLt:'#fff',color:who===v?C.dark:C.muted}}>{lbl}</button>
-              ))}
-            </div>
-          </div>
-        </Card>
-        <Card>
-          <h3 style={{fontWeight:800,marginBottom:20,fontSize:14}}>Breakdown</h3>
-          <div style={{display:'flex',flexDirection:'column',gap:11}}>
-            <Box label={`Total Commission (${cp}%)`} val={R(tot)} big/>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:11}}>
-              <Box label={`Agency / E&V (${as}%)`}  val={R(ag)}/>
-              <Box label={`Agent Share (${pct}%)`}   val={R(agent)} gold/>
-            </div>
-            <Box label={`→ ${who==='me'?ME:WIFE}'s Income`} val={R(agent)} big dark/>
-            <div style={{fontSize:11,color:C.muted,textAlign:'center',padding:'8px',background:C.bg,borderRadius:8,lineHeight:1.8}}>
-              {R(SP)} × {cp}% = {R(tot)} total<br/>× {pct}% = <strong style={{color:C.gold}}>{R(agent)}</strong>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
+function CommCalc() {
+  var _useState23 = useState('5000000'),
+    _useState24 = _slicedToArray(_useState23, 2),
+    sp = _useState24[0],
+    sP = _useState24[1];
+  var _useState25 = useState('5'),
+    _useState26 = _slicedToArray(_useState25, 2),
+    cp = _useState26[0],
+    sC = _useState26[1];
+  var _useState27 = useState('50'),
+    _useState28 = _slicedToArray(_useState27, 2),
+    as = _useState28[0],
+    sA = _useState28[1];
+  var _useState29 = useState('me'),
+    _useState30 = _slicedToArray(_useState29, 2),
+    who = _useState30[0],
+    sW = _useState30[1];
+  var SP = Number(sp) || 0,
+    CP = Number(cp) || 0,
+    AS = Number(as) || 50;
+  var tot = SP * (CP / 100),
+    ag = tot * (AS / 100),
+    agent = tot - ag,
+    pct = 100 - AS;
+  var Box = function Box(_ref13) {
+    var label = _ref13.label,
+      val = _ref13.val,
+      big = _ref13.big,
+      gold = _ref13.gold,
+      dark = _ref13.dark;
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: 'center',
+        padding: '16px 12px',
+        background: dark ? C.dark : gold ? C.goldLt : C.bg,
+        borderRadius: 10,
+        border: "1px solid ".concat(dark ? 'transparent' : C.border)
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        fontWeight: 700,
+        marginBottom: 5,
+        color: dark ? 'rgba(255,255,255,0.55)' : C.muted
+      }
+    }, label), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: big ? 28 : 18,
+        fontWeight: 800,
+        color: dark ? C.gold : C.dark,
+        lineHeight: 1
+      }
+    }, val));
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 22
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Commission Calculator"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, "Real-time Engel & V\xF6lkers split calculator.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 22,
+      maxWidth: 900
+    },
+    className: "g2"
+  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 20,
+      fontSize: 14
+    }
+  }, "Deal Details"), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      fontSize: 17,
+      fontWeight: 700
+    }),
+    type: "number",
+    value: sp,
+    onChange: function onChange(e) {
+      return sP(e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Commission Rate: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: C.gold
+    }
+  }, cp, "%")), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    style: {
+      width: '100%',
+      accentColor: C.gold,
+      marginBottom: 3
+    },
+    min: "1",
+    max: "10",
+    step: ".5",
+    value: cp,
+    onChange: function onChange(e) {
+      return sC(e.target.value);
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: 10,
+      color: C.muted
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "1%"), /*#__PURE__*/React.createElement("span", null, "10%"))), /*#__PURE__*/React.createElement("div", {
+    style: FLD
+  }, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "E&V keeps: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: C.gold
+    }
+  }, as, "%"), " \xB7 You keep: ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: C.gold
+    }
+  }, pct, "%")), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    style: {
+      width: '100%',
+      accentColor: C.gold,
+      marginBottom: 3
+    },
+    min: "0",
+    max: "100",
+    step: "5",
+    value: as,
+    onChange: function onChange(e) {
+      return sA(e.target.value);
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: 10,
+      color: C.muted
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "0%"), /*#__PURE__*/React.createElement("span", null, "100%"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    style: L
+  }, "Assign to"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 10
+    }
+  }, [['me', ME], ['wife', WIFE]].map(function (_ref14) {
+    var _ref15 = _slicedToArray(_ref14, 2),
+      v = _ref15[0],
+      lbl = _ref15[1];
+    return /*#__PURE__*/React.createElement("button", {
+      key: v,
+      type: "button",
+      onClick: function onClick() {
+        return sW(v);
+      },
+      style: {
+        flex: 1,
+        padding: '10px',
+        borderRadius: 8,
+        fontWeight: 800,
+        fontSize: 14,
+        cursor: 'pointer',
+        border: who === v ? "2px solid ".concat(C.gold) : "1px solid ".concat(C.border),
+        background: who === v ? C.goldLt : '#fff',
+        color: who === v ? C.dark : C.muted
+      }
+    }, lbl);
+  })))), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 20,
+      fontSize: 14
+    }
+  }, "Breakdown"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 11
+    }
+  }, /*#__PURE__*/React.createElement(Box, {
+    label: "Total Commission (".concat(cp, "%)"),
+    val: R(tot),
+    big: true
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 11
+    }
+  }, /*#__PURE__*/React.createElement(Box, {
+    label: "Agency / E&V (".concat(as, "%)"),
+    val: R(ag)
+  }), /*#__PURE__*/React.createElement(Box, {
+    label: "Agent Share (".concat(pct, "%)"),
+    val: R(agent),
+    gold: true
+  })), /*#__PURE__*/React.createElement(Box, {
+    label: "\u2192 ".concat(who === 'me' ? ME : WIFE, "'s Income"),
+    val: R(agent),
+    big: true,
+    dark: true
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: C.muted,
+      textAlign: 'center',
+      padding: '8px',
+      background: C.bg,
+      borderRadius: 8,
+      lineHeight: 1.8
+    }
+  }, R(SP), " \xD7 ", cp, "% = ", R(tot), " total", /*#__PURE__*/React.createElement("br", null), "\xD7 ", pct, "% = ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: C.gold
+    }
+  }, R(agent)))))));
 }
 
 // ── INCOME REPORT ────────────────────────────────────────────
-function Income({deals}){
-  const[yr,sY]=useState(new Date().getFullYear());
-  const yd=deals.filter(d=>(d.offer||'').startsWith(String(yr))&&d.sale>0);
-  const md=yd.filter(d=>d.who==='me'),wd=yd.filter(d=>d.who==='wife');
-  const mi=md.reduce((s,d)=>s+calc(d).me,0),wi=wd.reduce((s,d)=>s+calc(d).wife,0),co=mi+wi;
-  const moD=[];
-  for(let m=1;m<=12;m++){
-    const k=`${yr}-${String(m).padStart(2,'0')}`;
-    const ml=new Date(yr,m-1).toLocaleString('en',{month:'short'});
-    const mc2=deals.filter(d=>d.who==='me'&&(d.offer||'').startsWith(k)&&d.sale>0).reduce((s,d)=>s+calc(d).me,0);
-    const wc2=deals.filter(d=>d.who==='wife'&&(d.offer||'').startsWith(k)&&d.sale>0).reduce((s,d)=>s+calc(d).wife,0);
-    moD.push({m:ml,[ME]:Math.round(mc2/1000),[WIFE]:Math.round(wc2/1000)});
+function Income(_ref16) {
+  var deals = _ref16.deals;
+  var _useState31 = useState(new Date().getFullYear()),
+    _useState32 = _slicedToArray(_useState31, 2),
+    yr = _useState32[0],
+    sY = _useState32[1];
+  var yd = deals.filter(function (d) {
+    return (d.offer || '').startsWith(String(yr)) && d.sale > 0;
+  });
+  var md = yd.filter(function (d) {
+      return d.who === 'me';
+    }),
+    wd = yd.filter(function (d) {
+      return d.who === 'wife';
+    });
+  var mi = md.reduce(function (s, d) {
+      return s + calc(d).me;
+    }, 0),
+    wi = wd.reduce(function (s, d) {
+      return s + calc(d).wife;
+    }, 0),
+    co = mi + wi;
+  var moD = [];
+  var _loop2 = function _loop2() {
+    var k = "".concat(yr, "-").concat(String(m).padStart(2, '0'));
+    var ml = new Date(yr, m - 1).toLocaleString('en', {
+      month: 'short'
+    });
+    var mc2 = deals.filter(function (d) {
+      return d.who === 'me' && (d.offer || '').startsWith(k) && d.sale > 0;
+    }).reduce(function (s, d) {
+      return s + calc(d).me;
+    }, 0);
+    var wc2 = deals.filter(function (d) {
+      return d.who === 'wife' && (d.offer || '').startsWith(k) && d.sale > 0;
+    }).reduce(function (s, d) {
+      return s + calc(d).wife;
+    }, 0);
+    moD.push(_defineProperty(_defineProperty({
+      m: ml
+    }, ME, Math.round(mc2 / 1000)), WIFE, Math.round(wc2 / 1000)));
+  };
+  for (var m = 1; m <= 12; m++) {
+    _loop2();
   }
-  const Col=({nm,ag,ds,inc})=>(
-    <Card>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-        <div><div style={{fontSize:17,fontWeight:800}}>{nm}</div><div style={{fontSize:12,color:C.muted,marginTop:1}}>{ds.length} deals in {yr}</div></div>
-        <div style={{textAlign:'right'}}><div style={{fontSize:24,fontWeight:800,color:C.gold}}>{R(inc)}</div><div style={{fontSize:10,color:C.muted}}>gross commission</div></div>
-      </div>
-      <div style={{borderTop:`1px solid ${C.border}`,paddingTop:12}}>
-        {ds.length===0?<p style={{color:C.muted,fontSize:13}}>No deals in {yr}.</p>:ds.map(d=>{
-          const c=calc(d);
-          return(
-            <div key={d.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:`1px solid ${C.border}`}}>
-              <div><div style={{fontSize:13,fontWeight:700,maxWidth:190,lineHeight:1.3}}>{d.addr}</div>
-                <div style={{fontSize:10,color:C.muted,marginTop:1}}>{FD(d.offer)}</div>
-              </div>
-              <div style={{textAlign:'right',flexShrink:0,marginLeft:10}}>
-                <div style={{fontWeight:800,color:C.gold}}>{R(ag==='me'?c.me:c.wife)}</div>
-                <Badge status={d.status}/>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-  return(
-    <div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20,flexWrap:'wrap',gap:10}}>
-        <div><h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Income Report</h1>
-          <p style={{color:C.muted,fontSize:13,marginTop:3}}>{ME} &amp; {WIFE} — household split</p>
-        </div>
-        <select value={yr} onChange={e=>sY(Number(e.target.value))} style={{...IN,width:'auto',fontSize:13}}>
-          {[2024,2025,2026,2027].map(y=><option key={y}>{y}</option>)}
-        </select>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))',gap:13,marginBottom:20}} className="g3">
-        <Stat label={`${ME}'s Income`}  val={R(mi)} sub={`${md.length} deals`} icon="income"/>
-        <Stat label={`${WIFE}'s Income`} val={R(wi)} sub={`${wd.length} deals`} icon="income"/>
-        <Stat label="Combined Household" val={R(co)} sub={`${yd.length} total`} icon="trend"/>
-        <Stat label="Split Ratio" val={co>0?`${Math.round(mi/co*100)}/${Math.round(wi/co*100)}`:'N/A'} sub={`${ME} / ${WIFE}`} icon="target"/>
-      </div>
-      <Card style={{marginBottom:20}}>
-        <h3 style={{fontSize:13,fontWeight:800,marginBottom:16}}>Monthly Comparison — R'000</h3>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={moD}><CartesianGrid strokeDasharray="3 3" stroke={C.border}/>
-            <XAxis dataKey="m" tick={{fontSize:11,fill:C.muted}}/><YAxis tick={{fontSize:11,fill:C.muted}}/>
-            <Tooltip formatter={(v,n)=>[`R ${v}k`,n]} contentStyle={{borderRadius:8,border:`1px solid ${C.border}`,fontSize:11}}/>
-            <Legend/><Bar dataKey={ME} fill={C.dark} radius={[4,4,0,0]}/><Bar dataKey={WIFE} fill={C.gold} radius={[4,4,0,0]}/>
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}} className="g2">
-        <Col nm={ME}   ag="me"   ds={md} inc={mi}/>
-        <Col nm={WIFE} ag="wife" ds={wd} inc={wi}/>
-      </div>
-    </div>
-  );
+  var Col = function Col(_ref17) {
+    var nm = _ref17.nm,
+      ag = _ref17.ag,
+      ds = _ref17.ds,
+      inc = _ref17.inc;
+    return /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 17,
+        fontWeight: 800
+      }
+    }, nm), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: C.muted,
+        marginTop: 1
+      }
+    }, ds.length, " deals in ", yr)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: 'right'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 24,
+        fontWeight: 800,
+        color: C.gold
+      }
+    }, R(inc)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: C.muted
+      }
+    }, "gross commission"))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderTop: "1px solid ".concat(C.border),
+        paddingTop: 12
+      }
+    }, ds.length === 0 ? /*#__PURE__*/React.createElement("p", {
+      style: {
+        color: C.muted,
+        fontSize: 13
+      }
+    }, "No deals in ", yr, ".") : ds.map(function (d) {
+      var c = calc(d);
+      return /*#__PURE__*/React.createElement("div", {
+        key: d.id,
+        style: {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '9px 0',
+          borderBottom: "1px solid ".concat(C.border)
+        }
+      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 13,
+          fontWeight: 700,
+          maxWidth: 190,
+          lineHeight: 1.3
+        }
+      }, d.addr), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 10,
+          color: C.muted,
+          marginTop: 1
+        }
+      }, FD(d.offer))), /*#__PURE__*/React.createElement("div", {
+        style: {
+          textAlign: 'right',
+          flexShrink: 0,
+          marginLeft: 10
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontWeight: 800,
+          color: C.gold
+        }
+      }, R(ag === 'me' ? c.me : c.wife)), /*#__PURE__*/React.createElement(Badge, {
+        status: d.status
+      })));
+    })));
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 20,
+      flexWrap: 'wrap',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Income Report"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, ME, " & ", WIFE, " \u2014 household split")), /*#__PURE__*/React.createElement("select", {
+    value: yr,
+    onChange: function onChange(e) {
+      return sY(Number(e.target.value));
+    },
+    style: _objectSpread(_objectSpread({}, IN), {}, {
+      width: 'auto',
+      fontSize: 13
+    })
+  }, [2024, 2025, 2026, 2027].map(function (y) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: y
+    }, y);
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill,minmax(185px,1fr))',
+      gap: 13,
+      marginBottom: 20
+    },
+    className: "g3"
+  }, /*#__PURE__*/React.createElement(Stat, {
+    label: "".concat(ME, "'s Income"),
+    val: R(mi),
+    sub: "".concat(md.length, " deals"),
+    icon: "income"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "".concat(WIFE, "'s Income"),
+    val: R(wi),
+    sub: "".concat(wd.length, " deals"),
+    icon: "income"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Combined Household",
+    val: R(co),
+    sub: "".concat(yd.length, " total"),
+    icon: "trend"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Split Ratio",
+    val: co > 0 ? "".concat(Math.round(mi / co * 100), "/").concat(Math.round(wi / co * 100)) : 'N/A',
+    sub: "".concat(ME, " / ").concat(WIFE),
+    icon: "target"
+  })), /*#__PURE__*/React.createElement(Card, {
+    style: {
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      marginBottom: 16
+    }
+  }, "Monthly Comparison \u2014 R'000"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 250
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: moD
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: C.border
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "m",
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    formatter: function formatter(v, n) {
+      return ["R ".concat(v, "k"), n];
+    },
+    contentStyle: {
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Legend, null), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: ME,
+    fill: C.dark,
+    radius: [4, 4, 0, 0]
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: WIFE,
+    fill: C.gold,
+    radius: [4, 4, 0, 0]
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 20
+    },
+    className: "g2"
+  }, /*#__PURE__*/React.createElement(Col, {
+    nm: ME,
+    ag: "me",
+    ds: md,
+    inc: mi
+  }), /*#__PURE__*/React.createElement(Col, {
+    nm: WIFE,
+    ag: "wife",
+    ds: wd,
+    inc: wi
+  })));
 }
 
 // ── REPORTS ──────────────────────────────────────────────────
-function Reports({deals,pipe}){
-  const[tab,sT]=useState('monthly');
-  const sold=deals.filter(d=>['Sold','Registered','Paid'].includes(d.status)&&d.sale>0);
-  const paid=deals.filter(d=>d.status==='Paid'&&d.sale>0);
-  const pend=deals.filter(d=>['Sold','Registered'].includes(d.status)&&d.sale>0);
-  const tC=sold.reduce((s,d)=>s+calc(d).agent,0);
-  const pC=paid.reduce((s,d)=>s+calc(d).agent,0);
-  const eC=pend.reduce((s,d)=>s+calc(d).agent,0);
-  const avg=sold.length>0?tC/sold.length:0;
-  const pw=pipe.reduce((s,p)=>s+Number(p.price||0)*p.prob/100,0);
-  const now=new Date();
-  const mo12=[];
-  for(let i=11;i>=0;i--){
-    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
-    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    const ml=d.toLocaleString('en',{month:'short',year:'2-digit'});
-    const c=sold.filter(x=>(x.offer||'').startsWith(k)).reduce((s,x)=>s+calc(x).agent,0);
-    mo12.push({ml,v:Math.round(c/1000)});
+function Reports(_ref18) {
+  var deals = _ref18.deals,
+    pipe = _ref18.pipe;
+  var _useState33 = useState('monthly'),
+    _useState34 = _slicedToArray(_useState33, 2),
+    tab = _useState34[0],
+    sT = _useState34[1];
+  var sold = deals.filter(function (d) {
+    return ['Sold', 'Registered', 'Paid'].includes(d.status) && d.sale > 0;
+  });
+  var paid = deals.filter(function (d) {
+    return d.status === 'Paid' && d.sale > 0;
+  });
+  var pend = deals.filter(function (d) {
+    return ['Sold', 'Registered'].includes(d.status) && d.sale > 0;
+  });
+  var tC = sold.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var pC = paid.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var eC = pend.reduce(function (s, d) {
+    return s + calc(d).agent;
+  }, 0);
+  var avg = sold.length > 0 ? tC / sold.length : 0;
+  var pw = pipe.reduce(function (s, p) {
+    return s + Number(p.price || 0) * p.prob / 100;
+  }, 0);
+  var now = new Date();
+  var mo12 = [];
+  var _loop3 = function _loop3() {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var k = "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'));
+    var ml = d.toLocaleString('en', {
+      month: 'short',
+      year: '2-digit'
+    });
+    var c = sold.filter(function (x) {
+      return (x.offer || '').startsWith(k);
+    }).reduce(function (s, x) {
+      return s + calc(x).agent;
+    }, 0);
+    mo12.push({
+      ml: ml,
+      v: Math.round(c / 1000)
+    });
+  };
+  for (var i = 11; i >= 0; i--) {
+    _loop3();
   }
-  const aM={};
-  sold.forEach(d=>{const pts=d.addr.split(',');const a=pts.length>1?pts[pts.length-2].trim():pts[0].trim();if(!aM[a])aM[a]={n:0,c:0};aM[a].n++;aM[a].c+=calc(d).agent;});
-  const aD=Object.entries(aM).map(([a,v])=>({a,n:v.n,c:Math.round(v.c/1000)})).sort((x,y)=>y.c-x.c);
-  const TABS=[{k:'monthly',l:'Monthly'},{k:'pipeline',l:'Pipeline'},{k:'area',l:'By Area'},{k:'summary',l:'Summary'}];
-  const TH=({t})=><th style={{padding:'10px 13px',textAlign:'left',fontWeight:700,fontSize:10,textTransform:'uppercase',letterSpacing:.8,color:C.muted,borderBottom:`1px solid ${C.border}`,whiteSpace:'nowrap',background:C.bg}}>{t}</th>;
-  return(
-    <div>
-      <div style={{marginBottom:20}}><h1 style={{fontSize:24,fontWeight:800,letterSpacing:-.5}}>Reports</h1>
-        <p style={{color:C.muted,fontSize:13,marginTop:3}}>In-depth performance analysis.</p>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))',gap:13,marginBottom:24}} className="g3">
-        <Stat label="Total Commission"    val={R(tC)} sub="all sold"       icon="trend"/>
-        <Stat label="Commission Paid"     val={R(pC)} sub={`${paid.length} paid`} icon="home"/>
-        <Stat label="Pending"             val={R(eC)} sub={`${pend.length} deals`} icon="deals"/>
-        <Stat label="Avg per Sale"        val={R(avg)} sub="per deal"      icon="calc"/>
-        <Stat label="Pipeline (weighted)" val={R(pw)} sub="by probability" icon="pipeline"/>
-        <Stat label="Total Sold"          val={sold.length} sub="all time" icon="target"/>
-      </div>
-      <div style={{display:'flex',gap:3,marginBottom:18,background:C.bg,padding:3,borderRadius:9,border:`1px solid ${C.border}`,width:'fit-content',flexWrap:'wrap'}}>
-        {TABS.map(t=>(
-          <button key={t.k} onClick={()=>sT(t.k)} style={{padding:'8px 16px',borderRadius:7,border:'none',cursor:'pointer',fontWeight:700,fontSize:13,
-            background:tab===t.k?C.dark:'transparent',color:tab===t.k?'#fff':C.muted}}>{t.l}</button>
-        ))}
-      </div>
-      {tab==='monthly'&&(
-        <Card><h3 style={{fontWeight:800,marginBottom:18,fontSize:14}}>Monthly Commission — 12 Months (R'000)</h3>
-          <ResponsiveContainer width="100%" height={290}>
-            <BarChart data={mo12}><CartesianGrid strokeDasharray="3 3" stroke={C.border}/>
-              <XAxis dataKey="ml" tick={{fontSize:11,fill:C.muted}}/><YAxis tick={{fontSize:11,fill:C.muted}}/>
-              <Tooltip formatter={v=>[`R ${v}k`,'Commission']} contentStyle={{borderRadius:8,border:`1px solid ${C.border}`,fontSize:11}}/>
-              <Bar dataKey="v" fill={C.gold} radius={[5,5,0,0]}/>
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-      )}
-      {tab==='pipeline'&&(
-        <Card><h3 style={{fontWeight:800,marginBottom:18,fontSize:14}}>Pipeline Detail</h3>
-          <div style={{overflowX:'auto'}}>
-            <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-              <thead><tr><TH t="Property"/><TH t="Source"/><TH t="Est. Price"/><TH t="Est. Comm"/><TH t="Probability"/><TH t="Weighted Value"/><TH t="Close"/></tr></thead>
-              <tbody>
-                {pipe.map((p,i)=>{
-                  const ec2=Number(p.price)*0.05*0.5,wv=Number(p.price)*p.prob/100;
-                  return(
-                    <tr key={p.id} style={{borderBottom:`1px solid ${C.border}`,background:i%2===0?'#fff':'#FAFAF8'}}>
-                      <td style={{padding:'11px 13px',fontWeight:700,maxWidth:200}}>{p.addr}</td>
-                      <td style={{padding:'11px 13px',color:C.muted}}>{p.src}</td>
-                      <td style={{padding:'11px 13px',fontWeight:700}}>{R(p.price)}</td>
-                      <td style={{padding:'11px 13px',color:C.gold,fontWeight:800}}>{R(ec2)}</td>
-                      <td style={{padding:'11px 13px',fontWeight:700}}>{p.prob}%</td>
-                      <td style={{padding:'11px 13px',fontWeight:700}}>{R(wv)}</td>
-                      <td style={{padding:'11px 13px',color:C.muted,whiteSpace:'nowrap'}}>{FM(p.close)}</td>
-                    </tr>
-                  );
-                })}
-                <tr style={{background:C.goldLt,fontWeight:800}}>
-                  <td colSpan={5} style={{padding:'11px 13px',textAlign:'right'}}>Weighted Total:</td>
-                  <td style={{padding:'11px 13px'}}>{R(pw)}</td><td/>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      )}
-      {tab==='area'&&(
-        <Card><h3 style={{fontWeight:800,marginBottom:18,fontSize:14}}>Sales by Area (R'000)</h3>
-          {aD.length>0?<>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={aD} layout="vertical"><CartesianGrid strokeDasharray="3 3" stroke={C.border}/>
-                <XAxis type="number" tick={{fontSize:11,fill:C.muted}}/><YAxis type="category" dataKey="a" tick={{fontSize:11,fill:C.muted}} width={125}/>
-                <Tooltip formatter={v=>[`R ${v}k`,'Commission']} contentStyle={{borderRadius:8,border:`1px solid ${C.border}`,fontSize:11}}/>
-                <Bar dataKey="c" fill={C.dark} radius={[0,5,5,0]}/>
-              </BarChart>
-            </ResponsiveContainer>
-            <table style={{width:'100%',borderCollapse:'collapse',fontSize:13,marginTop:18}}>
-              <thead><tr><TH t="Area"/><TH t="Deals"/><TH t="Commission"/></tr></thead>
-              <tbody>{aD.map((a,i)=>(
-                <tr key={a.a} style={{borderBottom:`1px solid ${C.border}`,background:i%2===0?'#fff':'#FAFAF8'}}>
-                  <td style={{padding:'10px 13px',fontWeight:700}}>{a.a}</td>
-                  <td style={{padding:'10px 13px'}}>{a.n}</td>
-                  <td style={{padding:'10px 13px',color:C.gold,fontWeight:800}}>R {a.c}k</td>
-                </tr>
-              ))}</tbody>
-            </table>
-          </>:<p style={{color:C.muted}}>No sold deals yet.</p>}
-        </Card>
-      )}
-      {tab==='summary'&&(
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:18}} className="g2">
-          <Card><h3 style={{fontWeight:800,marginBottom:16,fontSize:14}}>Commission Summary</h3>
-            {[['Total Earned',R(tC)],['Paid',R(pC)],['Pending',R(eC)],['Avg per Sale',R(avg)],['Pipeline (weighted)',R(pw)]].map(([l,v])=>(
-              <div key={l} style={{display:'flex',justifyContent:'space-between',padding:'10px 0',borderBottom:`1px solid ${C.border}`}}>
-                <span style={{color:C.muted,fontSize:13}}>{l}</span><span style={{fontWeight:800,fontSize:13}}>{v}</span>
-              </div>
-            ))}
-          </Card>
-          <Card><h3 style={{fontWeight:800,marginBottom:16,fontSize:14}}>Deals by Status</h3>
-            {STATUSES.map(s=>{
-              const cnt=deals.filter(d=>d.status===s).length;
-              return(
-                <div key={s} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 0',borderBottom:`1px solid ${C.border}`}}>
-                  <Badge status={s}/><span style={{fontWeight:800,fontSize:15}}>{cnt}</span>
-                </div>
-              );
-            })}
-          </Card>
-        </div>
-      )}
-    </div>
-  );
+  var aM = {};
+  sold.forEach(function (d) {
+    var pts = d.addr.split(',');
+    var a = pts.length > 1 ? pts[pts.length - 2].trim() : pts[0].trim();
+    if (!aM[a]) aM[a] = {
+      n: 0,
+      c: 0
+    };
+    aM[a].n++;
+    aM[a].c += calc(d).agent;
+  });
+  var aD = Object.entries(aM).map(function (_ref19) {
+    var _ref20 = _slicedToArray(_ref19, 2),
+      a = _ref20[0],
+      v = _ref20[1];
+    return {
+      a: a,
+      n: v.n,
+      c: Math.round(v.c / 1000)
+    };
+  }).sort(function (x, y) {
+    return y.c - x.c;
+  });
+  var TABS = [{
+    k: 'monthly',
+    l: 'Monthly'
+  }, {
+    k: 'pipeline',
+    l: 'Pipeline'
+  }, {
+    k: 'area',
+    l: 'By Area'
+  }, {
+    k: 'summary',
+    l: 'Summary'
+  }];
+  var TH = function TH(_ref21) {
+    var t = _ref21.t;
+    return /*#__PURE__*/React.createElement("th", {
+      style: {
+        padding: '10px 13px',
+        textAlign: 'left',
+        fontWeight: 700,
+        fontSize: 10,
+        textTransform: 'uppercase',
+        letterSpacing: .8,
+        color: C.muted,
+        borderBottom: "1px solid ".concat(C.border),
+        whiteSpace: 'nowrap',
+        background: C.bg
+      }
+    }, t);
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: 24,
+      fontWeight: 800,
+      letterSpacing: -.5
+    }
+  }, "Reports"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted,
+      fontSize: 13,
+      marginTop: 3
+    }
+  }, "In-depth performance analysis.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))',
+      gap: 13,
+      marginBottom: 24
+    },
+    className: "g3"
+  }, /*#__PURE__*/React.createElement(Stat, {
+    label: "Total Commission",
+    val: R(tC),
+    sub: "all sold",
+    icon: "trend"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Commission Paid",
+    val: R(pC),
+    sub: "".concat(paid.length, " paid"),
+    icon: "home"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Pending",
+    val: R(eC),
+    sub: "".concat(pend.length, " deals"),
+    icon: "deals"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Avg per Sale",
+    val: R(avg),
+    sub: "per deal",
+    icon: "calc"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Pipeline (weighted)",
+    val: R(pw),
+    sub: "by probability",
+    icon: "pipeline"
+  }), /*#__PURE__*/React.createElement(Stat, {
+    label: "Total Sold",
+    val: sold.length,
+    sub: "all time",
+    icon: "target"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 3,
+      marginBottom: 18,
+      background: C.bg,
+      padding: 3,
+      borderRadius: 9,
+      border: "1px solid ".concat(C.border),
+      width: 'fit-content',
+      flexWrap: 'wrap'
+    }
+  }, TABS.map(function (t) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: t.k,
+      onClick: function onClick() {
+        return sT(t.k);
+      },
+      style: {
+        padding: '8px 16px',
+        borderRadius: 7,
+        border: 'none',
+        cursor: 'pointer',
+        fontWeight: 700,
+        fontSize: 13,
+        background: tab === t.k ? C.dark : 'transparent',
+        color: tab === t.k ? '#fff' : C.muted
+      }
+    }, t.l);
+  })), tab === 'monthly' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 18,
+      fontSize: 14
+    }
+  }, "Monthly Commission \u2014 12 Months (R'000)"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 290
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: mo12
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: C.border
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    dataKey: "ml",
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    formatter: function formatter(v) {
+      return ["R ".concat(v, "k"), 'Commission'];
+    },
+    contentStyle: {
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "v",
+    fill: C.gold,
+    radius: [5, 5, 0, 0]
+  })))), tab === 'pipeline' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 18,
+      fontSize: 14
+    }
+  }, "Pipeline Detail"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: 'auto'
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
+    t: "Property"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Source"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Est. Price"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Est. Comm"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Probability"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Weighted Value"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Close"
+  }))), /*#__PURE__*/React.createElement("tbody", null, pipe.map(function (p, i) {
+    var ec2 = Number(p.price) * 0.05 * 0.5,
+      wv = Number(p.price) * p.prob / 100;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.id,
+      style: {
+        borderBottom: "1px solid ".concat(C.border),
+        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        fontWeight: 700,
+        maxWidth: 200
+      }
+    }, p.addr), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        color: C.muted
+      }
+    }, p.src), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        fontWeight: 700
+      }
+    }, R(p.price)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        color: C.gold,
+        fontWeight: 800
+      }
+    }, R(ec2)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        fontWeight: 700
+      }
+    }, p.prob, "%"), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        fontWeight: 700
+      }
+    }, R(wv)), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '11px 13px',
+        color: C.muted,
+        whiteSpace: 'nowrap'
+      }
+    }, FM(p.close)));
+  }), /*#__PURE__*/React.createElement("tr", {
+    style: {
+      background: C.goldLt,
+      fontWeight: 800
+    }
+  }, /*#__PURE__*/React.createElement("td", {
+    colSpan: 5,
+    style: {
+      padding: '11px 13px',
+      textAlign: 'right'
+    }
+  }, "Weighted Total:"), /*#__PURE__*/React.createElement("td", {
+    style: {
+      padding: '11px 13px'
+    }
+  }, R(pw)), /*#__PURE__*/React.createElement("td", null)))))), tab === 'area' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 18,
+      fontSize: 14
+    }
+  }, "Sales by Area (R'000)"), aD.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ResponsiveContainer, {
+    width: "100%",
+    height: 250
+  }, /*#__PURE__*/React.createElement(BarChart, {
+    data: aD,
+    layout: "vertical"
+  }, /*#__PURE__*/React.createElement(CartesianGrid, {
+    strokeDasharray: "3 3",
+    stroke: C.border
+  }), /*#__PURE__*/React.createElement(XAxis, {
+    type: "number",
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    }
+  }), /*#__PURE__*/React.createElement(YAxis, {
+    type: "category",
+    dataKey: "a",
+    tick: {
+      fontSize: 11,
+      fill: C.muted
+    },
+    width: 125
+  }), /*#__PURE__*/React.createElement(Tooltip, {
+    formatter: function formatter(v) {
+      return ["R ".concat(v, "k"), 'Commission'];
+    },
+    contentStyle: {
+      borderRadius: 8,
+      border: "1px solid ".concat(C.border),
+      fontSize: 11
+    }
+  }), /*#__PURE__*/React.createElement(Bar, {
+    dataKey: "c",
+    fill: C.dark,
+    radius: [0, 5, 5, 0]
+  }))), /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: 13,
+      marginTop: 18
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
+    t: "Area"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Deals"
+  }), /*#__PURE__*/React.createElement(TH, {
+    t: "Commission"
+  }))), /*#__PURE__*/React.createElement("tbody", null, aD.map(function (a, i) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: a.a,
+      style: {
+        borderBottom: "1px solid ".concat(C.border),
+        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '10px 13px',
+        fontWeight: 700
+      }
+    }, a.a), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '10px 13px'
+      }
+    }, a.n), /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: '10px 13px',
+        color: C.gold,
+        fontWeight: 800
+      }
+    }, "R ", a.c, "k"));
+  })))) : /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: C.muted
+    }
+  }, "No sold deals yet.")), tab === 'summary' && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 18
+    },
+    className: "g2"
+  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 16,
+      fontSize: 14
+    }
+  }, "Commission Summary"), [['Total Earned', R(tC)], ['Paid', R(pC)], ['Pending', R(eC)], ['Avg per Sale', R(avg)], ['Pipeline (weighted)', R(pw)]].map(function (_ref22) {
+    var _ref23 = _slicedToArray(_ref22, 2),
+      l = _ref23[0],
+      v = _ref23[1];
+    return /*#__PURE__*/React.createElement("div", {
+      key: l,
+      style: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '10px 0',
+        borderBottom: "1px solid ".concat(C.border)
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: C.muted,
+        fontSize: 13
+      }
+    }, l), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontWeight: 800,
+        fontSize: 13
+      }
+    }, v));
+  })), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      fontWeight: 800,
+      marginBottom: 16,
+      fontSize: 14
+    }
+  }, "Deals by Status"), STATUSES.map(function (s) {
+    var cnt = deals.filter(function (d) {
+      return d.status === s;
+    }).length;
+    return /*#__PURE__*/React.createElement("div", {
+      key: s,
+      style: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px 0',
+        borderBottom: "1px solid ".concat(C.border)
+      }
+    }, /*#__PURE__*/React.createElement(Badge, {
+      status: s
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontWeight: 800,
+        fontSize: 15
+      }
+    }, cnt));
+  }))));
 }
 
 // ── APP SHELL ────────────────────────────────────────────────
-const NAV=[
-  {id:'dashboard',l:'Dashboard',   i:'dashboard'},
-  {id:'deals',    l:'Deals & Sales',i:'deals'},
-  {id:'pipeline', l:'Pipeline',    i:'pipeline'},
-  {id:'calc',     l:'Comm. Calc',  i:'calc'},
-  {id:'income',   l:'Income Report',i:'income'},
-  {id:'reports',  l:'Reports',     i:'reports'},
-];
-function App(){
-  const[pg,sPg]=useState('dashboard');
-  const[deals,sD]=useState(SD);
-  const[pipe,sP]=useState(SP);
-  const[nav,sN]=useState(false);
-  const addD=d=>sD(p=>[{...d,id:Date.now()},...p]);
-  const editD=d=>sD(p=>p.map(x=>x.id===d.id?d:x));
-  const delD=id=>sD(p=>p.filter(x=>x.id!==id));
-  const addP=x=>sP(p=>[{...x,id:Date.now()},...p]);
-  const editP=x=>sP(p=>p.map(y=>y.id===x.id?x:y));
-  const delP=id=>sP(p=>p.filter(x=>x.id!==id));
-  const go=id=>{sPg(id);sN(false);};
-  const render=()=>{switch(pg){
-    case'dashboard':return<Dashboard deals={deals} pipe={pipe}/>;
-    case'deals':    return<Deals deals={deals} onAdd={addD} onEdit={editD} onDel={delD}/>;
-    case'pipeline': return<Pipeline pipe={pipe} onAdd={addP} onEdit={editP} onDel={delP}/>;
-    case'calc':     return<CommCalc/>;
-    case'income':   return<Income deals={deals}/>;
-    case'reports':  return<Reports deals={deals} pipe={pipe}/>;
-    default:        return<Dashboard deals={deals} pipe={pipe}/>;
-  }};
-  const W=230;
-  return(
-    <div style={{display:'flex',minHeight:'100vh',background:C.bg}}>
-      {nav&&<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.45)',zIndex:98}} onClick={()=>sN(false)}/>}
-      {/* SIDEBAR */}
-      <aside className={`sidebar${nav?' open':''}`} style={{width:W,background:C.dark,color:'#fff',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,height:'100vh',zIndex:99,transition:'transform .25s'}}>
-        <div style={{padding:'24px 20px 18px',borderBottom:'1px solid rgba(255,255,255,0.1)'}}>
-          <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <div style={{width:32,height:32,background:C.gold,borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><I n="home" s={17}/></div>
-            <div><div style={{fontSize:15,fontWeight:900,letterSpacing:1.5,color:'#fff',lineHeight:1}}>AgentOS</div>
-              <div style={{fontSize:9,color:C.gold,letterSpacing:2,textTransform:'uppercase',marginTop:1}}>Real Estate</div>
-            </div>
-          </div>
-        </div>
-        <nav style={{flex:1,padding:'12px 9px',overflowY:'auto'}}>
-          {NAV.map(item=>{
-            const act=pg===item.id;
-            return(
-              <button key={item.id} onClick={()=>go(item.id)} style={{display:'flex',alignItems:'center',gap:10,width:'100%',padding:'11px 12px',marginBottom:2,borderRadius:8,border:'none',cursor:'pointer',textAlign:'left',
-                background:act?C.gold:'transparent',color:act?C.dark:'rgba(255,255,255,0.65)',fontWeight:act?800:500,fontSize:13.5,transition:'all .15s'}}>
-                <span style={{color:act?C.dark:'rgba(255,255,255,0.5)',display:'flex'}}><I n={item.i} s={17}/></span>{item.l}
-              </button>
-            );
-          })}
-        </nav>
-        <div style={{padding:'14px 18px',borderTop:'1px solid rgba(255,255,255,0.1)'}}>
-          <div style={{fontSize:13,fontWeight:800,color:'#fff'}}>{ME} &amp; {WIFE}</div>
-          <div style={{fontSize:10,color:'rgba(255,255,255,0.4)',marginTop:1,letterSpacing:.5}}>Engel &amp; Völkers · Cape Town</div>
-        </div>
-      </aside>
-      {/* MAIN */}
-      <div className="main-wrap" style={{flex:1,marginLeft:W,display:'flex',flexDirection:'column',minHeight:'100vh'}}>
-        <header className="mob-hdr" style={{display:'none',background:C.dark,padding:'13px 15px',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:50}}>
-          <button onClick={()=>sN(true)} style={{background:'none',border:'none',cursor:'pointer',color:'#fff',display:'flex',padding:4}}><I n="menu" s={21}/></button>
-          <div style={{fontSize:14,fontWeight:900,color:'#fff',letterSpacing:1.5}}>AgentOS</div>
-          <div style={{width:28}}/>
-        </header>
-        <main className="page-pad" style={{flex:1,padding:'30px 28px'}}>{render()}</main>
-        <footer style={{textAlign:'center',padding:'14px',fontSize:11,color:C.muted,borderTop:`1px solid ${C.border}`}}>
-          AgentOS · {ME} &amp; {WIFE} · Engel &amp; Völkers
-        </footer>
-      </div>
-    </div>
-  );
+var NAV = [{
+  id: 'dashboard',
+  l: 'Dashboard',
+  i: 'dashboard'
+}, {
+  id: 'deals',
+  l: 'Deals & Sales',
+  i: 'deals'
+}, {
+  id: 'pipeline',
+  l: 'Pipeline',
+  i: 'pipeline'
+}, {
+  id: 'calc',
+  l: 'Comm. Calc',
+  i: 'calc'
+}, {
+  id: 'income',
+  l: 'Income Report',
+  i: 'income'
+}, {
+  id: 'reports',
+  l: 'Reports',
+  i: 'reports'
+}];
+function App() {
+  var _useState35 = useState('dashboard'),
+    _useState36 = _slicedToArray(_useState35, 2),
+    pg = _useState36[0],
+    sPg = _useState36[1];
+  var _useState37 = useState(SD),
+    _useState38 = _slicedToArray(_useState37, 2),
+    deals = _useState38[0],
+    sD = _useState38[1];
+  var _useState39 = useState(SP),
+    _useState40 = _slicedToArray(_useState39, 2),
+    pipe = _useState40[0],
+    sP = _useState40[1];
+  var _useState41 = useState(false),
+    _useState42 = _slicedToArray(_useState41, 2),
+    nav = _useState42[0],
+    sN = _useState42[1];
+  var addD = function addD(d) {
+    return sD(function (p) {
+      return [_objectSpread(_objectSpread({}, d), {}, {
+        id: Date.now()
+      })].concat(_toConsumableArray(p));
+    });
+  };
+  var editD = function editD(d) {
+    return sD(function (p) {
+      return p.map(function (x) {
+        return x.id === d.id ? d : x;
+      });
+    });
+  };
+  var delD = function delD(id) {
+    return sD(function (p) {
+      return p.filter(function (x) {
+        return x.id !== id;
+      });
+    });
+  };
+  var addP = function addP(x) {
+    return sP(function (p) {
+      return [_objectSpread(_objectSpread({}, x), {}, {
+        id: Date.now()
+      })].concat(_toConsumableArray(p));
+    });
+  };
+  var editP = function editP(x) {
+    return sP(function (p) {
+      return p.map(function (y) {
+        return y.id === x.id ? x : y;
+      });
+    });
+  };
+  var delP = function delP(id) {
+    return sP(function (p) {
+      return p.filter(function (x) {
+        return x.id !== id;
+      });
+    });
+  };
+  var go = function go(id) {
+    sPg(id);
+    sN(false);
+  };
+  var render = function render() {
+    switch (pg) {
+      case 'dashboard':
+        return /*#__PURE__*/React.createElement(Dashboard, {
+          deals: deals,
+          pipe: pipe
+        });
+      case 'deals':
+        return /*#__PURE__*/React.createElement(Deals, {
+          deals: deals,
+          onAdd: addD,
+          onEdit: editD,
+          onDel: delD
+        });
+      case 'pipeline':
+        return /*#__PURE__*/React.createElement(Pipeline, {
+          pipe: pipe,
+          onAdd: addP,
+          onEdit: editP,
+          onDel: delP
+        });
+      case 'calc':
+        return /*#__PURE__*/React.createElement(CommCalc, null);
+      case 'income':
+        return /*#__PURE__*/React.createElement(Income, {
+          deals: deals
+        });
+      case 'reports':
+        return /*#__PURE__*/React.createElement(Reports, {
+          deals: deals,
+          pipe: pipe
+        });
+      default:
+        return /*#__PURE__*/React.createElement(Dashboard, {
+          deals: deals,
+          pipe: pipe
+        });
+    }
+  };
+  var W = 230;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      minHeight: '100vh',
+      background: C.bg
+    }
+  }, nav && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0,0,0,0.45)',
+      zIndex: 98
+    },
+    onClick: function onClick() {
+      return sN(false);
+    }
+  }), /*#__PURE__*/React.createElement("aside", {
+    className: "sidebar".concat(nav ? ' open' : ''),
+    style: {
+      width: W,
+      background: C.dark,
+      color: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      zIndex: 99,
+      transition: 'transform .25s'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '24px 20px 18px',
+      borderBottom: '1px solid rgba(255,255,255,0.1)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 32,
+      height: 32,
+      background: C.gold,
+      borderRadius: 8,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "home",
+    s: 17
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 15,
+      fontWeight: 900,
+      letterSpacing: 1.5,
+      color: '#fff',
+      lineHeight: 1
+    }
+  }, "AgentOS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: C.gold,
+      letterSpacing: 2,
+      textTransform: 'uppercase',
+      marginTop: 1
+    }
+  }, "Real Estate")))), /*#__PURE__*/React.createElement("nav", {
+    style: {
+      flex: 1,
+      padding: '12px 9px',
+      overflowY: 'auto'
+    }
+  }, NAV.map(function (item) {
+    var act = pg === item.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: item.id,
+      onClick: function onClick() {
+        return go(item.id);
+      },
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        width: '100%',
+        padding: '11px 12px',
+        marginBottom: 2,
+        borderRadius: 8,
+        border: 'none',
+        cursor: 'pointer',
+        textAlign: 'left',
+        background: act ? C.gold : 'transparent',
+        color: act ? C.dark : 'rgba(255,255,255,0.65)',
+        fontWeight: act ? 800 : 500,
+        fontSize: 13.5,
+        transition: 'all .15s'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: act ? C.dark : 'rgba(255,255,255,0.5)',
+        display: 'flex'
+      }
+    }, /*#__PURE__*/React.createElement(I, {
+      n: item.i,
+      s: 17
+    })), item.l);
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '14px 18px',
+      borderTop: '1px solid rgba(255,255,255,0.1)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      color: '#fff'
+    }
+  }, ME, " & ", WIFE), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: 'rgba(255,255,255,0.4)',
+      marginTop: 1,
+      letterSpacing: .5
+    }
+  }, "Engel & V\xF6lkers \xB7 Cape Town"))), /*#__PURE__*/React.createElement("div", {
+    className: "main-wrap",
+    style: {
+      flex: 1,
+      marginLeft: W,
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh'
+    }
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "mob-hdr",
+    style: {
+      display: 'none',
+      background: C.dark,
+      padding: '13px 15px',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return sN(true);
+    },
+    style: {
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      color: '#fff',
+      display: 'flex',
+      padding: 4
+    }
+  }, /*#__PURE__*/React.createElement(I, {
+    n: "menu",
+    s: 21
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 900,
+      color: '#fff',
+      letterSpacing: 1.5
+    }
+  }, "AgentOS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 28
+    }
+  })), /*#__PURE__*/React.createElement("main", {
+    className: "page-pad",
+    style: {
+      flex: 1,
+      padding: '30px 28px'
+    }
+  }, render()), /*#__PURE__*/React.createElement("footer", {
+    style: {
+      textAlign: 'center',
+      padding: '14px',
+      fontSize: 11,
+      color: C.muted,
+      borderTop: "1px solid ".concat(C.border)
+    }
+  }, "AgentOS \xB7 ", ME, " & ", WIFE, " \xB7 Engel & V\xF6lkers")));
 }
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
 </script>
 </body>
 </html>
