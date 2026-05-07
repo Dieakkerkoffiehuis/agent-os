@@ -1,3546 +1,919 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>AgentOS – Real Estate Command Centre</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F4F2ED;color:#1C1C1E}
-    ::-webkit-scrollbar{width:5px;height:5px}
-    ::-webkit-scrollbar-thumb{background:#C9A84C55;border-radius:10px}
-    input,select,textarea,button{font-family:inherit}
-    input[type=range]{accent-color:#C9A84C}
-    @media(max-width:768px){
-      .sidebar{transform:translateX(-100%)}
-      .sidebar.open{transform:translateX(0)}
-      .main-wrap{margin-left:0!important}
-      .mob-hdr{display:flex!important}
-      .page-pad{padding:18px 14px!important}
-      .g2{grid-template-columns:1fr!important}
-      .g3{grid-template-columns:1fr 1fr!important}
-    }
-    @media(max-width:480px){.g3{grid-template-columns:1fr!important}}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AgentOS — Engel &amp; Völkers</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a1a;color:#f0ede6;min-height:100vh}
+#root{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:240px;min-width:240px;background:#111;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid #2a2a2a}
+.logo-title{font-size:22px;font-weight:700;color:#c9a84c;letter-spacing:1px}
+.logo-sub{font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.sidebar-nav{flex:1;padding:16px 0}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:#aaa;font-size:14px;font-weight:500;transition:all .2s;border-left:3px solid transparent}
+.nav-item:hover{color:#f0ede6;background:#1a1a1a}
+.nav-item.active{color:#c9a84c;background:#1f1a0e;border-left-color:#c9a84c}
+.nav-icon{width:18px;height:18px;flex-shrink:0}
+.sidebar-footer{padding:16px 20px;border-top:1px solid #2a2a2a;font-size:12px;color:#555}
+
+/* Main */
+.main{flex:1;overflow-x:hidden;background:#1a1a1a}
+.topbar{background:#111;border-bottom:1px solid #2a2a2a;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-size:20px;font-weight:600;color:#f0ede6}
+.topbar-sub{font-size:12px;color:#888;margin-top:2px}
+.content{padding:32px}
+
+/* Cards */
+.card{background:#222;border:1px solid #2a2a2a;border-radius:12px;padding:24px}
+.card-sm{background:#222;border:1px solid #2a2a2a;border-radius:10px;padding:18px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:24px}
+
+/* KPI */
+.kpi-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:700;color:#f0ede6}
+.kpi-value.gold{color:#c9a84c}
+.kpi-badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-top:6px}
+.kpi-badge.up{background:#1a3a1a;color:#4caf50}
+.kpi-badge.down{background:#3a1a1a;color:#f44336}
+.kpi-badge.neutral{background:#2a2a2a;color:#aaa}
+
+/* Section headers */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{font-size:16px;font-weight:600;color:#f0ede6}
+.section-sub{font-size:13px;color:#888}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:#888;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #2a2a2a}
+td{padding:12px 14px;border-bottom:1px solid #222;color:#d0cdc6}
+tr:hover td{background:#252525}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:#1a3a1a;color:#4caf50}
+.badge-gold{background:#2a200a;color:#c9a84c}
+.badge-blue{background:#0a1a2a;color:#64b5f6}
+.badge-red{background:#3a1a1a;color:#ef5350}
+.badge-grey{background:#2a2a2a;color:#888}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-gold{background:#c9a84c;color:#111}
+.btn-gold:hover{background:#d4b460}
+.btn-outline{background:transparent;border:1px solid #333;color:#aaa}
+.btn-outline:hover{border-color:#c9a84c;color:#c9a84c}
+.btn-sm{padding:6px 14px;font-size:12px}
+
+/* Form */
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;color:#888;font-weight:500}
+input,select,textarea{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#f0ede6;font-size:14px;width:100%;transition:border .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#c9a84c}
+input[type=range]{padding:0;cursor:pointer}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:32px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:24px}
+.modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px}
+
+/* Progress bar */
+.progress-bar{height:8px;background:#2a2a2a;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);border-radius:4px;transition:width .4s}
+
+/* Recharts override */
+.recharts-tooltip-wrapper .recharts-default-tooltip{background:#222 !important;border:1px solid #333 !important;border-radius:8px !important}
+.recharts-legend-item-text{color:#aaa !important;font-size:12px !important}
+
+/* Mobile */
+@media(max-width:768px){
+  .sidebar{width:60px;min-width:60px}
+  .logo-title,.logo-sub,.nav-label,.sidebar-footer{display:none}
+  .nav-item{padding:14px;justify-content:center}
+  .content{padding:16px}
+  .grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr}
+}
+
+/* Chart containers */
+.chart-wrap{width:100%;height:280px;margin-top:16px}
+
+/* Gold divider */
+.gold-line{height:2px;background:linear-gradient(90deg,#c9a84c,transparent);margin:24px 0;border:none}
+
+/* Pill tabs */
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #333;color:#888;background:transparent;transition:all .2s}
+.tab.active{background:#c9a84c;color:#111;border-color:#c9a84c}
+
+/* Commission calc */
+.calc-result{background:#1f1a0e;border:1px solid #3a2d0a;border-radius:10px;padding:20px;margin-top:20px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #2a2a2a;font-size:14px}
+.calc-row:last-child{border-bottom:none}
+.calc-row.total{font-weight:700;font-size:16px;color:#c9a84c}
+.calc-label{color:#888}
+.calc-value{color:#f0ede6;font-weight:600}
+
+/* Spinner */
+.spinner{display:inline-block;width:40px;height:40px;border:3px solid #333;border-top-color:#c9a84c;border-radius:50%;animation:spin 1s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:#555}
+.empty-icon{font-size:48px;margin-bottom:16px}
+.empty-text{font-size:15px}
+</style>
 </head>
 <body>
-<div id="root"></div>
-<script>
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-var _React = React,
-  useState = _React.useState,
-  useMemo = _React.useMemo,
-  useCallback = _React.useCallback;
-var _Recharts = Recharts,
-  BarChart = _Recharts.BarChart,
-  Bar = _Recharts.Bar,
-  LineChart = _Recharts.LineChart,
-  Line = _Recharts.Line,
-  PieChart = _Recharts.PieChart,
-  Pie = _Recharts.Pie,
-  Cell = _Recharts.Cell,
-  XAxis = _Recharts.XAxis,
-  YAxis = _Recharts.YAxis,
-  CartesianGrid = _Recharts.CartesianGrid,
-  Tooltip = _Recharts.Tooltip,
-  Legend = _Recharts.Legend,
-  ResponsiveContainer = _Recharts.ResponsiveContainer;
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#c9a84c;font-size:18px">Loading AgentOS…</div></div>
+<script type="module">
+import{createElement as h,useState,useMemo,Fragment,useCallback}from'https://esm.sh/react@18.3.1';
+import{createRoot}from'https://esm.sh/react-dom@18.3.1/client';
+import{BarChart,Bar,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,LineChart,Line}from'https://esm.sh/recharts@2.12.7?deps=react@18.3.1,react-dom@18.3.1';
+import htm from'https://esm.sh/htm@3.1.1';
+const html=htm.bind(h);
 
-// ── CONSTANTS ───────────────────────────────────────────────
-var ME = 'Zaviér',
-  WIFE = 'Maré';
-var STATUSES = ['Lead', 'Mandate Signed', 'Under Offer', 'Sold', 'Registered', 'Paid'];
-var SOURCES = ['Referral', 'Walk-in', 'Cold Call', 'Social Media', 'Website', 'Previous Client', 'Other'];
-var C = {
-  dark: '#1C1C1E',
-  gold: '#C9A84C',
-  goldLt: '#F2E9D0',
-  bg: '#F4F2ED',
-  card: '#FFFFFF',
-  border: '#E5E0D5',
-  muted: '#6B6866',
-  success: '#2D6A4F',
-  warn: '#B5451B',
-  info: '#1A3A5C',
-  danger: '#8B1C1C'
-};
-var SC = {
-  'Lead': '#9CA3AF',
-  'Mandate Signed': '#1A3A5C',
-  'Under Offer': '#B5451B',
-  'Sold': '#2D6A4F',
-  'Registered': '#C9A84C',
-  'Paid': '#1C1C1E'
-};
+// ─── SAMPLE DATA ────────────────────────────────────────────────────────────
+const SAMPLE_DEALS=[
+  {id:1,property:'12 Clifton 1st Beach Rd',type:'Residential',agent:'Zaviér',salePrice:18500000,commPct:5,agencySplit:50,status:'Closed',date:'2026-01-14',area:'Clifton'},
+  {id:2,property:'Fresnaye Manor, Avenue Fresnaye',type:'Residential',agent:'Maré',salePrice:12200000,commPct:5,agencySplit:50,status:'Closed',date:'2026-01-28',area:'Fresnaye'},
+  {id:3,property:'Bantry Bay Penthouse',type:'Residential',agent:'Zaviér',salePrice:22000000,commPct:4.5,agencySplit:50,status:'Closed',date:'2026-02-10',area:'Bantry Bay'},
+  {id:4,property:'Camps Bay Villa — Sunset Drive',type:'Residential',agent:'Maré',salePrice:9800000,commPct:5,agencySplit:50,status:'Closed',date:'2026-02-22',area:'Camps Bay'},
+  {id:5,property:'Sea Point Apartment 14B',type:'Residential',agent:'Zaviér',salePrice:4200000,commPct:6,agencySplit:50,status:'Closed',date:'2026-03-05',area:'Sea Point'},
+  {id:6,property:'Constantia Winelands Estate',type:'Residential',agent:'Zaviér',salePrice:35000000,commPct:4,agencySplit:50,status:'Closed',date:'2026-03-18',area:'Constantia'},
+  {id:7,property:'Hout Bay Harbour View',type:'Residential',agent:'Maré',salePrice:7600000,commPct:5.5,agencySplit:50,status:'Closed',date:'2026-04-02',area:'Hout Bay'},
+  {id:8,property:'Green Point Modern Duplex',type:'Residential',agent:'Maré',salePrice:5400000,commPct:5,agencySplit:50,status:'Closed',date:'2026-04-15',area:'Green Point'},
+  {id:9,property:'De Waterkant Loft — Heritage Sq',type:'Residential',agent:'Zaviér',salePrice:3800000,commPct:6,agencySplit:50,status:'Pending',date:'2026-04-28',area:'De Waterkant'},
+  {id:10,property:'Bishopscourt Private Estate',type:'Residential',agent:'Maré',salePrice:28000000,commPct:4,agencySplit:50,status:'Pending',date:'2026-05-02',area:'Bishopscourt'},
+];
 
-// ── SAMPLE DATA ─────────────────────────────────────────────
-var SD = [{
-  id: 1,
-  addr: '12 Vineyard Estate Drive, Stellenbosch',
-  seller: 'Johan van der Berg',
-  buyer: 'Michael Thompson',
-  sale: 4500000,
-  list: 4750000,
-  offer: '2026-01-15',
-  reg: '2026-02-28',
-  status: 'Paid',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: 'Smooth transaction.'
-}, {
-  id: 2,
-  addr: '7 De Waal Drive, Fresnaye, Cape Town',
-  seller: 'Susan Adams',
-  buyer: 'André Pretorius',
-  sale: 8200000,
-  list: 8500000,
-  offer: '2026-02-03',
-  reg: '2026-03-20',
-  status: 'Registered',
-  who: 'wife',
-  name: WIFE,
-  comm: 4.5,
-  split: 50,
-  notes: 'Luxury sea-facing property.'
-}, {
-  id: 3,
-  addr: '34 Constantia Valley Road, Constantia',
-  seller: 'Peter Botha',
-  buyer: 'Sarah Johnson',
-  sale: 6800000,
-  list: 7200000,
-  offer: '2026-03-10',
-  reg: '',
-  status: 'Sold',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: 'In transfer process.'
-}, {
-  id: 4,
-  addr: '22 Atlantic Boulevard, Sea Point',
-  seller: 'Elize Swart',
-  buyer: 'James Harrington',
-  sale: 3200000,
-  list: 3400000,
-  offer: '2026-03-22',
-  reg: '',
-  status: 'Under Offer',
-  who: 'wife',
-  name: WIFE,
-  comm: 5,
-  split: 50,
-  notes: ''
-}, {
-  id: 5,
-  addr: '5 Bishopscourt Avenue, Bishopscourt',
-  seller: 'Mark Visser',
-  buyer: '',
-  sale: 0,
-  list: 12500000,
-  offer: '',
-  reg: '',
-  status: 'Mandate Signed',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: 'Ultra-luxury sole mandate.'
-}, {
-  id: 6,
-  addr: '18 Kloof Street, Gardens, Cape Town',
-  seller: 'Thabo Molefe',
-  buyer: 'Lisa van Wyk',
-  sale: 2100000,
-  list: 2250000,
-  offer: '2026-01-08',
-  reg: '2026-02-14',
-  status: 'Paid',
-  who: 'wife',
-  name: WIFE,
-  comm: 5,
-  split: 50,
-  notes: 'First-time buyer.'
-}, {
-  id: 7,
-  addr: '9 Oranjezicht Crescent, Oranjezicht',
-  seller: 'David Nkosi',
-  buyer: 'Emma Fitzgerald',
-  sale: 3750000,
-  list: 3900000,
-  offer: '2026-04-01',
-  reg: '',
-  status: 'Sold',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: ''
-}, {
-  id: 8,
-  addr: '45 Hout Bay Harbour Road, Hout Bay',
-  seller: 'Riana du Toit',
-  buyer: '',
-  sale: 0,
-  list: 5800000,
-  offer: '',
-  reg: '',
-  status: 'Lead',
-  who: 'wife',
-  name: WIFE,
-  comm: 5,
-  split: 50,
-  notes: 'Viewing scheduled next week.'
-}, {
-  id: 9,
-  addr: '3 Camps Bay Terrace, Camps Bay',
-  seller: 'Greg Patel',
-  buyer: 'Natasha Oberholzer',
-  sale: 9100000,
-  list: 9500000,
-  offer: '2025-11-20',
-  reg: '2026-01-10',
-  status: 'Paid',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: 'Exceptional sea-view.'
-}, {
-  id: 10,
-  addr: '77 Newlands Avenue, Newlands',
-  seller: 'Caroline Smith',
-  buyer: 'Ryan de Beer',
-  sale: 4200000,
-  list: 4400000,
-  offer: '2025-12-05',
-  reg: '2026-01-28',
-  status: 'Paid',
-  who: 'wife',
-  name: WIFE,
-  comm: 5,
-  split: 50,
-  notes: ''
-}];
-var SP = [{
-  id: 1,
-  addr: '88 Camps Bay Drive, Camps Bay',
-  src: 'Referral',
-  price: 9500000,
-  prob: 75,
-  close: '2026-06',
-  follow: '2026-05-05',
-  notes: 'Owner motivated. Second viewing done.'
-}, {
-  id: 2,
-  addr: '3 Somerset Road, Green Point',
-  src: 'Website',
-  price: 2800000,
-  prob: 50,
-  close: '2026-07',
-  follow: '2026-05-10',
-  notes: 'Needs to sell existing home first.'
-}, {
-  id: 3,
-  addr: '15 Newlands Forest Drive, Newlands',
-  src: 'Previous Client',
-  price: 6200000,
-  prob: 85,
-  close: '2026-05',
-  follow: '2026-04-30',
-  notes: 'Verbal agreement. Drawing up mandate.'
-}, {
-  id: 4,
-  addr: '27 Sunset Beach Drive, Bloubergstrand',
-  src: 'Social Media',
-  price: 4100000,
-  prob: 30,
-  close: '2026-08',
-  follow: '2026-05-20',
-  notes: 'Early-stage enquiry.'
-}, {
-  id: 5,
-  addr: '61 Main Road, Claremont',
-  src: 'Cold Call',
-  price: 3300000,
-  prob: 60,
-  close: '2026-06',
-  follow: '2026-05-03',
-  notes: 'Considering selling for 6 months.'
-}];
-var TARGETS = {
-  mc: 150000,
-  yc: 1800000,
-  md: 3,
-  yd: 36
+const SAMPLE_PIPELINE=[
+  {id:1,property:'Llandudno Beachfront',stage:'Viewing',value:15000000,agent:'Zaviér',probability:25,notes:'Second viewing booked'},
+  {id:2,property:'Tamboerskloof Victorian',stage:'Offer',value:6800000,agent:'Maré',probability:70,notes:'Verbal offer received'},
+  {id:3,property:'Mouille Point Seaview',stage:'Negotiation',value:8500000,agent:'Zaviér',probability:60,notes:'Countered at 8.2M'},
+  {id:4,property:'Oranjezicht Heritage Home',stage:'Due Diligence',value:11200000,agent:'Maré',probability:85,notes:'Attorneys appointed'},
+  {id:5,property:'Atlantic Seaboard New Dev',stage:'Signed',value:19500000,agent:'Zaviér',probability:95,notes:'Transfer expected June'},
+  {id:6,property:'Kenilworth Family Home',stage:'Viewing',value:4200000,agent:'Maré',probability:20,notes:'First showing this week'},
+  {id:7,property:'Newlands Cottage',stage:'Lead',value:3100000,agent:'Zaviér',probability:10,notes:'Referral from past client'},
+];
+
+const TARGETS={zaviér:{annual:3000000,monthly:250000},maré:{annual:2000000,monthly:167000}};
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+const fmt=n=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR',maximumFractionDigits:0}).format(n);
+const fmtN=n=>new Intl.NumberFormat('en-ZA',{maximumFractionDigits:0}).format(n);
+const fmtPct=n=>`${n}%`;
+const fmtDate=d=>new Date(d).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'});
+
+function calcCommission(deal){
+  const total=deal.salePrice*(deal.commPct/100);
+  const agencyShare=total*(deal.agencySplit/100);
+  const agentShare=total-agencyShare;
+  return{total,agencyShare,agentShare};
+}
+
+function getAgentCommission(deals,agent){
+  return deals.filter(d=>d.agent===agent&&d.status==='Closed').reduce((sum,d)=>{
+    const{agentShare}=calcCommission(d);
+    return sum+agentShare;
+  },0);
+}
+
+// ─── ICONS ──────────────────────────────────────────────────────────────────
+const Icon=({name,size=18,color='currentColor'})=>{
+  const icons={
+    dashboard:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    deals:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>`,
+    pipeline:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+    calc:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>`,
+    income:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
+    reports:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>`,
+    plus:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>`,
+    x:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
+    edit:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+    trash:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>`,
+    home:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  };
+  return html`<span class="nav-icon" dangerouslySetInnerHTML=${{__html:icons[name]||icons.home}}/>`;
 };
 
-// ── UTILS ───────────────────────────────────────────────────
-var R = function R(n) {
-  return "R ".concat(Number(n || 0).toLocaleString('en-ZA', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+// ─── DEAL MODAL ─────────────────────────────────────────────────────────────
+const DealModal=({deal,onSave,onClose})=>{
+  const[form,setForm]=useState(deal||{property:'',type:'Residential',agent:'Zaviér',salePrice:'',commPct:5,agencySplit:50,status:'Pending',date:new Date().toISOString().slice(0,10),area:''});
+  const set=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const save=()=>{
+    if(!form.property||!form.salePrice)return alert('Property name and sale price are required.');
+    onSave({...form,salePrice:Number(form.salePrice),commPct:Number(form.commPct),agencySplit:Number(form.agencySplit),id:deal?.id||Date.now()});
+  };
+  return html`
+    <div class="modal-backdrop" onClick=${e=>{if(e.target===e.currentTarget)onClose()}}>
+      <div class="modal">
+        <div class="modal-title">${deal?'Edit Deal':'New Deal'}</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Property Name / Address</label>
+            <input value=${form.property} onInput=${e=>set('property',e.target.value)} placeholder="e.g. Clifton 1st Beach Rd"/>
+          </div>
+          <div class="form-group">
+            <label>Area</label>
+            <input value=${form.area} onInput=${e=>set('area',e.target.value)} placeholder="e.g. Clifton"/>
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select value=${form.type} onChange=${e=>set('type',e.target.value)}>
+              <option>Residential</option><option>Commercial</option><option>Land</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Agent</label>
+            <select value=${form.agent} onChange=${e=>set('agent',e.target.value)}>
+              <option>Zaviér</option><option>Maré</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sale Price (ZAR)</label>
+            <input type="number" value=${form.salePrice} onInput=${e=>set('salePrice',e.target.value)} placeholder="10000000"/>
+          </div>
+          <div class="form-group">
+            <label>Commission % — ${form.commPct}%</label>
+            <input type="range" min="1" max="10" step="0.5" value=${form.commPct} onInput=${e=>set('commPct',e.target.value)}/>
+          </div>
+          <div class="form-group">
+            <label>Agency Split % — ${form.agencySplit}%</label>
+            <input type="range" min="0" max="100" step="5" value=${form.agencySplit} onInput=${e=>set('agencySplit',e.target.value)}/>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select value=${form.status} onChange=${e=>set('status',e.target.value)}>
+              <option>Pending</option><option>Closed</option><option>Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" value=${form.date} onChange=${e=>set('date',e.target.value)}/>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onClick=${onClose}>Cancel</button>
+          <button class="btn btn-gold" onClick=${save}>Save Deal</button>
+        </div>
+      </div>
+    </div>`;
+};
+
+// ─── PIPELINE MODAL ──────────────────────────────────────────────────────────
+const PipelineModal=({item,onSave,onClose})=>{
+  const[form,setForm]=useState(item||{property:'',stage:'Lead',value:'',agent:'Zaviér',probability:50,notes:''});
+  const set=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const save=()=>{
+    if(!form.property)return alert('Property name required.');
+    onSave({...form,value:Number(form.value),probability:Number(form.probability),id:item?.id||Date.now()});
+  };
+  return html`
+    <div class="modal-backdrop" onClick=${e=>{if(e.target===e.currentTarget)onClose()}}>
+      <div class="modal">
+        <div class="modal-title">${item?'Edit Pipeline Item':'Add to Pipeline'}</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Property</label>
+            <input value=${form.property} onInput=${e=>set('property',e.target.value)} placeholder="e.g. Llandudno Beachfront"/>
+          </div>
+          <div class="form-group">
+            <label>Stage</label>
+            <select value=${form.stage} onChange=${e=>set('stage',e.target.value)}>
+              <option>Lead</option><option>Viewing</option><option>Offer</option><option>Negotiation</option><option>Due Diligence</option><option>Signed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Agent</label>
+            <select value=${form.agent} onChange=${e=>set('agent',e.target.value)}>
+              <option>Zaviér</option><option>Maré</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estimated Value (ZAR)</label>
+            <input type="number" value=${form.value} onInput=${e=>set('value',e.target.value)} placeholder="5000000"/>
+          </div>
+          <div class="form-group">
+            <label>Probability — ${form.probability}%</label>
+            <input type="range" min="0" max="100" step="5" value=${form.probability} onInput=${e=>set('probability',e.target.value)}/>
+          </div>
+          <div class="form-group full">
+            <label>Notes</label>
+            <textarea rows="3" value=${form.notes} onInput=${e=>set('notes',e.target.value)} placeholder="Any relevant notes…"/>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onClick=${onClose}>Cancel</button>
+          <button class="btn btn-gold" onClick=${save}>Save</button>
+        </div>
+      </div>
+    </div>`;
+};
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+const Dashboard=({deals,pipeline})=>{
+  const closed=deals.filter(d=>d.status==='Closed');
+  const totalVol=closed.reduce((s,d)=>s+d.salePrice,0);
+  const zComm=getAgentCommission(deals,'Zaviér');
+  const mComm=getAgentCommission(deals,'Maré');
+  const totalComm=zComm+mComm;
+  const pipelineVal=pipeline.reduce((s,p)=>s+p.value,0);
+  const weightedPipeline=pipeline.reduce((s,p)=>s+p.value*(p.probability/100),0);
+
+  const monthlyData=['Jan','Feb','Mar','Apr','May'].map((month,i)=>{
+    const mDeals=closed.filter(d=>new Date(d.date).getMonth()===i);
+    const vol=mDeals.reduce((s,d)=>s+d.salePrice,0);
+    const comm=mDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
+    return{month,vol:vol/1e6,comm:comm/1000};
+  });
+
+  const byAgent=[
+    {name:'Zaviér',value:zComm,color:'#c9a84c'},
+    {name:'Maré',value:mComm,color:'#64b5f6'},
+  ];
+
+  return html`
+    <div>
+      <div class="grid-4">
+        <div class="card-sm">
+          <div class="kpi-label">Total Sales Volume</div>
+          <div class="kpi-value gold">${fmt(totalVol)}</div>
+          <span class="kpi-badge up">↑ YTD 2026</span>
+        </div>
+        <div class="card-sm">
+          <div class="kpi-label">Agent Commission Earned</div>
+          <div class="kpi-value gold">${fmt(totalComm)}</div>
+          <span class="kpi-badge up">${closed.length} closed deals</span>
+        </div>
+        <div class="card-sm">
+          <div class="kpi-label">Pipeline (Total Value)</div>
+          <div class="kpi-value">${fmt(pipelineVal)}</div>
+          <span class="kpi-badge neutral">Weighted: ${fmt(weightedPipeline)}</span>
+        </div>
+        <div class="card-sm">
+          <div class="kpi-label">Active Listings</div>
+          <div class="kpi-value">${pipeline.length}</div>
+          <span class="kpi-badge neutral">${pipeline.filter(p=>p.stage==='Signed').length} ready to close</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Monthly Sales Volume (ZAR M)</div>
+          </div>
+          <div class="chart-wrap">
+            ${h(ResponsiveContainer,{width:'100%',height:260},
+              h(BarChart,{data:monthlyData,margin:{top:5,right:20,left:0,bottom:5}},
+                h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
+                h(XAxis,{dataKey:'month',stroke:'#666',tick:{fill:'#888',fontSize:12}}),
+                h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:12}}),
+                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'}}),
+                h(Bar,{dataKey:'vol',fill:'#c9a84c',radius:[4,4,0,0],name:'Volume (M)'})
+              )
+            )}
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Commission Split by Agent</div>
+          </div>
+          <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center">
+            ${h(ResponsiveContainer,{width:'100%',height:260},
+              h(PieChart,{},
+                h(Pie,{data:byAgent,dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:100,paddingAngle:3,label:({name,percent})=>`${name} ${(percent*100).toFixed(0)}%`,labelLine:true},
+                  byAgent.map((e,i)=>h(Cell,{key:i,fill:e.color}))
+                ),
+                h(Tooltip,{formatter:v=>fmt(v),contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}})
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <div class="section-title">Recent Closed Deals</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Property</th><th>Agent</th><th>Sale Price</th><th>Agent Comm</th><th>Date</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              ${closed.slice(0,5).map(d=>{
+                const{agentShare}=calcCommission(d);
+                return html`<tr key=${d.id}>
+                  <td>${d.property}</td>
+                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
+                  <td>${fmt(d.salePrice)}</td>
+                  <td style="color:#c9a84c;font-weight:600">${fmt(agentShare)}</td>
+                  <td style="color:#888">${fmtDate(d.date)}</td>
+                  <td><span class="badge badge-green">Closed</span></td>
+                </tr>`;
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+};
+
+// ─── DEALS ───────────────────────────────────────────────────────────────────
+const Deals=({deals,setDeals})=>{
+  const[modal,setModal]=useState(null);
+  const[filter,setFilter]=useState('All');
+  const[agentFilter,setAgentFilter]=useState('All');
+
+  const filtered=deals.filter(d=>
+    (filter==='All'||d.status===filter)&&
+    (agentFilter==='All'||d.agent===agentFilter)
+  );
+
+  const save=deal=>{
+    setDeals(prev=>prev.some(d=>d.id===deal.id)?prev.map(d=>d.id===deal.id?deal:d):[...prev,deal]);
+    setModal(null);
+  };
+  const del=id=>{ if(confirm('Delete this deal?'))setDeals(prev=>prev.filter(d=>d.id!==id)); };
+
+  return html`
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${['All','Closed','Pending','Cancelled'].map(s=>html`
+            <button key=${s} class="tab ${filter===s?'active':''}" onClick=${()=>setFilter(s)}>${s}</button>`)}
+          <select style="padding:8px 14px;border-radius:20px;font-size:13px;background:#1a1a1a;border:1px solid #333;color:#aaa" onChange=${e=>setAgentFilter(e.target.value)}>
+            <option value="All">All Agents</option>
+            <option value="Zaviér">Zaviér</option>
+            <option value="Maré">Maré</option>
+          </select>
+        </div>
+        <button class="btn btn-gold" onClick=${()=>setModal({})}>
+          ${h(Icon,{name:'plus',size:16,color:'#111'})}
+          <span class="nav-label">New Deal</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Property</th><th>Area</th><th>Agent</th><th>Sale Price</th><th>Comm %</th><th>Agent Comm</th><th>Date</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody>
+              ${filtered.length===0?html`<tr><td colspan="9" style="text-align:center;color:#555;padding:40px">No deals found.</td></tr>`:
+              filtered.map(d=>{
+                const{agentShare}=calcCommission(d);
+                return html`<tr key=${d.id}>
+                  <td style="font-weight:500">${d.property}</td>
+                  <td style="color:#888">${d.area}</td>
+                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
+                  <td>${fmt(d.salePrice)}</td>
+                  <td style="color:#888">${d.commPct}%</td>
+                  <td style="color:#c9a84c;font-weight:700">${fmt(agentShare)}</td>
+                  <td style="color:#888">${fmtDate(d.date)}</td>
+                  <td><span class="badge ${d.status==='Closed'?'badge-green':d.status==='Pending'?'badge-gold':'badge-red'}">${d.status}</span></td>
+                  <td>
+                    <div style="display:flex;gap:8px">
+                      <button class="btn btn-outline btn-sm" onClick=${()=>setModal(d)}>${h(Icon,{name:'edit',size:13})}</button>
+                      <button class="btn btn-outline btn-sm" style="color:#ef5350" onClick=${()=>del(d.id)}>${h(Icon,{name:'trash',size:13,color:'#ef5350'})}</button>
+                    </div>
+                  </td>
+                </tr>`;
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      ${modal!==null?h(DealModal,{deal:Object.keys(modal).length?modal:null,onSave:save,onClose:()=>setModal(null)}):null}
+    </div>`;
+};
+
+// ─── PIPELINE ────────────────────────────────────────────────────────────────
+const STAGES=['Lead','Viewing','Offer','Negotiation','Due Diligence','Signed'];
+const STAGE_COLORS={Lead:'#555',Viewing:'#1565c0',Offer:'#6a1b9a',Negotiation:'#e65100',['Due Diligence']:'#2e7d32',Signed:'#c9a84c'};
+
+const Pipeline=({pipeline,setPipeline})=>{
+  const[modal,setModal]=useState(null);
+  const save=item=>{
+    setPipeline(prev=>prev.some(p=>p.id===item.id)?prev.map(p=>p.id===item.id?item:p):[...prev,item]);
+    setModal(null);
+  };
+  const del=id=>{ if(confirm('Remove from pipeline?'))setPipeline(prev=>prev.filter(p=>p.id!==id)); };
+  const total=pipeline.reduce((s,p)=>s+p.value,0);
+  const weighted=pipeline.reduce((s,p)=>s+p.value*(p.probability/100),0);
+
+  const stageData=STAGES.map(s=>({
+    stage:s,
+    count:pipeline.filter(p=>p.stage===s).length,
+    value:pipeline.filter(p=>p.stage===s).reduce((a,p)=>a+p.value,0),
   }));
+
+  return html`
+    <div>
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="card-sm">
+          <div class="kpi-label">Pipeline Value</div>
+          <div class="kpi-value gold">${fmt(total)}</div>
+        </div>
+        <div class="card-sm">
+          <div class="kpi-label">Weighted Value</div>
+          <div class="kpi-value">${fmt(weighted)}</div>
+        </div>
+        <div class="card-sm">
+          <div class="kpi-label">Active Listings</div>
+          <div class="kpi-value">${pipeline.length}</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px">
+        <div class="section-header">
+          <div class="section-title">Pipeline by Stage</div>
+        </div>
+        <div class="chart-wrap">
+          ${h(ResponsiveContainer,{width:'100%',height:220},
+            h(BarChart,{data:stageData,margin:{top:5,right:20,left:0,bottom:5}},
+              h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
+              h(XAxis,{dataKey:'stage',stroke:'#666',tick:{fill:'#888',fontSize:11}}),
+              h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:11}}),
+              h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`${v} listings`}),
+              h(Bar,{dataKey:'count',fill:'#c9a84c',radius:[4,4,0,0],name:'Listings'})
+            )
+          )}
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn btn-gold" onClick=${()=>setModal({})}>
+          ${h(Icon,{name:'plus',size:16,color:'#111'})}
+          <span class="nav-label">Add Listing</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Property</th><th>Stage</th><th>Agent</th><th>Value</th><th>Probability</th><th>Notes</th><th></th>
+            </tr></thead>
+            <tbody>
+              ${pipeline.map(p=>html`
+                <tr key=${p.id}>
+                  <td style="font-weight:500">${p.property}</td>
+                  <td><span class="badge" style="background:${STAGE_COLORS[p.stage]}22;color:${STAGE_COLORS[p.stage]}">${p.stage}</span></td>
+                  <td><span class="badge ${p.agent==='Zaviér'?'badge-gold':'badge-blue'}">${p.agent}</span></td>
+                  <td>${fmt(p.value)}</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <div class="progress-bar" style="width:80px">
+                        <div class="progress-fill" style="width:${p.probability}%"/>
+                      </div>
+                      <span style="font-size:12px;color:#888">${p.probability}%</span>
+                    </div>
+                  </td>
+                  <td style="color:#888;font-size:13px;max-width:180px">${p.notes}</td>
+                  <td>
+                    <div style="display:flex;gap:8px">
+                      <button class="btn btn-outline btn-sm" onClick=${()=>setModal(p)}>${h(Icon,{name:'edit',size:13})}</button>
+                      <button class="btn btn-outline btn-sm" style="color:#ef5350" onClick=${()=>del(p.id)}>${h(Icon,{name:'trash',size:13,color:'#ef5350'})}</button>
+                    </div>
+                  </td>
+                </tr>`)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      ${modal!==null?h(PipelineModal,{item:Object.keys(modal).length?modal:null,onSave:save,onClose:()=>setModal(null)}):null}
+    </div>`;
 };
-var FD = function FD(s) {
-  return s ? new Date(s).toLocaleDateString('en-ZA', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  }) : '—';
+
+// ─── COMMISSION CALCULATOR ───────────────────────────────────────────────────
+const CommCalc=()=>{
+  const[price,setPrice]=useState(10000000);
+  const[commPct,setCommPct]=useState(5);
+  const[agencySplit,setAgencySplit]=useState(50);
+  const[agent,setAgent]=useState('Zaviér');
+
+  const totalComm=price*(commPct/100);
+  const agencyShare=totalComm*(agencySplit/100);
+  const agentShare=totalComm-agencyShare;
+
+  return html`
+    <div style="max-width:680px;margin:0 auto">
+      <div class="card">
+        <div class="section-title" style="margin-bottom:24px">Commission Calculator</div>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="form-group">
+            <label>Sale Price: ${fmt(price)}</label>
+            <input type="range" min="500000" max="100000000" step="100000" value=${price} onInput=${e=>setPrice(Number(e.target.value))}/>
+            <input type="number" value=${price} onInput=${e=>setPrice(Number(e.target.value))} placeholder="10000000"/>
+          </div>
+          <div class="form-group">
+            <label>Commission Rate: ${commPct}%</label>
+            <input type="range" min="1" max="10" step="0.5" value=${commPct} onInput=${e=>setCommPct(Number(e.target.value))}/>
+          </div>
+          <div class="form-group">
+            <label>Agency Split: ${agencySplit}%</label>
+            <input type="range" min="0" max="100" step="5" value=${agencySplit} onInput=${e=>setAgencySplit(Number(e.target.value))}/>
+          </div>
+          <div class="form-group">
+            <label>Agent</label>
+            <select value=${agent} onChange=${e=>setAgent(e.target.value)}>
+              <option>Zaviér</option><option>Maré</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-row">
+            <span class="calc-label">Sale Price</span>
+            <span class="calc-value">${fmt(price)}</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Total Commission (${commPct}%)</span>
+            <span class="calc-value">${fmt(totalComm)}</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Agency Share (${agencySplit}%)</span>
+            <span class="calc-value">${fmt(agencyShare)}</span>
+          </div>
+          <div class="calc-row total">
+            <span>${agent}'s Commission</span>
+            <span>${fmt(agentShare)}</span>
+          </div>
+        </div>
+
+        <div style="margin-top:24px">
+          ${h(ResponsiveContainer,{width:'100%',height:200},
+            h(PieChart,{},
+              h(Pie,{
+                data:[
+                  {name:'Agency Share',value:agencyShare,color:'#555'},
+                  {name:`${agent}'s Commission`,value:agentShare,color:'#c9a84c'},
+                ],
+                dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:80,
+              },
+                [
+                  h(Cell,{key:0,fill:'#555'}),
+                  h(Cell,{key:1,fill:'#c9a84c'}),
+                ]
+              ),
+              h(Tooltip,{formatter:v=>fmt(v),contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}}),
+              h(Legend,{})
+            )
+          )}
+        </div>
+      </div>
+    </div>`;
 };
-var FM = function FM(s) {
-  if (!s) return '—';
-  var _s$split = s.split('-'),
-    _s$split2 = _slicedToArray(_s$split, 2),
-    y = _s$split2[0],
-    m = _s$split2[1];
-  return new Date(y, m - 1).toLocaleString('en', {
-    month: 'short',
-    year: '2-digit'
+
+// ─── INCOME REPORT ───────────────────────────────────────────────────────────
+const Income=({deals})=>{
+  const closed=deals.filter(d=>d.status==='Closed');
+  const zDeals=closed.filter(d=>d.agent==='Zaviér');
+  const mDeals=closed.filter(d=>d.agent==='Maré');
+  const zComm=zDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
+  const mComm=mDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
+  const total=zComm+mComm;
+  const zTarget=TARGETS['zaviér'].annual;
+  const mTarget=TARGETS['maré'].annual;
+
+  const monthlyComparison=['Jan','Feb','Mar','Apr','May'].map((month,i)=>{
+    const zM=zDeals.filter(d=>new Date(d.date).getMonth()===i).reduce((s,d)=>s+calcCommission(d).agentShare,0);
+    const mM=mDeals.filter(d=>new Date(d.date).getMonth()===i).reduce((s,d)=>s+calcCommission(d).agentShare,0);
+    return{month,Zaviér:zM/1000,Maré:mM/1000};
   });
+
+  return html`
+    <div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="kpi-label">Zaviér — YTD Commission</div>
+          <div class="kpi-value gold">${fmt(zComm)}</div>
+          <div style="margin-top:12px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px">
+              <span>Annual Target: ${fmt(zTarget)}</span>
+              <span>${((zComm/zTarget)*100).toFixed(0)}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:${Math.min((zComm/zTarget)*100,100)}%"/>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;color:#888">${zDeals.length} deals closed · Avg ${fmt(zComm/Math.max(zDeals.length,1))}/deal</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">Maré — YTD Commission</div>
+          <div class="kpi-value" style="color:#64b5f6">${fmt(mComm)}</div>
+          <div style="margin-top:12px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px">
+              <span>Annual Target: ${fmt(mTarget)}</span>
+              <span>${((mComm/mTarget)*100).toFixed(0)}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:${Math.min((mComm/mTarget)*100,100)}%;background:linear-gradient(90deg,#1565c0,#64b5f6)"/>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;color:#888">${mDeals.length} deals closed · Avg ${fmt(mComm/Math.max(mDeals.length,1))}/deal</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px">
+        <div class="section-title" style="margin-bottom:16px">Monthly Commission Comparison (ZAR '000)</div>
+        <div class="chart-wrap">
+          ${h(ResponsiveContainer,{width:'100%',height:280},
+            h(BarChart,{data:monthlyComparison,margin:{top:5,right:20,left:0,bottom:5}},
+              h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
+              h(XAxis,{dataKey:'month',stroke:'#666',tick:{fill:'#888',fontSize:12}}),
+              h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:12}}),
+              h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`R ${v}k`}),
+              h(Legend,{}),
+              h(Bar,{dataKey:'Zaviér',fill:'#c9a84c',radius:[4,4,0,0]}),
+              h(Bar,{dataKey:'Maré',fill:'#64b5f6',radius:[4,4,0,0]})
+            )
+          )}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:16px">Combined Household Income</div>
+        <div class="calc-result" style="max-width:400px">
+          <div class="calc-row"><span class="calc-label">Zaviér</span><span class="calc-value">${fmt(zComm)}</span></div>
+          <div class="calc-row"><span class="calc-label">Maré</span><span class="calc-value">${fmt(mComm)}</span></div>
+          <div class="calc-row total"><span>Total Household</span><span>${fmt(total)}</span></div>
+        </div>
+      </div>
+    </div>`;
 };
-function calc(d) {
-  var sp = Number(d.sale || 0),
-    cp = Number(d.comm || 5),
-    ap = Number(d.split || 50);
-  var tot = sp * (cp / 100),
-    ag = tot * (ap / 100),
-    agent = tot - ag;
-  return {
-    tot: tot,
-    ag: ag,
-    agent: agent,
-    me: d.who === 'me' ? agent : 0,
-    wife: d.who === 'wife' ? agent : 0
-  };
+
+// ─── REPORTS ─────────────────────────────────────────────────────────────────
+const Reports=({deals,pipeline})=>{
+  const closed=deals.filter(d=>d.status==='Closed');
+  const totalVol=closed.reduce((s,d)=>s+d.salePrice,0);
+  const totalComm=closed.reduce((s,d)=>s+calcCommission(d).agentShare,0);
+  const avgDealSize=totalVol/Math.max(closed.length,1);
+
+  const byArea=Object.entries(
+    closed.reduce((acc,d)=>{
+      acc[d.area]=(acc[d.area]||0)+d.salePrice;
+      return acc;
+    },{})
+  ).map(([area,value])=>({area,value:value/1e6})).sort((a,b)=>b.value-a.value);
+
+  const byStatus=[
+    {name:'Closed',value:deals.filter(d=>d.status==='Closed').length,color:'#4caf50'},
+    {name:'Pending',value:deals.filter(d=>d.status==='Pending').length,color:'#c9a84c'},
+    {name:'Cancelled',value:deals.filter(d=>d.status==='Cancelled').length,color:'#ef5350'},
+  ];
+
+  return html`
+    <div>
+      <div class="grid-4" style="margin-bottom:24px">
+        <div class="card-sm"><div class="kpi-label">Total Deals</div><div class="kpi-value">${deals.length}</div></div>
+        <div class="card-sm"><div class="kpi-label">Closed Volume</div><div class="kpi-value gold">${fmt(totalVol)}</div></div>
+        <div class="card-sm"><div class="kpi-label">Total Agent Comm</div><div class="kpi-value gold">${fmt(totalComm)}</div></div>
+        <div class="card-sm"><div class="kpi-label">Avg Deal Size</div><div class="kpi-value">${fmt(avgDealSize)}</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title" style="margin-bottom:16px">Volume by Area (ZAR M)</div>
+          <div class="chart-wrap">
+            ${h(ResponsiveContainer,{width:'100%',height:280},
+              h(BarChart,{data:byArea,layout:'vertical',margin:{top:5,right:20,left:60,bottom:5}},
+                h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
+                h(XAxis,{type:'number',stroke:'#666',tick:{fill:'#888',fontSize:11}}),
+                h(YAxis,{type:'category',dataKey:'area',stroke:'#666',tick:{fill:'#888',fontSize:11},width:80}),
+                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`R ${v.toFixed(1)}M`}),
+                h(Bar,{dataKey:'value',fill:'#c9a84c',radius:[0,4,4,0],name:'Volume (M)'})
+              )
+            )}
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:16px">Deal Status Breakdown</div>
+          <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center">
+            ${h(ResponsiveContainer,{width:'100%',height:280},
+              h(PieChart,{},
+                h(Pie,{data:byStatus,dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:100,paddingAngle:3,label:({name,value})=>`${name}: ${value}`,labelLine:true},
+                  byStatus.map((s,i)=>h(Cell,{key:i,fill:s.color}))
+                ),
+                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}}),
+                h(Legend,{})
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="section-title" style="margin-bottom:16px">Full Deal Ledger</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Property</th><th>Agent</th><th>Sale Price</th><th>Comm%</th><th>Total Comm</th><th>Agency</th><th>Agent Earn</th><th>Date</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              ${deals.map(d=>{
+                const{total,agencyShare,agentShare}=calcCommission(d);
+                return html`<tr key=${d.id}>
+                  <td>${d.property}</td>
+                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
+                  <td>${fmt(d.salePrice)}</td>
+                  <td style="color:#888">${d.commPct}%</td>
+                  <td>${fmt(total)}</td>
+                  <td style="color:#888">${fmt(agencyShare)}</td>
+                  <td style="color:#c9a84c;font-weight:700">${fmt(agentShare)}</td>
+                  <td style="color:#888">${fmtDate(d.date)}</td>
+                  <td><span class="badge ${d.status==='Closed'?'badge-green':d.status==='Pending'?'badge-gold':'badge-red'}">${d.status}</span></td>
+                </tr>`;
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+};
+
+// ─── APP SHELL ───────────────────────────────────────────────────────────────
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'dashboard'},
+  {id:'deals',label:'Deals',icon:'deals'},
+  {id:'pipeline',label:'Pipeline',icon:'pipeline'},
+  {id:'calculator',label:'Calculator',icon:'calc'},
+  {id:'income',label:'Income',icon:'income'},
+  {id:'reports',label:'Reports',icon:'reports'},
+];
+
+const PAGE_TITLES={
+  dashboard:{title:'Dashboard',sub:'Overview for 2026 YTD'},
+  deals:{title:'Deal Tracker',sub:'All residential transactions'},
+  pipeline:{title:'Pipeline',sub:'Active listings & prospects'},
+  calculator:{title:'Commission Calculator',sub:'Quick commission breakdown'},
+  income:{title:'Income Report',sub:'Zaviér & Maré earnings'},
+  reports:{title:'Reports',sub:'Full analytics & ledger'},
+};
+
+function App(){
+  const[page,setPage]=useState('dashboard');
+  const[deals,setDeals]=useState(SAMPLE_DEALS);
+  const[pipeline,setPipeline]=useState(SAMPLE_PIPELINE);
+  const{title,sub}=PAGE_TITLES[page];
+
+  return html`
+    <div id="root" style="display:flex;min-height:100vh">
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-title">AgentOS</div>
+          <div class="logo-sub">Engel &amp; Völkers · CPT</div>
+        </div>
+        <nav class="sidebar-nav">
+          ${NAV.map(n=>html`
+            <div key=${n.id} class="nav-item ${page===n.id?'active':''}" onClick=${()=>setPage(n.id)}>
+              ${h(Icon,{name:n.icon,size:18,color:page===n.id?'#c9a84c':'currentColor'})}
+              <span class="nav-label">${n.label}</span>
+            </div>`)}
+        </nav>
+        <div class="sidebar-footer">
+          <div style="color:#c9a84c;font-weight:600;margin-bottom:2px">Zaviér &amp; Maré</div>
+          <div>Engel &amp; Völkers</div>
+          <div style="margin-top:8px;color:#333;font-size:10px">AgentOS v1.0</div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <div class="topbar">
+          <div>
+            <div class="topbar-title">${title}</div>
+            <div class="topbar-sub">${sub}</div>
+          </div>
+          <div style="font-size:13px;color:#555">${new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+        <div class="content">
+          ${page==='dashboard'?h(Dashboard,{deals,pipeline}):null}
+          ${page==='deals'?h(Deals,{deals,setDeals}):null}
+          ${page==='pipeline'?h(Pipeline,{pipeline,setPipeline}):null}
+          ${page==='calculator'?h(CommCalc,{}):null}
+          ${page==='income'?h(Income,{deals}):null}
+          ${page==='reports'?h(Reports,{deals,pipeline}):null}
+        </div>
+      </div>
+    </div>`;
 }
 
-// ── ICONS ────────────────────────────────────────────────────
-var ICONS = {
-  dashboard: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("rect", {
-    x: "3",
-    y: "3",
-    width: "7",
-    height: "7",
-    rx: "1.5"
-  }), /*#__PURE__*/React.createElement("rect", {
-    x: "14",
-    y: "3",
-    width: "7",
-    height: "7",
-    rx: "1.5"
-  }), /*#__PURE__*/React.createElement("rect", {
-    x: "3",
-    y: "14",
-    width: "7",
-    height: "7",
-    rx: "1.5"
-  }), /*#__PURE__*/React.createElement("rect", {
-    x: "14",
-    y: "14",
-    width: "7",
-    height: "7",
-    rx: "1.5"
-  })),
-  deals: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"
-  })),
-  pipeline: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M3 6h18M3 12h18M3 18h18"
-  })),
-  calc: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("rect", {
-    x: "4",
-    y: "2",
-    width: "16",
-    height: "20",
-    rx: "2"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M8 6h8M8 11h2m4 0h2M8 16h2m4 0h2"
-  })),
-  income: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "9",
-    cy: "7",
-    r: "4"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
-  })),
-  reports: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-  })),
-  plus: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2.2"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M12 4v16M4 12h16"
-  })),
-  edit: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"
-  })),
-  trash: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("polyline", {
-    points: "3 6 5 6 21 6"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"
-  })),
-  x: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2.2"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M18 6L6 18M6 6l12 12"
-  })),
-  home: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-  }), /*#__PURE__*/React.createElement("polyline", {
-    points: "9 22 9 12 15 12 15 22"
-  })),
-  menu: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2"
-  }, /*#__PURE__*/React.createElement("line", {
-    x1: "3",
-    y1: "6",
-    x2: "21",
-    y2: "6"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "3",
-    y1: "12",
-    x2: "21",
-    y2: "12"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: "3",
-    y1: "18",
-    x2: "21",
-    y2: "18"
-  })),
-  search: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("circle", {
-    cx: "11",
-    cy: "11",
-    r: "8"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M21 21l-4.35-4.35"
-  })),
-  target: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("circle", {
-    cx: "12",
-    cy: "12",
-    r: "10"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "12",
-    cy: "12",
-    r: "6"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "12",
-    cy: "12",
-    r: "2"
-  })),
-  trend: /*#__PURE__*/React.createElement("svg", {
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "1.8"
-  }, /*#__PURE__*/React.createElement("polyline", {
-    points: "23 6 13.5 15.5 8.5 10.5 1 18"
-  }), /*#__PURE__*/React.createElement("polyline", {
-    points: "17 6 23 6 23 12"
-  }))
-};
-var I = function I(_ref) {
-  var n = _ref.n,
-    _ref$s = _ref.s,
-    s = _ref$s === void 0 ? 18 : _ref$s;
-  return /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      width: s,
-      height: s,
-      flexShrink: 0
-    }
-  }, React.cloneElement(ICONS[n] || ICONS.home, {
-    style: {
-      width: s,
-      height: s
-    }
-  }));
-};
-
-// ── SHARED UI ───────────────────────────────────────────────
-var Card = function Card(_ref2) {
-  var children = _ref2.children,
-    _ref2$style = _ref2.style,
-    style = _ref2$style === void 0 ? {} : _ref2$style;
-  return /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread({
-      background: C.card,
-      borderRadius: 14,
-      padding: 22,
-      boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-      border: "1px solid ".concat(C.border)
-    }, style)
-  }, children);
-};
-var Stat = function Stat(_ref3) {
-  var label = _ref3.label,
-    val = _ref3.val,
-    sub = _ref3.sub,
-    icon = _ref3.icon;
-  return /*#__PURE__*/React.createElement(Card, {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 7
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start'
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: C.muted,
-      textTransform: 'uppercase',
-      letterSpacing: 1.2,
-      fontWeight: 700
-    }
-  }, label), icon && /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: C.gold,
-      opacity: .8
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: icon,
-    s: 16
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      color: C.dark,
-      letterSpacing: -.5,
-      lineHeight: 1
-    }
-  }, val), sub && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.muted
-    }
-  }, sub));
-};
-var Badge = function Badge(_ref4) {
-  var status = _ref4.status;
-  return /*#__PURE__*/React.createElement("span", {
-    style: {
-      display: 'inline-block',
-      padding: '3px 9px',
-      borderRadius: 20,
-      fontSize: 11,
-      fontWeight: 700,
-      background: SC[status] + '1A',
-      color: SC[status],
-      border: "1px solid ".concat(SC[status], "44"),
-      whiteSpace: 'nowrap'
-    }
-  }, status);
-};
-var Prog = function Prog(_ref5) {
-  var label = _ref5.label,
-    cur = _ref5.cur,
-    tgt = _ref5.tgt,
-    fmt = _ref5.fmt;
-  var p = Math.min(cur / tgt * 100, 100);
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      marginBottom: 5
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      fontWeight: 600
-    }
-  }, label), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12,
-      color: C.muted
-    }
-  }, fmt ? fmt(cur) : cur, " / ", fmt ? fmt(tgt) : tgt)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      height: 6,
-      background: C.border,
-      borderRadius: 3,
-      overflow: 'hidden'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      height: '100%',
-      width: "".concat(p, "%"),
-      background: p >= 100 ? C.success : C.gold,
-      borderRadius: 3,
-      transition: 'width .6s'
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.muted,
-      marginTop: 3
-    }
-  }, p.toFixed(1), "% of target"));
-};
-var Modal = function Modal(_ref6) {
-  var open = _ref6.open,
-    onClose = _ref6.onClose,
-    title = _ref6.title,
-    children = _ref6.children,
-    _ref6$w = _ref6.w,
-    w = _ref6$w === void 0 ? 700 : _ref6$w;
-  if (!open) return null;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0,0,0,0.5)',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 14
-    },
-    onClick: onClose
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.card,
-      borderRadius: 16,
-      width: '100%',
-      maxWidth: w,
-      maxHeight: '92vh',
-      overflowY: 'auto',
-      boxShadow: '0 24px 70px rgba(0,0,0,0.22)'
-    },
-    onClick: function onClick(e) {
-      return e.stopPropagation();
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '18px 24px',
-      borderBottom: "1px solid ".concat(C.border),
-      position: 'sticky',
-      top: 0,
-      background: C.card,
-      zIndex: 2,
-      borderRadius: '16px 16px 0 0'
-    }
-  }, /*#__PURE__*/React.createElement("h2", {
-    style: {
-      fontSize: 16,
-      fontWeight: 800,
-      color: C.dark
-    }
-  }, title), /*#__PURE__*/React.createElement("button", {
-    onClick: onClose,
-    style: {
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      color: C.muted,
-      display: 'flex',
-      padding: 4
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "x",
-    s: 19
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: 24
-    }
-  }, children)));
-};
-
-// ── FORM HELPERS ─────────────────────────────────────────────
-var L = {
-  fontSize: 11,
-  fontWeight: 700,
-  color: C.muted,
-  textTransform: 'uppercase',
-  letterSpacing: .6,
-  marginBottom: 5,
-  display: 'block'
-};
-var IN = {
-  width: '100%',
-  padding: '10px 12px',
-  border: "1px solid ".concat(C.border),
-  borderRadius: 8,
-  fontSize: 14,
-  color: C.dark,
-  background: '#FAFAF8',
-  outline: 'none'
-};
-var FLD = {
-  marginBottom: 14
-};
-var G2 = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: 14
-};
-
-// ── DEAL FORM ────────────────────────────────────────────────
-var ED = {
-  addr: '',
-  seller: '',
-  buyer: '',
-  sale: '',
-  list: '',
-  offer: '',
-  reg: '',
-  status: 'Lead',
-  who: 'me',
-  name: ME,
-  comm: 5,
-  split: 50,
-  notes: ''
-};
-function DealForm(_ref7) {
-  var deal = _ref7.deal,
-    onSave = _ref7.onSave,
-    onClose = _ref7.onClose;
-  var _useState = useState(deal || ED),
-    _useState2 = _slicedToArray(_useState, 2),
-    f = _useState2[0],
-    sF = _useState2[1];
-  var set = function set(k, v) {
-    return sF(function (p) {
-      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
-    });
-  };
-  var c = useMemo(function () {
-    return calc(f);
-  }, [f]);
-  return /*#__PURE__*/React.createElement("form", {
-    onSubmit: function onSubmit(e) {
-      e.preventDefault();
-      onSave(_objectSpread(_objectSpread({}, f), {}, {
-        id: (deal === null || deal === void 0 ? void 0 : deal.id) || Date.now()
-      }));
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Property Address *"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    value: f.addr,
-    onChange: function onChange(e) {
-      return set('addr', e.target.value);
-    },
-    required: true,
-    placeholder: "12 Example Street, Suburb, City"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: G2
-  }, /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Seller Name"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    value: f.seller,
-    onChange: function onChange(e) {
-      return set('seller', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Buyer Name"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    value: f.buyer,
-    onChange: function onChange(e) {
-      return set('buyer', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Listing Price (R)"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "number",
-    value: f.list,
-    onChange: function onChange(e) {
-      return set('list', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "number",
-    value: f.sale,
-    onChange: function onChange(e) {
-      return set('sale', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Date Offer Accepted"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "date",
-    value: f.offer,
-    onChange: function onChange(e) {
-      return set('offer', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Date Registered"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "date",
-    value: f.reg,
-    onChange: function onChange(e) {
-      return set('reg', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Status"), /*#__PURE__*/React.createElement("select", {
-    style: IN,
-    value: f.status,
-    onChange: function onChange(e) {
-      return set('status', e.target.value);
-    }
-  }, STATUSES.map(function (s) {
-    return /*#__PURE__*/React.createElement("option", {
-      key: s
-    }, s);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Assigned To"), /*#__PURE__*/React.createElement("select", {
-    style: IN,
-    value: f.who,
-    onChange: function onChange(e) {
-      set('who', e.target.value);
-      set('name', e.target.value === 'me' ? ME : WIFE);
-    }
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "me"
-  }, ME), /*#__PURE__*/React.createElement("option", {
-    value: "wife"
-  }, WIFE))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Commission %"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "number",
-    step: ".1",
-    min: "0",
-    max: "20",
-    value: f.comm,
-    onChange: function onChange(e) {
-      return set('comm', parseFloat(e.target.value) || 0);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Agency Split % (E&V keeps)"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "number",
-    step: "1",
-    min: "0",
-    max: "100",
-    value: f.split,
-    onChange: function onChange(e) {
-      return set('split', parseFloat(e.target.value) || 0);
-    }
-  }))), Number(f.sale) > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.bg,
-      borderRadius: 10,
-      padding: 14,
-      marginBottom: 14,
-      border: "1px solid ".concat(C.border)
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 800,
-      textTransform: 'uppercase',
-      letterSpacing: 1.2,
-      color: C.gold,
-      marginBottom: 8
-    }
-  }, "Live Commission Preview"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr 1fr',
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.muted,
-      marginBottom: 2
-    }
-  }, "Total Commission"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 800
-    }
-  }, R(c.tot))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.muted,
-      marginBottom: 2
-    }
-  }, "Agency (E&V)"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 700,
-      color: C.muted
-    }
-  }, R(c.ag))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: C.muted,
-      marginBottom: 2
-    }
-  }, "Your Gross"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 800,
-      color: C.gold
-    }
-  }, R(c.agent)))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.muted,
-      marginTop: 8
-    }
-  }, "\u2192 Allocated to ", /*#__PURE__*/React.createElement("strong", null, f.who === 'me' ? ME : WIFE))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Notes"), /*#__PURE__*/React.createElement("textarea", {
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      minHeight: 72,
-      resize: 'vertical'
-    }),
-    value: f.notes,
-    onChange: function onChange(e) {
-      return set('notes', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 10,
-      justifyContent: 'flex-end',
-      paddingTop: 6
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: onClose,
-    style: {
-      padding: '10px 20px',
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      background: 'none',
-      cursor: 'pointer',
-      fontWeight: 700,
-      fontSize: 13
-    }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    style: {
-      padding: '10px 24px',
-      borderRadius: 8,
-      border: 'none',
-      background: C.dark,
-      color: '#fff',
-      cursor: 'pointer',
-      fontWeight: 800,
-      fontSize: 13
-    }
-  }, "Save Deal")));
-}
-
-// ── DASHBOARD ────────────────────────────────────────────────
-function Dashboard(_ref8) {
-  var deals = _ref8.deals,
-    pipe = _ref8.pipe;
-  var now = new Date();
-  var mKey = "".concat(now.getFullYear(), "-").concat(String(now.getMonth() + 1).padStart(2, '0'));
-  var yKey = String(now.getFullYear());
-  var sold = deals.filter(function (d) {
-    return ['Sold', 'Registered', 'Paid'].includes(d.status) && d.sale > 0;
-  });
-  var paid = deals.filter(function (d) {
-    return d.status === 'Paid' && d.sale > 0;
-  });
-  var pend = deals.filter(function (d) {
-    return ['Sold', 'Registered'].includes(d.status) && d.sale > 0;
-  });
-  var mo = sold.filter(function (d) {
-    return (d.offer || '').startsWith(mKey);
-  });
-  var yr = sold.filter(function (d) {
-    return (d.offer || '').startsWith(yKey);
-  });
-  var mComm = mo.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var yComm = yr.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var pComm = paid.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var eComm = pend.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var avg = sold.length > 0 ? sold.reduce(function (s, d) {
-    return s + d.sale;
-  }, 0) / sold.length : 0;
-  var bars = [];
-  var _loop = function _loop() {
-    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    var k = "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'));
-    var m = d.toLocaleString('en', {
-      month: 'short'
-    });
-    var c = sold.filter(function (x) {
-      return (x.offer || '').startsWith(k);
-    }).reduce(function (s, x) {
-      return s + calc(x).agent;
-    }, 0);
-    bars.push({
-      m: m,
-      v: Math.round(c / 1000)
-    });
-  };
-  for (var i = 5; i >= 0; i--) {
-    _loop();
-  }
-  var pie = STATUSES.map(function (s) {
-    return {
-      n: s,
-      v: deals.filter(function (d) {
-        return d.status === s;
-      }).length
-    };
-  }).filter(function (x) {
-    return x.v > 0;
-  });
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 22
-    }
-  }, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Dashboard"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, "Welcome back, ", ME, ". Here's your overview.")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill,minmax(185px,1fr))',
-      gap: 13,
-      marginBottom: 20
-    },
-    className: "g3"
-  }, /*#__PURE__*/React.createElement(Stat, {
-    label: "This Month Commission",
-    val: R(mComm),
-    sub: "".concat(mo.length, " deal").concat(mo.length !== 1 ? 's' : ''),
-    icon: "trend"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "This Year Commission",
-    val: R(yComm),
-    sub: "".concat(yr.length, " deals"),
-    icon: "target"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Commission Paid",
-    val: R(pComm),
-    sub: "".concat(paid.length, " paid"),
-    icon: "home"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Commission Pending",
-    val: R(eComm),
-    sub: "".concat(pend.length, " deals"),
-    icon: "deals"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Houses Sold",
-    val: sold.length,
-    sub: "all time",
-    icon: "home"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Avg Selling Price",
-    val: R(avg),
-    sub: "all sold deals",
-    icon: "trend"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 14,
-      marginBottom: 20
-    },
-    className: "g2"
-  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      marginBottom: 16
-    }
-  }, "Monthly Targets"), /*#__PURE__*/React.createElement(Prog, {
-    label: "Commission",
-    cur: mComm,
-    tgt: TARGETS.mc,
-    fmt: R
-  }), /*#__PURE__*/React.createElement(Prog, {
-    label: "Deals",
-    cur: mo.length,
-    tgt: TARGETS.md
-  })), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      marginBottom: 16
-    }
-  }, "Yearly Targets"), /*#__PURE__*/React.createElement(Prog, {
-    label: "Commission",
-    cur: yComm,
-    tgt: TARGETS.yc,
-    fmt: R
-  }), /*#__PURE__*/React.createElement(Prog, {
-    label: "Deals",
-    cur: yr.length,
-    tgt: TARGETS.yd
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '2fr 1fr',
-      gap: 14
-    },
-    className: "g2"
-  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      marginBottom: 16
-    }
-  }, "Commission Trend \u2014 6 Months (R'000)"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 210
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: bars
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: C.border
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "m",
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    formatter: function formatter(v) {
-      return ["R ".concat(v, "k"), 'Commission'];
-    },
-    contentStyle: {
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      fontSize: 12
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "v",
-    fill: C.gold,
-    radius: [5, 5, 0, 0]
-  })))), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      marginBottom: 12
-    }
-  }, "Deals by Status"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 175
-  }, /*#__PURE__*/React.createElement(PieChart, null, /*#__PURE__*/React.createElement(Pie, {
-    data: pie,
-    dataKey: "v",
-    cx: "50%",
-    cy: "50%",
-    outerRadius: 70,
-    innerRadius: 30
-  }, pie.map(function (e, i) {
-    return /*#__PURE__*/React.createElement(Cell, {
-      key: i,
-      fill: SC[e.n]
-    });
-  })), /*#__PURE__*/React.createElement(Tooltip, {
-    contentStyle: {
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      fontSize: 11
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 6,
-      marginTop: 6
-    }
-  }, pie.map(function (s) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: s.n,
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: 4,
-        fontSize: 10
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 7,
-        height: 7,
-        borderRadius: '50%',
-        background: SC[s.n]
-      }
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, s.n, " (", s.v, ")"));
-  })))));
-}
-
-// ── DEALS TRACKER ────────────────────────────────────────────
-function Deals(_ref9) {
-  var deals = _ref9.deals,
-    onAdd = _ref9.onAdd,
-    onEdit = _ref9.onEdit,
-    onDel = _ref9.onDel;
-  var _useState3 = useState(''),
-    _useState4 = _slicedToArray(_useState3, 2),
-    q = _useState4[0],
-    sQ = _useState4[1];
-  var _useState5 = useState('All'),
-    _useState6 = _slicedToArray(_useState5, 2),
-    sf = _useState6[0],
-    sSf = _useState6[1];
-  var _useState7 = useState('All'),
-    _useState8 = _slicedToArray(_useState7, 2),
-    af = _useState8[0],
-    sAf = _useState8[1];
-  var _useState9 = useState(false),
-    _useState0 = _slicedToArray(_useState9, 2),
-    modal = _useState0[0],
-    sModal = _useState0[1];
-  var _useState1 = useState(null),
-    _useState10 = _slicedToArray(_useState1, 2),
-    edit = _useState10[0],
-    sEdit = _useState10[1];
-  var _useState11 = useState(null),
-    _useState12 = _slicedToArray(_useState11, 2),
-    del = _useState12[0],
-    sDel = _useState12[1];
-  var _useState13 = useState(null),
-    _useState14 = _slicedToArray(_useState13, 2),
-    exp = _useState14[0],
-    sExp = _useState14[1];
-  var list = useMemo(function () {
-    return deals.filter(function (d) {
-      var m = d.addr.toLowerCase().includes(q.toLowerCase()) || d.seller.toLowerCase().includes(q.toLowerCase()) || d.buyer.toLowerCase().includes(q.toLowerCase());
-      return m && (sf === 'All' || d.status === sf) && (af === 'All' || d.who === af);
-    });
-  }, [deals, q, sf, af]);
-  var save = function save(d) {
-    edit ? onEdit(d) : onAdd(_objectSpread(_objectSpread({}, d), {}, {
-      id: Date.now()
-    }));
-    sModal(false);
-    sEdit(null);
-  };
-  var SI = _objectSpread(_objectSpread({}, IN), {}, {
-    width: 'auto',
-    fontSize: 13
-  });
-  var TH = function TH(_ref0) {
-    var t = _ref0.t;
-    return /*#__PURE__*/React.createElement("th", {
-      style: {
-        padding: '11px 15px',
-        textAlign: 'left',
-        fontWeight: 700,
-        fontSize: 10,
-        textTransform: 'uppercase',
-        letterSpacing: .8,
-        color: C.muted,
-        borderBottom: "1px solid ".concat(C.border),
-        whiteSpace: 'nowrap',
-        background: C.bg
-      }
-    }, t);
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginBottom: 20,
-      flexWrap: 'wrap',
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Deals & Sales"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, deals.length, " total \xB7 ", list.length, " showing")), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      sEdit(null);
-      sModal(true);
-    },
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 7,
-      padding: '10px 18px',
-      background: C.dark,
-      color: '#fff',
-      border: 'none',
-      borderRadius: 9,
-      cursor: 'pointer',
-      fontWeight: 800,
-      fontSize: 13
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "plus",
-    s: 14
-  }), " Add Deal")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 9,
-      marginBottom: 16,
-      flexWrap: 'wrap'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: 'relative',
-      flex: 1,
-      minWidth: 190
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      position: 'absolute',
-      left: 10,
-      top: '50%',
-      transform: 'translateY(-50%)',
-      color: C.muted,
-      pointerEvents: 'none'
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "search",
-    s: 14
-  })), /*#__PURE__*/React.createElement("input", {
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      paddingLeft: 32,
-      width: '100%',
-      fontSize: 13
-    }),
-    placeholder: "Search address, buyer, seller\u2026",
-    value: q,
-    onChange: function onChange(e) {
-      return sQ(e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("select", {
-    style: SI,
-    value: sf,
-    onChange: function onChange(e) {
-      return sSf(e.target.value);
-    }
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "All"
-  }, "All Statuses"), STATUSES.map(function (s) {
-    return /*#__PURE__*/React.createElement("option", {
-      key: s
-    }, s);
-  })), /*#__PURE__*/React.createElement("select", {
-    style: SI,
-    value: af,
-    onChange: function onChange(e) {
-      return sAf(e.target.value);
-    }
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "All"
-  }, "All Agents"), /*#__PURE__*/React.createElement("option", {
-    value: "me"
-  }, ME), /*#__PURE__*/React.createElement("option", {
-    value: "wife"
-  }, WIFE))), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      padding: 0,
-      overflow: 'hidden'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: 'auto'
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: 13
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
-    t: "Property"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Agent"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Sale Price"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Gross Commission"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Status"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Offer Date"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: ""
-  }))), /*#__PURE__*/React.createElement("tbody", null, list.map(function (d, i) {
-    var c = calc(d);
-    var isMe = d.who === 'me';
-    return /*#__PURE__*/React.createElement(React.Fragment, {
-      key: d.id
-    }, /*#__PURE__*/React.createElement("tr", {
-      style: {
-        borderBottom: "1px solid ".concat(C.border),
-        background: i % 2 === 0 ? '#fff' : '#FAFAF8',
-        cursor: 'pointer'
-      },
-      onClick: function onClick() {
-        return sExp(exp === d.id ? null : d.id);
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 700,
-        maxWidth: 250,
-        lineHeight: 1.3
-      }
-    }, d.addr)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontWeight: 700,
-        fontSize: 11,
-        color: isMe ? C.info : '#7B4F2C',
-        background: (isMe ? C.info : '#7B4F2C') + '15',
-        padding: '3px 8px',
-        borderRadius: 10
-      }
-    }, d.name)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        fontWeight: 700
-      }
-    }, d.sale > 0 ? R(d.sale) : '—'), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, d.sale > 0 ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 800,
-        color: C.gold
-      }
-    }, R(c.agent)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.muted,
-        marginTop: 1
-      }
-    }, d.comm, "% \xD7 ", 100 - d.split, "%")) : '—'), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement(Badge, {
-      status: d.status
-    })), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        color: C.muted,
-        whiteSpace: 'nowrap'
-      }
-    }, FD(d.offer)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'flex',
-        gap: 5
-      },
-      onClick: function onClick(e) {
-        return e.stopPropagation();
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        sEdit(d);
-        sModal(true);
-      },
-      style: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: 5,
-        borderRadius: 6,
-        display: 'flex'
-      }
-    }, /*#__PURE__*/React.createElement(I, {
-      n: "edit",
-      s: 14
-    })), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        return sDel(d.id);
-      },
-      style: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: C.danger,
-        padding: 5,
-        borderRadius: 6,
-        display: 'flex'
-      }
-    }, /*#__PURE__*/React.createElement(I, {
-      n: "trash",
-      s: 14
-    }))))), exp === d.id && /*#__PURE__*/React.createElement("tr", {
-      style: {
-        background: '#F7F5F0'
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      colSpan: 7,
-      style: {
-        padding: '13px 18px'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill,minmax(155px,1fr))',
-        gap: 10,
-        fontSize: 12
-      }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Seller: "), /*#__PURE__*/React.createElement("strong", null, d.seller || '—')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Buyer: "), /*#__PURE__*/React.createElement("strong", null, d.buyer || '—')), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Listing: "), /*#__PURE__*/React.createElement("strong", null, R(d.list))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Total Comm: "), /*#__PURE__*/React.createElement("strong", null, R(c.tot))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Agency: "), /*#__PURE__*/React.createElement("strong", null, R(c.ag))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted
-      }
-    }, "Registered: "), /*#__PURE__*/React.createElement("strong", null, FD(d.reg)))), d.notes && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 8,
-        fontSize: 12,
-        color: C.muted
-      }
-    }, /*#__PURE__*/React.createElement("strong", null, "Notes:"), " ", d.notes))));
-  }), list.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
-    colSpan: 7,
-    style: {
-      padding: '44px',
-      textAlign: 'center',
-      color: C.muted
-    }
-  }, "No deals match your filters.")))))), /*#__PURE__*/React.createElement(Modal, {
-    open: modal,
-    onClose: function onClose() {
-      sModal(false);
-      sEdit(null);
-    },
-    title: edit ? 'Edit Deal' : 'Add New Deal',
-    w: 730
-  }, /*#__PURE__*/React.createElement(DealForm, {
-    deal: edit,
-    onSave: save,
-    onClose: function onClose() {
-      sModal(false);
-      sEdit(null);
-    }
-  })), /*#__PURE__*/React.createElement(Modal, {
-    open: !!del,
-    onClose: function onClose() {
-      return sDel(null);
-    },
-    title: "Delete Deal?",
-    w: 420
-  }, /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      marginBottom: 22,
-      fontSize: 14
-    }
-  }, "This deal will be permanently removed."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 10,
-      justifyContent: 'flex-end'
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return sDel(null);
-    },
-    style: {
-      padding: '10px 20px',
-      border: "1px solid ".concat(C.border),
-      borderRadius: 8,
-      background: 'none',
-      cursor: 'pointer',
-      fontWeight: 700
-    }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      onDel(del);
-      sDel(null);
-    },
-    style: {
-      padding: '10px 22px',
-      border: 'none',
-      borderRadius: 8,
-      background: C.danger,
-      color: '#fff',
-      cursor: 'pointer',
-      fontWeight: 800
-    }
-  }, "Delete"))));
-}
-
-// ── PIPELINE ─────────────────────────────────────────────────
-var EP = {
-  addr: '',
-  src: 'Referral',
-  price: '',
-  prob: 50,
-  close: '',
-  follow: '',
-  notes: ''
-};
-function PipeForm(_ref1) {
-  var item = _ref1.item,
-    onSave = _ref1.onSave,
-    onClose = _ref1.onClose;
-  var _useState15 = useState(item || EP),
-    _useState16 = _slicedToArray(_useState15, 2),
-    f = _useState16[0],
-    sF = _useState16[1];
-  var set = function set(k, v) {
-    return sF(function (p) {
-      return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, v));
-    });
-  };
-  var ec = Number(f.price) * 0.05 * 0.5 || 0;
-  return /*#__PURE__*/React.createElement("form", {
-    onSubmit: function onSubmit(e) {
-      e.preventDefault();
-      onSave(_objectSpread(_objectSpread({}, f), {}, {
-        id: (item === null || item === void 0 ? void 0 : item.id) || Date.now()
-      }));
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Property Address *"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    value: f.addr,
-    onChange: function onChange(e) {
-      return set('addr', e.target.value);
-    },
-    required: true
-  })), /*#__PURE__*/React.createElement("div", {
-    style: G2
-  }, /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Lead Source"), /*#__PURE__*/React.createElement("select", {
-    style: IN,
-    value: f.src,
-    onChange: function onChange(e) {
-      return set('src', e.target.value);
-    }
-  }, SOURCES.map(function (s) {
-    return /*#__PURE__*/React.createElement("option", {
-      key: s
-    }, s);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Est. Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "number",
-    value: f.price,
-    onChange: function onChange(e) {
-      return set('price', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Probability: ", f.prob, "%"), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    style: {
-      width: '100%',
-      accentColor: C.gold
-    },
-    min: "0",
-    max: "100",
-    step: "5",
-    value: f.prob,
-    onChange: function onChange(e) {
-      return set('prob', Number(e.target.value));
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Est. Commission (5%, 50%)"), /*#__PURE__*/React.createElement("div", {
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      fontWeight: 800,
-      color: C.gold,
-      background: C.goldLt,
-      border: "1px solid ".concat(C.border)
-    })
-  }, R(ec))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Expected Close Month"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "month",
-    value: f.close,
-    onChange: function onChange(e) {
-      return set('close', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Next Follow-up"), /*#__PURE__*/React.createElement("input", {
-    style: IN,
-    type: "date",
-    value: f.follow,
-    onChange: function onChange(e) {
-      return set('follow', e.target.value);
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Notes"), /*#__PURE__*/React.createElement("textarea", {
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      minHeight: 70,
-      resize: 'vertical'
-    }),
-    value: f.notes,
-    onChange: function onChange(e) {
-      return set('notes', e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 10,
-      justifyContent: 'flex-end'
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: onClose,
-    style: {
-      padding: '10px 20px',
-      border: "1px solid ".concat(C.border),
-      borderRadius: 8,
-      background: 'none',
-      cursor: 'pointer',
-      fontWeight: 700,
-      fontSize: 13
-    }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    style: {
-      padding: '10px 24px',
-      border: 'none',
-      borderRadius: 8,
-      background: C.dark,
-      color: '#fff',
-      cursor: 'pointer',
-      fontWeight: 800,
-      fontSize: 13
-    }
-  }, "Save")));
-}
-function Pipeline(_ref10) {
-  var pipe = _ref10.pipe,
-    onAdd = _ref10.onAdd,
-    onEdit = _ref10.onEdit,
-    onDel = _ref10.onDel;
-  var _useState17 = useState(false),
-    _useState18 = _slicedToArray(_useState17, 2),
-    modal = _useState18[0],
-    sM = _useState18[1];
-  var _useState19 = useState(null),
-    _useState20 = _slicedToArray(_useState19, 2),
-    edit = _useState20[0],
-    sE = _useState20[1];
-  var _useState21 = useState(null),
-    _useState22 = _slicedToArray(_useState21, 2),
-    del = _useState22[0],
-    sD = _useState22[1];
-  var raw = pipe.reduce(function (s, p) {
-    return s + Number(p.price || 0);
-  }, 0);
-  var wt = pipe.reduce(function (s, p) {
-    return s + Number(p.price || 0) * p.prob / 100;
-  }, 0);
-  var ec = pipe.reduce(function (s, p) {
-    return s + Number(p.price || 0) * 0.05 * 0.5 * p.prob / 100;
-  }, 0);
-  var save = function save(x) {
-    edit ? onEdit(x) : onAdd(_objectSpread(_objectSpread({}, x), {}, {
-      id: Date.now()
-    }));
-    sM(false);
-    sE(null);
-  };
-  var PC = function PC(_ref11) {
-    var p = _ref11.p;
-    var col = p >= 75 ? C.success : p >= 50 ? C.warn : C.muted;
-    return /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12,
-        fontWeight: 800,
-        color: col,
-        background: col + '18',
-        padding: '3px 8px',
-        borderRadius: 10
-      }
-    }, p, "%");
-  };
-  var TH = function TH(_ref12) {
-    var t = _ref12.t;
-    return /*#__PURE__*/React.createElement("th", {
-      style: {
-        padding: '11px 15px',
-        textAlign: 'left',
-        fontWeight: 700,
-        fontSize: 10,
-        textTransform: 'uppercase',
-        letterSpacing: .8,
-        color: C.muted,
-        borderBottom: "1px solid ".concat(C.border),
-        whiteSpace: 'nowrap',
-        background: C.bg
-      }
-    }, t);
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginBottom: 20,
-      flexWrap: 'wrap',
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Pipeline"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, "Weighted: ", R(wt), " \xB7 Est. Commission: ", R(ec))), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      sE(null);
-      sM(true);
-    },
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 7,
-      padding: '10px 18px',
-      background: C.dark,
-      color: '#fff',
-      border: 'none',
-      borderRadius: 9,
-      cursor: 'pointer',
-      fontWeight: 800,
-      fontSize: 13
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "plus",
-    s: 14
-  }), " Add Lead")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill,minmax(175px,1fr))',
-      gap: 13,
-      marginBottom: 20
-    },
-    className: "g3"
-  }, /*#__PURE__*/React.createElement(Stat, {
-    label: "Active Leads",
-    val: pipe.length,
-    icon: "pipeline"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Pipeline Value",
-    val: R(raw),
-    sub: "gross",
-    icon: "trend"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Weighted Value",
-    val: R(wt),
-    sub: "by probability",
-    icon: "target"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Est. Commission",
-    val: R(ec),
-    sub: "weighted 5%\xB750%",
-    icon: "calc"
-  })), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      padding: 0,
-      overflow: 'hidden'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: 'auto'
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: 13
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
-    t: "Property"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Source"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Est. Price"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Est. Commission"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Probability"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Close"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Follow-up"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: ""
-  }))), /*#__PURE__*/React.createElement("tbody", null, pipe.map(function (p, i) {
-    var ec2 = Number(p.price) * 0.05 * 0.5;
-    return /*#__PURE__*/React.createElement("tr", {
-      key: p.id,
-      style: {
-        borderBottom: "1px solid ".concat(C.border),
-        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 700,
-        maxWidth: 210
-      }
-    }, p.addr), p.notes && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.muted,
-        marginTop: 1
-      }
-    }, p.notes.slice(0, 50), p.notes.length > 50 ? '…' : '')), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        color: C.muted
-      }
-    }, p.src), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        fontWeight: 700
-      }
-    }, R(p.price)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        color: C.gold,
-        fontWeight: 800
-      }
-    }, R(ec2)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement(PC, {
-      p: Number(p.prob)
-    })), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        color: C.muted,
-        whiteSpace: 'nowrap'
-      }
-    }, FM(p.close)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px',
-        color: C.muted,
-        whiteSpace: 'nowrap'
-      }
-    }, FD(p.follow)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '12px 15px'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'flex',
-        gap: 5
-      }
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        sE(p);
-        sM(true);
-      },
-      style: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: 5,
-        borderRadius: 6,
-        display: 'flex'
-      }
-    }, /*#__PURE__*/React.createElement(I, {
-      n: "edit",
-      s: 14
-    })), /*#__PURE__*/React.createElement("button", {
-      onClick: function onClick() {
-        return sD(p.id);
-      },
-      style: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: C.danger,
-        padding: 5,
-        borderRadius: 6,
-        display: 'flex'
-      }
-    }, /*#__PURE__*/React.createElement(I, {
-      n: "trash",
-      s: 14
-    })))));
-  }), pipe.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
-    colSpan: 8,
-    style: {
-      padding: '44px',
-      textAlign: 'center',
-      color: C.muted
-    }
-  }, "No pipeline leads yet.")))))), /*#__PURE__*/React.createElement(Modal, {
-    open: modal,
-    onClose: function onClose() {
-      sM(false);
-      sE(null);
-    },
-    title: edit ? 'Edit Lead' : 'Add Pipeline Lead'
-  }, /*#__PURE__*/React.createElement(PipeForm, {
-    item: edit,
-    onSave: save,
-    onClose: function onClose() {
-      sM(false);
-      sE(null);
-    }
-  })), /*#__PURE__*/React.createElement(Modal, {
-    open: !!del,
-    onClose: function onClose() {
-      return sD(null);
-    },
-    title: "Remove Lead?",
-    w: 420
-  }, /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      marginBottom: 22,
-      fontSize: 14
-    }
-  }, "Remove this lead from your pipeline?"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 10,
-      justifyContent: 'flex-end'
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return sD(null);
-    },
-    style: {
-      padding: '10px 20px',
-      border: "1px solid ".concat(C.border),
-      borderRadius: 8,
-      background: 'none',
-      cursor: 'pointer',
-      fontWeight: 700
-    }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      onDel(del);
-      sD(null);
-    },
-    style: {
-      padding: '10px 22px',
-      border: 'none',
-      borderRadius: 8,
-      background: C.danger,
-      color: '#fff',
-      cursor: 'pointer',
-      fontWeight: 800
-    }
-  }, "Remove"))));
-}
-
-// ── COMMISSION CALCULATOR ────────────────────────────────────
-function CommCalc() {
-  var _useState23 = useState('5000000'),
-    _useState24 = _slicedToArray(_useState23, 2),
-    sp = _useState24[0],
-    sP = _useState24[1];
-  var _useState25 = useState('5'),
-    _useState26 = _slicedToArray(_useState25, 2),
-    cp = _useState26[0],
-    sC = _useState26[1];
-  var _useState27 = useState('50'),
-    _useState28 = _slicedToArray(_useState27, 2),
-    as = _useState28[0],
-    sA = _useState28[1];
-  var _useState29 = useState('me'),
-    _useState30 = _slicedToArray(_useState29, 2),
-    who = _useState30[0],
-    sW = _useState30[1];
-  var SP = Number(sp) || 0,
-    CP = Number(cp) || 0,
-    AS = Number(as) || 50;
-  var tot = SP * (CP / 100),
-    ag = tot * (AS / 100),
-    agent = tot - ag,
-    pct = 100 - AS;
-  var Box = function Box(_ref13) {
-    var label = _ref13.label,
-      val = _ref13.val,
-      big = _ref13.big,
-      gold = _ref13.gold,
-      dark = _ref13.dark;
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: 'center',
-        padding: '16px 12px',
-        background: dark ? C.dark : gold ? C.goldLt : C.bg,
-        borderRadius: 10,
-        border: "1px solid ".concat(dark ? 'transparent' : C.border)
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        fontWeight: 700,
-        marginBottom: 5,
-        color: dark ? 'rgba(255,255,255,0.55)' : C.muted
-      }
-    }, label), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: big ? 28 : 18,
-        fontWeight: 800,
-        color: dark ? C.gold : C.dark,
-        lineHeight: 1
-      }
-    }, val));
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 22
-    }
-  }, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Commission Calculator"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, "Real-time Engel & V\xF6lkers split calculator.")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 22,
-      maxWidth: 900
-    },
-    className: "g2"
-  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 20,
-      fontSize: 14
-    }
-  }, "Deal Details"), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Sale Price (R)"), /*#__PURE__*/React.createElement("input", {
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      fontSize: 17,
-      fontWeight: 700
-    }),
-    type: "number",
-    value: sp,
-    onChange: function onChange(e) {
-      return sP(e.target.value);
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Commission Rate: ", /*#__PURE__*/React.createElement("strong", {
-    style: {
-      color: C.gold
-    }
-  }, cp, "%")), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    style: {
-      width: '100%',
-      accentColor: C.gold,
-      marginBottom: 3
-    },
-    min: "1",
-    max: "10",
-    step: ".5",
-    value: cp,
-    onChange: function onChange(e) {
-      return sC(e.target.value);
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: 10,
-      color: C.muted
-    }
-  }, /*#__PURE__*/React.createElement("span", null, "1%"), /*#__PURE__*/React.createElement("span", null, "10%"))), /*#__PURE__*/React.createElement("div", {
-    style: FLD
-  }, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "E&V keeps: ", /*#__PURE__*/React.createElement("strong", {
-    style: {
-      color: C.gold
-    }
-  }, as, "%"), " \xB7 You keep: ", /*#__PURE__*/React.createElement("strong", {
-    style: {
-      color: C.gold
-    }
-  }, pct, "%")), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    style: {
-      width: '100%',
-      accentColor: C.gold,
-      marginBottom: 3
-    },
-    min: "0",
-    max: "100",
-    step: "5",
-    value: as,
-    onChange: function onChange(e) {
-      return sA(e.target.value);
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: 10,
-      color: C.muted
-    }
-  }, /*#__PURE__*/React.createElement("span", null, "0%"), /*#__PURE__*/React.createElement("span", null, "100%"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    style: L
-  }, "Assign to"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 10
-    }
-  }, [['me', ME], ['wife', WIFE]].map(function (_ref14) {
-    var _ref15 = _slicedToArray(_ref14, 2),
-      v = _ref15[0],
-      lbl = _ref15[1];
-    return /*#__PURE__*/React.createElement("button", {
-      key: v,
-      type: "button",
-      onClick: function onClick() {
-        return sW(v);
-      },
-      style: {
-        flex: 1,
-        padding: '10px',
-        borderRadius: 8,
-        fontWeight: 800,
-        fontSize: 14,
-        cursor: 'pointer',
-        border: who === v ? "2px solid ".concat(C.gold) : "1px solid ".concat(C.border),
-        background: who === v ? C.goldLt : '#fff',
-        color: who === v ? C.dark : C.muted
-      }
-    }, lbl);
-  })))), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 20,
-      fontSize: 14
-    }
-  }, "Breakdown"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 11
-    }
-  }, /*#__PURE__*/React.createElement(Box, {
-    label: "Total Commission (".concat(cp, "%)"),
-    val: R(tot),
-    big: true
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 11
-    }
-  }, /*#__PURE__*/React.createElement(Box, {
-    label: "Agency / E&V (".concat(as, "%)"),
-    val: R(ag)
-  }), /*#__PURE__*/React.createElement(Box, {
-    label: "Agent Share (".concat(pct, "%)"),
-    val: R(agent),
-    gold: true
-  })), /*#__PURE__*/React.createElement(Box, {
-    label: "\u2192 ".concat(who === 'me' ? ME : WIFE, "'s Income"),
-    val: R(agent),
-    big: true,
-    dark: true
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: C.muted,
-      textAlign: 'center',
-      padding: '8px',
-      background: C.bg,
-      borderRadius: 8,
-      lineHeight: 1.8
-    }
-  }, R(SP), " \xD7 ", cp, "% = ", R(tot), " total", /*#__PURE__*/React.createElement("br", null), "\xD7 ", pct, "% = ", /*#__PURE__*/React.createElement("strong", {
-    style: {
-      color: C.gold
-    }
-  }, R(agent)))))));
-}
-
-// ── INCOME REPORT ────────────────────────────────────────────
-function Income(_ref16) {
-  var deals = _ref16.deals;
-  var _useState31 = useState(new Date().getFullYear()),
-    _useState32 = _slicedToArray(_useState31, 2),
-    yr = _useState32[0],
-    sY = _useState32[1];
-  var yd = deals.filter(function (d) {
-    return (d.offer || '').startsWith(String(yr)) && d.sale > 0;
-  });
-  var md = yd.filter(function (d) {
-      return d.who === 'me';
-    }),
-    wd = yd.filter(function (d) {
-      return d.who === 'wife';
-    });
-  var mi = md.reduce(function (s, d) {
-      return s + calc(d).me;
-    }, 0),
-    wi = wd.reduce(function (s, d) {
-      return s + calc(d).wife;
-    }, 0),
-    co = mi + wi;
-  var moD = [];
-  var _loop2 = function _loop2() {
-    var k = "".concat(yr, "-").concat(String(m).padStart(2, '0'));
-    var ml = new Date(yr, m - 1).toLocaleString('en', {
-      month: 'short'
-    });
-    var mc2 = deals.filter(function (d) {
-      return d.who === 'me' && (d.offer || '').startsWith(k) && d.sale > 0;
-    }).reduce(function (s, d) {
-      return s + calc(d).me;
-    }, 0);
-    var wc2 = deals.filter(function (d) {
-      return d.who === 'wife' && (d.offer || '').startsWith(k) && d.sale > 0;
-    }).reduce(function (s, d) {
-      return s + calc(d).wife;
-    }, 0);
-    moD.push(_defineProperty(_defineProperty({
-      m: ml
-    }, ME, Math.round(mc2 / 1000)), WIFE, Math.round(wc2 / 1000)));
-  };
-  for (var m = 1; m <= 12; m++) {
-    _loop2();
-  }
-  var Col = function Col(_ref17) {
-    var nm = _ref17.nm,
-      ag = _ref17.ag,
-      ds = _ref17.ds,
-      inc = _ref17.inc;
-    return /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 16
-      }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 17,
-        fontWeight: 800
-      }
-    }, nm), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: C.muted,
-        marginTop: 1
-      }
-    }, ds.length, " deals in ", yr)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: 'right'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 24,
-        fontWeight: 800,
-        color: C.gold
-      }
-    }, R(inc)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: C.muted
-      }
-    }, "gross commission"))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderTop: "1px solid ".concat(C.border),
-        paddingTop: 12
-      }
-    }, ds.length === 0 ? /*#__PURE__*/React.createElement("p", {
-      style: {
-        color: C.muted,
-        fontSize: 13
-      }
-    }, "No deals in ", yr, ".") : ds.map(function (d) {
-      var c = calc(d);
-      return /*#__PURE__*/React.createElement("div", {
-        key: d.id,
-        style: {
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '9px 0',
-          borderBottom: "1px solid ".concat(C.border)
-        }
-      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-        style: {
-          fontSize: 13,
-          fontWeight: 700,
-          maxWidth: 190,
-          lineHeight: 1.3
-        }
-      }, d.addr), /*#__PURE__*/React.createElement("div", {
-        style: {
-          fontSize: 10,
-          color: C.muted,
-          marginTop: 1
-        }
-      }, FD(d.offer))), /*#__PURE__*/React.createElement("div", {
-        style: {
-          textAlign: 'right',
-          flexShrink: 0,
-          marginLeft: 10
-        }
-      }, /*#__PURE__*/React.createElement("div", {
-        style: {
-          fontWeight: 800,
-          color: C.gold
-        }
-      }, R(ag === 'me' ? c.me : c.wife)), /*#__PURE__*/React.createElement(Badge, {
-        status: d.status
-      })));
-    })));
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginBottom: 20,
-      flexWrap: 'wrap',
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Income Report"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, ME, " & ", WIFE, " \u2014 household split")), /*#__PURE__*/React.createElement("select", {
-    value: yr,
-    onChange: function onChange(e) {
-      return sY(Number(e.target.value));
-    },
-    style: _objectSpread(_objectSpread({}, IN), {}, {
-      width: 'auto',
-      fontSize: 13
-    })
-  }, [2024, 2025, 2026, 2027].map(function (y) {
-    return /*#__PURE__*/React.createElement("option", {
-      key: y
-    }, y);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill,minmax(185px,1fr))',
-      gap: 13,
-      marginBottom: 20
-    },
-    className: "g3"
-  }, /*#__PURE__*/React.createElement(Stat, {
-    label: "".concat(ME, "'s Income"),
-    val: R(mi),
-    sub: "".concat(md.length, " deals"),
-    icon: "income"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "".concat(WIFE, "'s Income"),
-    val: R(wi),
-    sub: "".concat(wd.length, " deals"),
-    icon: "income"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Combined Household",
-    val: R(co),
-    sub: "".concat(yd.length, " total"),
-    icon: "trend"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Split Ratio",
-    val: co > 0 ? "".concat(Math.round(mi / co * 100), "/").concat(Math.round(wi / co * 100)) : 'N/A',
-    sub: "".concat(ME, " / ").concat(WIFE),
-    icon: "target"
-  })), /*#__PURE__*/React.createElement(Card, {
-    style: {
-      marginBottom: 20
-    }
-  }, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      marginBottom: 16
-    }
-  }, "Monthly Comparison \u2014 R'000"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 250
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: moD
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: C.border
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "m",
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    formatter: function formatter(v, n) {
-      return ["R ".concat(v, "k"), n];
-    },
-    contentStyle: {
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Legend, null), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: ME,
-    fill: C.dark,
-    radius: [4, 4, 0, 0]
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: WIFE,
-    fill: C.gold,
-    radius: [4, 4, 0, 0]
-  })))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 20
-    },
-    className: "g2"
-  }, /*#__PURE__*/React.createElement(Col, {
-    nm: ME,
-    ag: "me",
-    ds: md,
-    inc: mi
-  }), /*#__PURE__*/React.createElement(Col, {
-    nm: WIFE,
-    ag: "wife",
-    ds: wd,
-    inc: wi
-  })));
-}
-
-// ── REPORTS ──────────────────────────────────────────────────
-function Reports(_ref18) {
-  var deals = _ref18.deals,
-    pipe = _ref18.pipe;
-  var _useState33 = useState('monthly'),
-    _useState34 = _slicedToArray(_useState33, 2),
-    tab = _useState34[0],
-    sT = _useState34[1];
-  var sold = deals.filter(function (d) {
-    return ['Sold', 'Registered', 'Paid'].includes(d.status) && d.sale > 0;
-  });
-  var paid = deals.filter(function (d) {
-    return d.status === 'Paid' && d.sale > 0;
-  });
-  var pend = deals.filter(function (d) {
-    return ['Sold', 'Registered'].includes(d.status) && d.sale > 0;
-  });
-  var tC = sold.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var pC = paid.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var eC = pend.reduce(function (s, d) {
-    return s + calc(d).agent;
-  }, 0);
-  var avg = sold.length > 0 ? tC / sold.length : 0;
-  var pw = pipe.reduce(function (s, p) {
-    return s + Number(p.price || 0) * p.prob / 100;
-  }, 0);
-  var now = new Date();
-  var mo12 = [];
-  var _loop3 = function _loop3() {
-    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    var k = "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, '0'));
-    var ml = d.toLocaleString('en', {
-      month: 'short',
-      year: '2-digit'
-    });
-    var c = sold.filter(function (x) {
-      return (x.offer || '').startsWith(k);
-    }).reduce(function (s, x) {
-      return s + calc(x).agent;
-    }, 0);
-    mo12.push({
-      ml: ml,
-      v: Math.round(c / 1000)
-    });
-  };
-  for (var i = 11; i >= 0; i--) {
-    _loop3();
-  }
-  var aM = {};
-  sold.forEach(function (d) {
-    var pts = d.addr.split(',');
-    var a = pts.length > 1 ? pts[pts.length - 2].trim() : pts[0].trim();
-    if (!aM[a]) aM[a] = {
-      n: 0,
-      c: 0
-    };
-    aM[a].n++;
-    aM[a].c += calc(d).agent;
-  });
-  var aD = Object.entries(aM).map(function (_ref19) {
-    var _ref20 = _slicedToArray(_ref19, 2),
-      a = _ref20[0],
-      v = _ref20[1];
-    return {
-      a: a,
-      n: v.n,
-      c: Math.round(v.c / 1000)
-    };
-  }).sort(function (x, y) {
-    return y.c - x.c;
-  });
-  var TABS = [{
-    k: 'monthly',
-    l: 'Monthly'
-  }, {
-    k: 'pipeline',
-    l: 'Pipeline'
-  }, {
-    k: 'area',
-    l: 'By Area'
-  }, {
-    k: 'summary',
-    l: 'Summary'
-  }];
-  var TH = function TH(_ref21) {
-    var t = _ref21.t;
-    return /*#__PURE__*/React.createElement("th", {
-      style: {
-        padding: '10px 13px',
-        textAlign: 'left',
-        fontWeight: 700,
-        fontSize: 10,
-        textTransform: 'uppercase',
-        letterSpacing: .8,
-        color: C.muted,
-        borderBottom: "1px solid ".concat(C.border),
-        whiteSpace: 'nowrap',
-        background: C.bg
-      }
-    }, t);
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 20
-    }
-  }, /*#__PURE__*/React.createElement("h1", {
-    style: {
-      fontSize: 24,
-      fontWeight: 800,
-      letterSpacing: -.5
-    }
-  }, "Reports"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted,
-      fontSize: 13,
-      marginTop: 3
-    }
-  }, "In-depth performance analysis.")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))',
-      gap: 13,
-      marginBottom: 24
-    },
-    className: "g3"
-  }, /*#__PURE__*/React.createElement(Stat, {
-    label: "Total Commission",
-    val: R(tC),
-    sub: "all sold",
-    icon: "trend"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Commission Paid",
-    val: R(pC),
-    sub: "".concat(paid.length, " paid"),
-    icon: "home"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Pending",
-    val: R(eC),
-    sub: "".concat(pend.length, " deals"),
-    icon: "deals"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Avg per Sale",
-    val: R(avg),
-    sub: "per deal",
-    icon: "calc"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Pipeline (weighted)",
-    val: R(pw),
-    sub: "by probability",
-    icon: "pipeline"
-  }), /*#__PURE__*/React.createElement(Stat, {
-    label: "Total Sold",
-    val: sold.length,
-    sub: "all time",
-    icon: "target"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 3,
-      marginBottom: 18,
-      background: C.bg,
-      padding: 3,
-      borderRadius: 9,
-      border: "1px solid ".concat(C.border),
-      width: 'fit-content',
-      flexWrap: 'wrap'
-    }
-  }, TABS.map(function (t) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: t.k,
-      onClick: function onClick() {
-        return sT(t.k);
-      },
-      style: {
-        padding: '8px 16px',
-        borderRadius: 7,
-        border: 'none',
-        cursor: 'pointer',
-        fontWeight: 700,
-        fontSize: 13,
-        background: tab === t.k ? C.dark : 'transparent',
-        color: tab === t.k ? '#fff' : C.muted
-      }
-    }, t.l);
-  })), tab === 'monthly' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 18,
-      fontSize: 14
-    }
-  }, "Monthly Commission \u2014 12 Months (R'000)"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 290
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: mo12
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: C.border
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "ml",
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    formatter: function formatter(v) {
-      return ["R ".concat(v, "k"), 'Commission'];
-    },
-    contentStyle: {
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "v",
-    fill: C.gold,
-    radius: [5, 5, 0, 0]
-  })))), tab === 'pipeline' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 18,
-      fontSize: 14
-    }
-  }, "Pipeline Detail"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: 'auto'
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: 13
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
-    t: "Property"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Source"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Est. Price"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Est. Comm"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Probability"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Weighted Value"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Close"
-  }))), /*#__PURE__*/React.createElement("tbody", null, pipe.map(function (p, i) {
-    var ec2 = Number(p.price) * 0.05 * 0.5,
-      wv = Number(p.price) * p.prob / 100;
-    return /*#__PURE__*/React.createElement("tr", {
-      key: p.id,
-      style: {
-        borderBottom: "1px solid ".concat(C.border),
-        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        fontWeight: 700,
-        maxWidth: 200
-      }
-    }, p.addr), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        color: C.muted
-      }
-    }, p.src), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        fontWeight: 700
-      }
-    }, R(p.price)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        color: C.gold,
-        fontWeight: 800
-      }
-    }, R(ec2)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        fontWeight: 700
-      }
-    }, p.prob, "%"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        fontWeight: 700
-      }
-    }, R(wv)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '11px 13px',
-        color: C.muted,
-        whiteSpace: 'nowrap'
-      }
-    }, FM(p.close)));
-  }), /*#__PURE__*/React.createElement("tr", {
-    style: {
-      background: C.goldLt,
-      fontWeight: 800
-    }
-  }, /*#__PURE__*/React.createElement("td", {
-    colSpan: 5,
-    style: {
-      padding: '11px 13px',
-      textAlign: 'right'
-    }
-  }, "Weighted Total:"), /*#__PURE__*/React.createElement("td", {
-    style: {
-      padding: '11px 13px'
-    }
-  }, R(pw)), /*#__PURE__*/React.createElement("td", null)))))), tab === 'area' && /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 18,
-      fontSize: 14
-    }
-  }, "Sales by Area (R'000)"), aD.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 250
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: aD,
-    layout: "vertical"
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    strokeDasharray: "3 3",
-    stroke: C.border
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    type: "number",
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    }
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    type: "category",
-    dataKey: "a",
-    tick: {
-      fontSize: 11,
-      fill: C.muted
-    },
-    width: 125
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    formatter: function formatter(v) {
-      return ["R ".concat(v, "k"), 'Commission'];
-    },
-    contentStyle: {
-      borderRadius: 8,
-      border: "1px solid ".concat(C.border),
-      fontSize: 11
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "c",
-    fill: C.dark,
-    radius: [0, 5, 5, 0]
-  }))), /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      fontSize: 13,
-      marginTop: 18
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement(TH, {
-    t: "Area"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Deals"
-  }), /*#__PURE__*/React.createElement(TH, {
-    t: "Commission"
-  }))), /*#__PURE__*/React.createElement("tbody", null, aD.map(function (a, i) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: a.a,
-      style: {
-        borderBottom: "1px solid ".concat(C.border),
-        background: i % 2 === 0 ? '#fff' : '#FAFAF8'
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '10px 13px',
-        fontWeight: 700
-      }
-    }, a.a), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '10px 13px'
-      }
-    }, a.n), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: '10px 13px',
-        color: C.gold,
-        fontWeight: 800
-      }
-    }, "R ", a.c, "k"));
-  })))) : /*#__PURE__*/React.createElement("p", {
-    style: {
-      color: C.muted
-    }
-  }, "No sold deals yet.")), tab === 'summary' && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 18
-    },
-    className: "g2"
-  }, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 16,
-      fontSize: 14
-    }
-  }, "Commission Summary"), [['Total Earned', R(tC)], ['Paid', R(pC)], ['Pending', R(eC)], ['Avg per Sale', R(avg)], ['Pipeline (weighted)', R(pw)]].map(function (_ref22) {
-    var _ref23 = _slicedToArray(_ref22, 2),
-      l = _ref23[0],
-      v = _ref23[1];
-    return /*#__PURE__*/React.createElement("div", {
-      key: l,
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '10px 0',
-        borderBottom: "1px solid ".concat(C.border)
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: C.muted,
-        fontSize: 13
-      }
-    }, l), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontWeight: 800,
-        fontSize: 13
-      }
-    }, v));
-  })), /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement("h3", {
-    style: {
-      fontWeight: 800,
-      marginBottom: 16,
-      fontSize: 14
-    }
-  }, "Deals by Status"), STATUSES.map(function (s) {
-    var cnt = deals.filter(function (d) {
-      return d.status === s;
-    }).length;
-    return /*#__PURE__*/React.createElement("div", {
-      key: s,
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 0',
-        borderBottom: "1px solid ".concat(C.border)
-      }
-    }, /*#__PURE__*/React.createElement(Badge, {
-      status: s
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontWeight: 800,
-        fontSize: 15
-      }
-    }, cnt));
-  }))));
-}
-
-// ── APP SHELL ────────────────────────────────────────────────
-var NAV = [{
-  id: 'dashboard',
-  l: 'Dashboard',
-  i: 'dashboard'
-}, {
-  id: 'deals',
-  l: 'Deals & Sales',
-  i: 'deals'
-}, {
-  id: 'pipeline',
-  l: 'Pipeline',
-  i: 'pipeline'
-}, {
-  id: 'calc',
-  l: 'Comm. Calc',
-  i: 'calc'
-}, {
-  id: 'income',
-  l: 'Income Report',
-  i: 'income'
-}, {
-  id: 'reports',
-  l: 'Reports',
-  i: 'reports'
-}];
-function App() {
-  var _useState35 = useState('dashboard'),
-    _useState36 = _slicedToArray(_useState35, 2),
-    pg = _useState36[0],
-    sPg = _useState36[1];
-  var _useState37 = useState(SD),
-    _useState38 = _slicedToArray(_useState37, 2),
-    deals = _useState38[0],
-    sD = _useState38[1];
-  var _useState39 = useState(SP),
-    _useState40 = _slicedToArray(_useState39, 2),
-    pipe = _useState40[0],
-    sP = _useState40[1];
-  var _useState41 = useState(false),
-    _useState42 = _slicedToArray(_useState41, 2),
-    nav = _useState42[0],
-    sN = _useState42[1];
-  var addD = function addD(d) {
-    return sD(function (p) {
-      return [_objectSpread(_objectSpread({}, d), {}, {
-        id: Date.now()
-      })].concat(_toConsumableArray(p));
-    });
-  };
-  var editD = function editD(d) {
-    return sD(function (p) {
-      return p.map(function (x) {
-        return x.id === d.id ? d : x;
-      });
-    });
-  };
-  var delD = function delD(id) {
-    return sD(function (p) {
-      return p.filter(function (x) {
-        return x.id !== id;
-      });
-    });
-  };
-  var addP = function addP(x) {
-    return sP(function (p) {
-      return [_objectSpread(_objectSpread({}, x), {}, {
-        id: Date.now()
-      })].concat(_toConsumableArray(p));
-    });
-  };
-  var editP = function editP(x) {
-    return sP(function (p) {
-      return p.map(function (y) {
-        return y.id === x.id ? x : y;
-      });
-    });
-  };
-  var delP = function delP(id) {
-    return sP(function (p) {
-      return p.filter(function (x) {
-        return x.id !== id;
-      });
-    });
-  };
-  var go = function go(id) {
-    sPg(id);
-    sN(false);
-  };
-  var render = function render() {
-    switch (pg) {
-      case 'dashboard':
-        return /*#__PURE__*/React.createElement(Dashboard, {
-          deals: deals,
-          pipe: pipe
-        });
-      case 'deals':
-        return /*#__PURE__*/React.createElement(Deals, {
-          deals: deals,
-          onAdd: addD,
-          onEdit: editD,
-          onDel: delD
-        });
-      case 'pipeline':
-        return /*#__PURE__*/React.createElement(Pipeline, {
-          pipe: pipe,
-          onAdd: addP,
-          onEdit: editP,
-          onDel: delP
-        });
-      case 'calc':
-        return /*#__PURE__*/React.createElement(CommCalc, null);
-      case 'income':
-        return /*#__PURE__*/React.createElement(Income, {
-          deals: deals
-        });
-      case 'reports':
-        return /*#__PURE__*/React.createElement(Reports, {
-          deals: deals,
-          pipe: pipe
-        });
-      default:
-        return /*#__PURE__*/React.createElement(Dashboard, {
-          deals: deals,
-          pipe: pipe
-        });
-    }
-  };
-  var W = 230;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      minHeight: '100vh',
-      background: C.bg
-    }
-  }, nav && /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0,0,0,0.45)',
-      zIndex: 98
-    },
-    onClick: function onClick() {
-      return sN(false);
-    }
-  }), /*#__PURE__*/React.createElement("aside", {
-    className: "sidebar".concat(nav ? ' open' : ''),
-    style: {
-      width: W,
-      background: C.dark,
-      color: '#fff',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      height: '100vh',
-      zIndex: 99,
-      transition: 'transform .25s'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: '24px 20px 18px',
-      borderBottom: '1px solid rgba(255,255,255,0.1)'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 32,
-      height: 32,
-      background: C.gold,
-      borderRadius: 8,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "home",
-    s: 17
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 15,
-      fontWeight: 900,
-      letterSpacing: 1.5,
-      color: '#fff',
-      lineHeight: 1
-    }
-  }, "AgentOS"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 9,
-      color: C.gold,
-      letterSpacing: 2,
-      textTransform: 'uppercase',
-      marginTop: 1
-    }
-  }, "Real Estate")))), /*#__PURE__*/React.createElement("nav", {
-    style: {
-      flex: 1,
-      padding: '12px 9px',
-      overflowY: 'auto'
-    }
-  }, NAV.map(function (item) {
-    var act = pg === item.id;
-    return /*#__PURE__*/React.createElement("button", {
-      key: item.id,
-      onClick: function onClick() {
-        return go(item.id);
-      },
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        width: '100%',
-        padding: '11px 12px',
-        marginBottom: 2,
-        borderRadius: 8,
-        border: 'none',
-        cursor: 'pointer',
-        textAlign: 'left',
-        background: act ? C.gold : 'transparent',
-        color: act ? C.dark : 'rgba(255,255,255,0.65)',
-        fontWeight: act ? 800 : 500,
-        fontSize: 13.5,
-        transition: 'all .15s'
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: act ? C.dark : 'rgba(255,255,255,0.5)',
-        display: 'flex'
-      }
-    }, /*#__PURE__*/React.createElement(I, {
-      n: item.i,
-      s: 17
-    })), item.l);
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: '14px 18px',
-      borderTop: '1px solid rgba(255,255,255,0.1)'
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13,
-      fontWeight: 800,
-      color: '#fff'
-    }
-  }, ME, " & ", WIFE), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'rgba(255,255,255,0.4)',
-      marginTop: 1,
-      letterSpacing: .5
-    }
-  }, "Engel & V\xF6lkers \xB7 Cape Town"))), /*#__PURE__*/React.createElement("div", {
-    className: "main-wrap",
-    style: {
-      flex: 1,
-      marginLeft: W,
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '100vh'
-    }
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "mob-hdr",
-    style: {
-      display: 'none',
-      background: C.dark,
-      padding: '13px 15px',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      position: 'sticky',
-      top: 0,
-      zIndex: 50
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function onClick() {
-      return sN(true);
-    },
-    style: {
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      color: '#fff',
-      display: 'flex',
-      padding: 4
-    }
-  }, /*#__PURE__*/React.createElement(I, {
-    n: "menu",
-    s: 21
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      fontWeight: 900,
-      color: '#fff',
-      letterSpacing: 1.5
-    }
-  }, "AgentOS"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 28
-    }
-  })), /*#__PURE__*/React.createElement("main", {
-    className: "page-pad",
-    style: {
-      flex: 1,
-      padding: '30px 28px'
-    }
-  }, render()), /*#__PURE__*/React.createElement("footer", {
-    style: {
-      textAlign: 'center',
-      padding: '14px',
-      fontSize: 11,
-      color: C.muted,
-      borderTop: "1px solid ".concat(C.border)
-    }
-  }, "AgentOS \xB7 ", ME, " & ", WIFE, " \xB7 Engel & V\xF6lkers")));
-}
-ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+createRoot(document.getElementById('root')).render(h(App,null));
 </script>
 </body>
 </html>
