@@ -1,919 +1,561 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>AgentOS — Engel &amp; Völkers</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Client Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a1a;color:#f0ede6;min-height:100vh}
-#root{display:flex;min-height:100vh}
+  :root{
+    --bg:#FAF9F5;
+    --surface:#FFFFFF;
+    --surface-raised:#F2EFE8;
+    --ink:#1B1815;
+    --ink-soft:#6B6459;
+    --ink-faint:#9A9285;
+    --border:#E6E1D6;
+    --gold:#B6862F;
+    --gold-deep:#8F6A24;
+    --gold-soft:#EFE2C4;
+    --success:#4C6E50;
+    --success-soft:#E3EAE0;
+    --danger:#9C4B3E;
+    --danger-soft:#F3E2DE;
+    --watch:#A1762E;
+    --watch-soft:#F1E6CC;
+    --shadow-1: 0 1px 2px rgba(27,24,21,0.04), 0 1px 1px rgba(27,24,21,0.03);
+    --shadow-2: 0 8px 24px -8px rgba(27,24,21,0.10), 0 2px 6px -2px rgba(27,24,21,0.06);
+    --radius: 14px;
+  }
 
-/* Sidebar */
-.sidebar{width:240px;min-width:240px;background:#111;border-right:1px solid #2a2a2a;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid #2a2a2a}
-.logo-title{font-size:22px;font-weight:700;color:#c9a84c;letter-spacing:1px}
-.logo-sub{font-size:10px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
-.sidebar-nav{flex:1;padding:16px 0}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:#aaa;font-size:14px;font-weight:500;transition:all .2s;border-left:3px solid transparent}
-.nav-item:hover{color:#f0ede6;background:#1a1a1a}
-.nav-item.active{color:#c9a84c;background:#1f1a0e;border-left-color:#c9a84c}
-.nav-icon{width:18px;height:18px;flex-shrink:0}
-.sidebar-footer{padding:16px 20px;border-top:1px solid #2a2a2a;font-size:12px;color:#555}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
 
-/* Main */
-.main{flex:1;overflow-x:hidden;background:#1a1a1a}
-.topbar{background:#111;border-bottom:1px solid #2a2a2a;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
-.topbar-title{font-size:20px;font-weight:600;color:#f0ede6}
-.topbar-sub{font-size:12px;color:#888;margin-top:2px}
-.content{padding:32px}
+  /* subtle grain overlay */
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:9999;
+    opacity:0.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 
-/* Cards */
-.card{background:#222;border:1px solid #2a2a2a;border-radius:12px;padding:24px}
-.card-sm{background:#222;border:1px solid #2a2a2a;border-radius:10px;padding:18px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px}
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:24px}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
 
-/* KPI */
-.kpi-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.kpi-value{font-size:28px;font-weight:700;color:#f0ede6}
-.kpi-value.gold{color:#c9a84c}
-.kpi-badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-top:6px}
-.kpi-badge.up{background:#1a3a1a;color:#4caf50}
-.kpi-badge.down{background:#3a1a1a;color:#f44336}
-.kpi-badge.neutral{background:#2a2a2a;color:#aaa}
+  .shell{
+    display:grid;
+    grid-template-columns: 264px 1fr;
+    min-height:100vh;
+  }
 
-/* Section headers */
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.section-title{font-size:16px;font-weight:600;color:#f0ede6}
-.section-sub{font-size:13px;color:#888}
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:32px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:36px;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+  .brand{
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .brand .mark{
+    font-family:'Cormorant Garamond', serif;
+    font-size:24px;
+    font-weight:600;
+    letter-spacing:0.01em;
+  }
+  .brand .mark span{ color:var(--gold-deep); font-style:italic; }
+  .brand .sub{
+    font-size:10.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
 
-/* Table */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 14px;color:#888;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #2a2a2a}
-td{padding:12px 14px;border-bottom:1px solid #222;color:#d0cdc6}
-tr:hover td{background:#252525}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-green{background:#1a3a1a;color:#4caf50}
-.badge-gold{background:#2a200a;color:#c9a84c}
-.badge-blue{background:#0a1a2a;color:#64b5f6}
-.badge-red{background:#3a1a1a;color:#ef5350}
-.badge-grey{background:#2a2a2a;color:#888}
+  nav.primary{display:flex; flex-direction:column; gap:2px;}
+  .nav-label{
+    font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--ink-faint); margin:18px 0 8px 12px;
+  }
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:14px; font-weight:500;
+    color:var(--ink-soft);
+    transition: background .18s ease, color .18s ease;
+  }
+  .nav-item svg{ width:17px; height:17px; flex-shrink:0; opacity:0.85;}
+  .nav-item:hover{ background:var(--surface-raised); color:var(--ink); }
+  .nav-item.active{
+    background:linear-gradient(180deg, var(--gold-soft), #F7EFDA);
+    color:var(--gold-deep);
+    font-weight:600;
+  }
+  .nav-item.active svg{ opacity:1; }
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
-.btn-gold{background:#c9a84c;color:#111}
-.btn-gold:hover{background:#d4b460}
-.btn-outline{background:transparent;border:1px solid #333;color:#aaa}
-.btn-outline:hover{border-color:#c9a84c;color:#c9a84c}
-.btn-sm{padding:6px 14px;font-size:12px}
+  .sidebar-foot{
+    margin-top:auto;
+    border-top:1px solid var(--border);
+    padding-top:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    background:var(--ink); color:#F2EAD8;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond', serif; font-size:15px; font-weight:600;
+  }
+  .sidebar-foot .who{ font-size:13px; font-weight:600; line-height:1.2; }
+  .sidebar-foot .role{ font-size:11.5px; color:var(--ink-faint); }
 
-/* Form */
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-group.full{grid-column:1/-1}
-label{font-size:12px;color:#888;font-weight:500}
-input,select,textarea{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#f0ede6;font-size:14px;width:100%;transition:border .2s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#c9a84c}
-input[type=range]{padding:0;cursor:pointer}
+  /* ---------- MAIN ---------- */
+  main{ padding:36px 44px 64px; max-width:1280px; }
 
-/* Modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.modal{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:32px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
-.modal-title{font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:24px}
-.modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px}
+  .topbar{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:32px; flex-wrap:wrap; gap:16px;
+  }
+  .topbar h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    font-size:clamp(26px, 3vw, 34px);
+    margin:0 0 4px;
+  }
+  .topbar .date{ font-size:13px; color:var(--ink-faint); }
+  .advisor-pill{
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:100px;
+    padding:8px 16px 8px 8px;
+    box-shadow:var(--shadow-1);
+  }
+  .advisor-pill .dot{ width:8px; height:8px; border-radius:50%; background:var(--success); }
+  .advisor-pill .txt{ font-size:12.5px; }
+  .advisor-pill .txt b{ font-weight:600; }
+  .advisor-pill button{
+    border:none; background:var(--ink); color:#F4ECDA;
+    font-size:12px; font-weight:600; padding:7px 13px; border-radius:100px;
+  }
 
-/* Progress bar */
-.progress-bar{height:8px;background:#2a2a2a;border-radius:4px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#c9a84c,#e8c96a);border-radius:4px;transition:width .4s}
+  /* KPI ROW */
+  .kpi-row{
+    display:grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+    gap:16px;
+    margin-bottom:28px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-1);
+    padding:22px 22px;
+    opacity:0;
+    transform:translateY(8px);
+    animation: rise .55s ease forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
 
-/* Recharts override */
-.recharts-tooltip-wrapper .recharts-default-tooltip{background:#222 !important;border:1px solid #333 !important;border-radius:8px !important}
-.recharts-legend-item-text{color:#aaa !important;font-size:12px !important}
+  .kpi-label{
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:10px;
+  }
+  .kpi-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:26px; font-weight:500; letter-spacing:-0.01em;
+  }
+  .kpi-main .kpi-value{
+    font-family:'Cormorant Garamond', serif;
+    font-size:38px; font-weight:600;
+  }
+  .kpi-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px; font-weight:500;
+    color:var(--success); background:var(--success-soft);
+    padding:3px 9px; border-radius:100px; margin-top:10px;
+  }
+  .kpi-sub{ font-size:12px; color:var(--ink-faint); margin-top:8px; }
 
-/* Mobile */
-@media(max-width:768px){
-  .sidebar{width:60px;min-width:60px}
-  .logo-title,.logo-sub,.nav-label,.sidebar-footer{display:none}
-  .nav-item{padding:14px;justify-content:center}
-  .content{padding:16px}
-  .grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}
-  .grid-2{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-}
-@media(max-width:480px){
-  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr}
-}
+  /* CHART CARD */
+  .panel-row{ display:grid; grid-template-columns: 1.55fr 1fr; gap:20px; margin-bottom:24px; align-items:start;}
+  .panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow-1); padding:26px 26px 18px;
+  }
+  .panel-head{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:18px; gap:12px; flex-wrap:wrap;}
+  .panel-title{ font-family:'Cormorant Garamond', serif; font-size:21px; font-weight:600;}
+  .panel-title small{ display:block; font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--ink-faint); font-weight:500; margin-top:2px;}
 
-/* Chart containers */
-.chart-wrap{width:100%;height:280px;margin-top:16px}
+  .range-toggle{ display:flex; background:var(--surface-raised); border-radius:100px; padding:3px; gap:2px;}
+  .range-toggle button{
+    border:none; background:transparent; font-size:12px; font-weight:600;
+    padding:6px 13px; border-radius:100px; color:var(--ink-faint);
+    transition: background .15s, color .15s;
+  }
+  .range-toggle button.active{ background:var(--ink); color:#F4ECDA; }
 
-/* Gold divider */
-.gold-line{height:2px;background:linear-gradient(90deg,#c9a84c,transparent);margin:24px 0;border:none}
+  .chart-wrap{ height:230px; }
 
-/* Pill tabs */
-.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #333;color:#888;background:transparent;transition:all .2s}
-.tab.active{background:#c9a84c;color:#111;border-color:#c9a84c}
+  /* INSIGHTS */
+  .insight-card{
+    border-left:3px solid var(--gold);
+    background:var(--surface-raised);
+    border-radius:10px;
+    padding:13px 15px;
+    margin-bottom:10px;
+  }
+  .insight-card.attention{ border-left-color:var(--danger); }
+  .insight-card p{ margin:0; font-size:13px; line-height:1.5; color:var(--ink); }
+  .insight-card .tag{
+    font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint); display:block; margin-bottom:5px; font-weight:600;
+  }
 
-/* Commission calc */
-.calc-result{background:#1f1a0e;border:1px solid #3a2d0a;border-radius:10px;padding:20px;margin-top:20px}
-.calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #2a2a2a;font-size:14px}
-.calc-row:last-child{border-bottom:none}
-.calc-row.total{font-weight:700;font-size:16px;color:#c9a84c}
-.calc-label{color:#888}
-.calc-value{color:#f0ede6;font-weight:600}
+  /* PROPERTIES */
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin:8px 0 16px;}
+  .section-head h2{ font-family:'Cormorant Garamond', serif; font-size:22px; font-weight:600; margin:0;}
+  .section-head a{ font-size:12.5px; font-weight:600; color:var(--gold-deep); border-bottom:1px solid var(--gold-soft); padding-bottom:2px;}
 
-/* Spinner */
-.spinner{display:inline-block;width:40px;height:40px;border:3px solid #333;border-top-color:#c9a84c;border-radius:50%;animation:spin 1s linear infinite;margin:40px auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+  .property-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin-bottom:32px;}
+  .property-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow-1); overflow:hidden; transition: box-shadow .2s ease, transform .2s ease;
+  }
+  .property-card:hover{ box-shadow:var(--shadow-2); transform:translateY(-2px); }
+  .property-thumb{
+    height:120px; position:relative; overflow:hidden;
+    background: linear-gradient(135deg, #2B2722, #423B30);
+  }
+  .property-thumb svg{ position:absolute; inset:0; width:100%; height:100%; opacity:0.5;}
+  .status-chip{
+    position:absolute; top:10px; right:10px;
+    font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    padding:4px 9px; border-radius:100px;
+  }
+  .status-chip.excellent{ background:var(--success-soft); color:var(--success); }
+  .status-chip.monitor{ background:var(--watch-soft); color:var(--watch); }
+  .status-chip.action{ background:var(--danger-soft); color:var(--danger); }
 
-/* Empty state */
-.empty{text-align:center;padding:60px 20px;color:#555}
-.empty-icon{font-size:48px;margin-bottom:16px}
-.empty-text{font-size:15px}
+  .property-body{ padding:16px 16px 18px;}
+  .property-body .name{ font-weight:700; font-size:14.5px; margin-bottom:2px;}
+  .property-body .addr{ font-size:12px; color:var(--ink-faint); margin-bottom:14px;}
+  .pstat-row{ display:flex; justify-content:space-between; font-size:12px; padding:7px 0; border-top:1px dashed var(--border);}
+  .pstat-row .k{ color:var(--ink-faint);}
+  .pstat-row .v{ font-family:'IBM Plex Mono', monospace; font-weight:500;}
+  .pstat-row .v.pos{ color:var(--success);}
+  .pstat-row .v.neg{ color:var(--danger);}
+
+  footer.note{
+    margin-top:40px; padding-top:18px; border-top:1px solid var(--border);
+    font-size:11.5px; color:var(--ink-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  /* stagger */
+  .kpi-row .card:nth-child(1){animation-delay:.02s;}
+  .kpi-row .card:nth-child(2){animation-delay:.08s;}
+  .kpi-row .card:nth-child(3){animation-delay:.14s;}
+  .kpi-row .card:nth-child(4){animation-delay:.20s;}
+  .kpi-row .card:nth-child(5){animation-delay:.26s;}
+  .property-grid .property-card{ opacity:0; transform:translateY(8px); animation: rise .55s ease forwards; }
+  .property-grid .property-card:nth-child(1){animation-delay:.10s;}
+  .property-grid .property-card:nth-child(2){animation-delay:.18s;}
+  .property-grid .property-card:nth-child(3){animation-delay:.26s;}
+
+  *:focus-visible{ outline:2px solid var(--gold-deep); outline-offset:2px; border-radius:6px;}
+
+  @media (max-width:1100px){
+    .kpi-row{ grid-template-columns: repeat(2, 1fr); }
+    .kpi-main{ grid-column: 1 / -1; }
+    .panel-row{ grid-template-columns: 1fr; }
+    .property-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width:780px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{ position:relative; height:auto; flex-direction:row; align-items:center; padding:16px 18px; gap:0; overflow-x:auto;}
+    .sidebar-foot{ display:none; }
+    nav.primary{ flex-direction:row; gap:4px;}
+    .nav-label{ display:none;}
+    .nav-item span{ display:none;}
+    .brand{ margin-right:18px; flex-shrink:0;}
+    main{ padding:24px 18px 48px;}
+    .kpi-row, .property-grid{ grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
-<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#c9a84c;font-size:18px">Loading AgentOS…</div></div>
-<script type="module">
-import{createElement as h,useState,useMemo,Fragment,useCallback}from'https://esm.sh/react@18.3.1';
-import{createRoot}from'https://esm.sh/react-dom@18.3.1/client';
-import{BarChart,Bar,PieChart,Pie,Cell,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,LineChart,Line}from'https://esm.sh/recharts@2.12.7?deps=react@18.3.1,react-dom@18.3.1';
-import htm from'https://esm.sh/htm@3.1.1';
-const html=htm.bind(h);
 
-// ─── SAMPLE DATA ────────────────────────────────────────────────────────────
-const SAMPLE_DEALS=[
-  {id:1,property:'12 Clifton 1st Beach Rd',type:'Residential',agent:'Zaviér',salePrice:18500000,commPct:5,agencySplit:50,status:'Closed',date:'2026-01-14',area:'Clifton'},
-  {id:2,property:'Fresnaye Manor, Avenue Fresnaye',type:'Residential',agent:'Maré',salePrice:12200000,commPct:5,agencySplit:50,status:'Closed',date:'2026-01-28',area:'Fresnaye'},
-  {id:3,property:'Bantry Bay Penthouse',type:'Residential',agent:'Zaviér',salePrice:22000000,commPct:4.5,agencySplit:50,status:'Closed',date:'2026-02-10',area:'Bantry Bay'},
-  {id:4,property:'Camps Bay Villa — Sunset Drive',type:'Residential',agent:'Maré',salePrice:9800000,commPct:5,agencySplit:50,status:'Closed',date:'2026-02-22',area:'Camps Bay'},
-  {id:5,property:'Sea Point Apartment 14B',type:'Residential',agent:'Zaviér',salePrice:4200000,commPct:6,agencySplit:50,status:'Closed',date:'2026-03-05',area:'Sea Point'},
-  {id:6,property:'Constantia Winelands Estate',type:'Residential',agent:'Zaviér',salePrice:35000000,commPct:4,agencySplit:50,status:'Closed',date:'2026-03-18',area:'Constantia'},
-  {id:7,property:'Hout Bay Harbour View',type:'Residential',agent:'Maré',salePrice:7600000,commPct:5.5,agencySplit:50,status:'Closed',date:'2026-04-02',area:'Hout Bay'},
-  {id:8,property:'Green Point Modern Duplex',type:'Residential',agent:'Maré',salePrice:5400000,commPct:5,agencySplit:50,status:'Closed',date:'2026-04-15',area:'Green Point'},
-  {id:9,property:'De Waterkant Loft — Heritage Sq',type:'Residential',agent:'Zaviér',salePrice:3800000,commPct:6,agencySplit:50,status:'Pending',date:'2026-04-28',area:'De Waterkant'},
-  {id:10,property:'Bishopscourt Private Estate',type:'Residential',agent:'Maré',salePrice:28000000,commPct:4,agencySplit:50,status:'Pending',date:'2026-05-02',area:'Bishopscourt'},
-];
+<div class="shell">
 
-const SAMPLE_PIPELINE=[
-  {id:1,property:'Llandudno Beachfront',stage:'Viewing',value:15000000,agent:'Zaviér',probability:25,notes:'Second viewing booked'},
-  {id:2,property:'Tamboerskloof Victorian',stage:'Offer',value:6800000,agent:'Maré',probability:70,notes:'Verbal offer received'},
-  {id:3,property:'Mouille Point Seaview',stage:'Negotiation',value:8500000,agent:'Zaviér',probability:60,notes:'Countered at 8.2M'},
-  {id:4,property:'Oranjezicht Heritage Home',stage:'Due Diligence',value:11200000,agent:'Maré',probability:85,notes:'Attorneys appointed'},
-  {id:5,property:'Atlantic Seaboard New Dev',stage:'Signed',value:19500000,agent:'Zaviér',probability:95,notes:'Transfer expected June'},
-  {id:6,property:'Kenilworth Family Home',stage:'Viewing',value:4200000,agent:'Maré',probability:20,notes:'First showing this week'},
-  {id:7,property:'Newlands Cottage',stage:'Lead',value:3100000,agent:'Zaviér',probability:10,notes:'Referral from past client'},
-];
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">Akker <span>Portfolio</span></div>
+      <div class="sub">Private Client Access</div>
+    </div>
 
-const TARGETS={zaviér:{annual:3000000,monthly:250000},maré:{annual:2000000,monthly:167000}};
+    <nav class="primary">
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+        <span>Properties</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l4 4v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M14 2v5h5"/><path d="M8 13h7M8 17h7"/></svg>
+        <span>Documents</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17 9 9l4 4 8-9"/><path d="M3 21h18"/></svg>
+        <span>Financials</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 14.6 8.8 22 9.3l-5.6 4.7L18 21l-6-3.9L6 21l1.6-7-5.6-4.7 7.4-.5Z"/></svg>
+        <span>Insights</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <span>Action Centre</span>
+      </div>
+      <div class="nav-label">Account</div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+        <span>Client Profile</span>
+      </div>
+    </nav>
 
-// ─── HELPERS ────────────────────────────────────────────────────────────────
-const fmt=n=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR',maximumFractionDigits:0}).format(n);
-const fmtN=n=>new Intl.NumberFormat('en-ZA',{maximumFractionDigits:0}).format(n);
-const fmtPct=n=>`${n}%`;
-const fmtDate=d=>new Date(d).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'});
+    <div class="sidebar-foot">
+      <div class="avatar">MJ</div>
+      <div>
+        <div class="who">Marco Jansen</div>
+        <div class="role">Client since 2021</div>
+      </div>
+    </div>
+  </aside>
 
-function calcCommission(deal){
-  const total=deal.salePrice*(deal.commPct/100);
-  const agencyShare=total*(deal.agencySplit/100);
-  const agentShare=total-agencyShare;
-  return{total,agencyShare,agentShare};
-}
+  <!-- MAIN -->
+  <main>
 
-function getAgentCommission(deals,agent){
-  return deals.filter(d=>d.agent===agent&&d.status==='Closed').reduce((sum,d)=>{
-    const{agentShare}=calcCommission(d);
-    return sum+agentShare;
-  },0);
-}
+    <div class="topbar">
+      <div>
+        <h1>Good evening, Marco</h1>
+        <div class="date">Sunday, 21 June 2026 · Portfolio snapshot as of today</div>
+      </div>
+      <div class="advisor-pill">
+        <span class="dot"></span>
+        <span class="txt">Advisor <b>Zaviér</b> · last reviewed 3 days ago</span>
+        <button>Message advisor</button>
+      </div>
+    </div>
 
-// ─── ICONS ──────────────────────────────────────────────────────────────────
-const Icon=({name,size=18,color='currentColor'})=>{
-  const icons={
-    dashboard:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
-    deals:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>`,
-    pipeline:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
-    calc:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg>`,
-    income:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
-    reports:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>`,
-    plus:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>`,
-    x:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>`,
-    edit:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
-    trash:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>`,
-    home:`<svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-  };
-  return html`<span class="nav-icon" dangerouslySetInnerHTML=${{__html:icons[name]||icons.home}}/>`;
-};
+    <!-- KPI ROW -->
+    <section class="kpi-row">
+      <div class="card kpi-main">
+        <div class="kpi-label">Current Portfolio Value</div>
+        <div class="kpi-value">R 8,450,000</div>
+        <span class="kpi-badge">▲ 8.2% this year</span>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Monthly Rental Income</div>
+        <div class="kpi-value">R 62,500</div>
+        <div class="kpi-sub">across 7 properties</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Occupancy Rate</div>
+        <div class="kpi-value">97%</div>
+        <div class="kpi-sub">1 unit vacant</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Net Cash Flow</div>
+        <div class="kpi-value">R 48,200</div>
+        <div class="kpi-sub">after expenses, monthly</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Total Properties</div>
+        <div class="kpi-value">7</div>
+        <div class="kpi-sub">2 cities</div>
+      </div>
+    </section>
 
-// ─── DEAL MODAL ─────────────────────────────────────────────────────────────
-const DealModal=({deal,onSave,onClose})=>{
-  const[form,setForm]=useState(deal||{property:'',type:'Residential',agent:'Zaviér',salePrice:'',commPct:5,agencySplit:50,status:'Pending',date:new Date().toISOString().slice(0,10),area:''});
-  const set=(k,v)=>setForm(f=>({...f,[k]:v}));
-  const save=()=>{
-    if(!form.property||!form.salePrice)return alert('Property name and sale price are required.');
-    onSave({...form,salePrice:Number(form.salePrice),commPct:Number(form.commPct),agencySplit:Number(form.agencySplit),id:deal?.id||Date.now()});
-  };
-  return html`
-    <div class="modal-backdrop" onClick=${e=>{if(e.target===e.currentTarget)onClose()}}>
-      <div class="modal">
-        <div class="modal-title">${deal?'Edit Deal':'New Deal'}</div>
-        <div class="form-grid">
-          <div class="form-group full">
-            <label>Property Name / Address</label>
-            <input value=${form.property} onInput=${e=>set('property',e.target.value)} placeholder="e.g. Clifton 1st Beach Rd"/>
+    <!-- CHART + INSIGHTS -->
+    <section class="panel-row">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Portfolio Value Growth
+            <small>Aggregate value across all properties, before bond balances</small>
           </div>
-          <div class="form-group">
-            <label>Area</label>
-            <input value=${form.area} onInput=${e=>set('area',e.target.value)} placeholder="e.g. Clifton"/>
-          </div>
-          <div class="form-group">
-            <label>Type</label>
-            <select value=${form.type} onChange=${e=>set('type',e.target.value)}>
-              <option>Residential</option><option>Commercial</option><option>Land</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Agent</label>
-            <select value=${form.agent} onChange=${e=>set('agent',e.target.value)}>
-              <option>Zaviér</option><option>Maré</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Sale Price (ZAR)</label>
-            <input type="number" value=${form.salePrice} onInput=${e=>set('salePrice',e.target.value)} placeholder="10000000"/>
-          </div>
-          <div class="form-group">
-            <label>Commission % — ${form.commPct}%</label>
-            <input type="range" min="1" max="10" step="0.5" value=${form.commPct} onInput=${e=>set('commPct',e.target.value)}/>
-          </div>
-          <div class="form-group">
-            <label>Agency Split % — ${form.agencySplit}%</label>
-            <input type="range" min="0" max="100" step="5" value=${form.agencySplit} onInput=${e=>set('agencySplit',e.target.value)}/>
-          </div>
-          <div class="form-group">
-            <label>Status</label>
-            <select value=${form.status} onChange=${e=>set('status',e.target.value)}>
-              <option>Pending</option><option>Closed</option><option>Cancelled</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Date</label>
-            <input type="date" value=${form.date} onChange=${e=>set('date',e.target.value)}/>
+          <div class="range-toggle">
+            <button data-range="1M">1M</button>
+            <button data-range="3M">3M</button>
+            <button data-range="6M">6M</button>
+            <button class="active" data-range="1Y">1Y</button>
+            <button data-range="3Y">3Y</button>
           </div>
         </div>
-        <div class="modal-actions">
-          <button class="btn btn-outline" onClick=${onClose}>Cancel</button>
-          <button class="btn btn-gold" onClick=${save}>Save Deal</button>
+        <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Recent Insights</div>
+        </div>
+        <div class="insight-card">
+          <span class="tag">Performance</span>
+          <p>The Oaks, Unit 14B has outperformed the Potchefstroom market by 6.2% this year.</p>
+        </div>
+        <div class="insight-card attention">
+          <span class="tag">Attention</span>
+          <p>Heritage Square, Unit 22 has been vacant for 18 days — yield has dropped below your portfolio average.</p>
+        </div>
+        <div class="insight-card">
+          <span class="tag">Opportunity</span>
+          <p>Market activity suggests Riverside Views could support a rental increase of approximately 4%.</p>
         </div>
       </div>
-    </div>`;
-};
+    </section>
 
-// ─── PIPELINE MODAL ──────────────────────────────────────────────────────────
-const PipelineModal=({item,onSave,onClose})=>{
-  const[form,setForm]=useState(item||{property:'',stage:'Lead',value:'',agent:'Zaviér',probability:50,notes:''});
-  const set=(k,v)=>setForm(f=>({...f,[k]:v}));
-  const save=()=>{
-    if(!form.property)return alert('Property name required.');
-    onSave({...form,value:Number(form.value),probability:Number(form.probability),id:item?.id||Date.now()});
-  };
-  return html`
-    <div class="modal-backdrop" onClick=${e=>{if(e.target===e.currentTarget)onClose()}}>
-      <div class="modal">
-        <div class="modal-title">${item?'Edit Pipeline Item':'Add to Pipeline'}</div>
-        <div class="form-grid">
-          <div class="form-group full">
-            <label>Property</label>
-            <input value=${form.property} onInput=${e=>set('property',e.target.value)} placeholder="e.g. Llandudno Beachfront"/>
-          </div>
-          <div class="form-group">
-            <label>Stage</label>
-            <select value=${form.stage} onChange=${e=>set('stage',e.target.value)}>
-              <option>Lead</option><option>Viewing</option><option>Offer</option><option>Negotiation</option><option>Due Diligence</option><option>Signed</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Agent</label>
-            <select value=${form.agent} onChange=${e=>set('agent',e.target.value)}>
-              <option>Zaviér</option><option>Maré</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Estimated Value (ZAR)</label>
-            <input type="number" value=${form.value} onInput=${e=>set('value',e.target.value)} placeholder="5000000"/>
-          </div>
-          <div class="form-group">
-            <label>Probability — ${form.probability}%</label>
-            <input type="range" min="0" max="100" step="5" value=${form.probability} onInput=${e=>set('probability',e.target.value)}/>
-          </div>
-          <div class="form-group full">
-            <label>Notes</label>
-            <textarea rows="3" value=${form.notes} onInput=${e=>set('notes',e.target.value)} placeholder="Any relevant notes…"/>
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn btn-outline" onClick=${onClose}>Cancel</button>
-          <button class="btn btn-gold" onClick=${save}>Save</button>
-        </div>
+    <!-- PROPERTIES -->
+    <section>
+      <div class="section-head">
+        <h2>Your Properties</h2>
+        <a href="#">View all 7 properties →</a>
       </div>
-    </div>`;
-};
+      <div class="property-grid">
 
-// ─── DASHBOARD ───────────────────────────────────────────────────────────────
-const Dashboard=({deals,pipeline})=>{
-  const closed=deals.filter(d=>d.status==='Closed');
-  const totalVol=closed.reduce((s,d)=>s+d.salePrice,0);
-  const zComm=getAgentCommission(deals,'Zaviér');
-  const mComm=getAgentCommission(deals,'Maré');
-  const totalComm=zComm+mComm;
-  const pipelineVal=pipeline.reduce((s,p)=>s+p.value,0);
-  const weightedPipeline=pipeline.reduce((s,p)=>s+p.value*(p.probability/100),0);
+        <div class="property-card">
+          <div class="property-thumb">
+            <span class="status-chip excellent">Excellent</span>
+            <svg viewBox="0 0 200 90"><polyline points="0,90 0,55 30,55 30,35 70,35 70,55 100,55 100,20 140,20 140,55 200,55 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
+          </div>
+          <div class="property-body">
+            <div class="name">The Oaks, Unit 14B</div>
+            <div class="addr">12 Vrede Street, Potchefstroom</div>
+            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,250,000</span></div>
+            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 9,800</span></div>
+            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">9.4%</span></div>
+            <div class="pstat-row"><span class="k">Capital growth</span><span class="v pos">+6.8%</span></div>
+          </div>
+        </div>
 
-  const monthlyData=['Jan','Feb','Mar','Apr','May'].map((month,i)=>{
-    const mDeals=closed.filter(d=>new Date(d.date).getMonth()===i);
-    const vol=mDeals.reduce((s,d)=>s+d.salePrice,0);
-    const comm=mDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
-    return{month,vol:vol/1e6,comm:comm/1000};
+        <div class="property-card">
+          <div class="property-thumb">
+            <span class="status-chip excellent">Excellent</span>
+            <svg viewBox="0 0 200 90"><polyline points="0,90 0,60 40,60 40,40 80,40 80,60 120,60 120,25 160,25 160,55 200,55 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
+          </div>
+          <div class="property-body">
+            <div class="name">Riverside Views, Unit 7</div>
+            <div class="addr">45 Beyers Naudé Drive, Potchefstroom</div>
+            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 980,000</span></div>
+            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 7,200</span></div>
+            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">8.8%</span></div>
+            <div class="pstat-row"><span class="k">Capital growth</span><span class="v pos">+5.2%</span></div>
+          </div>
+        </div>
+
+        <div class="property-card">
+          <div class="property-thumb">
+            <span class="status-chip action">Action Required</span>
+            <svg viewBox="0 0 200 90"><polyline points="0,90 0,50 40,50 40,60 80,60 80,30 120,30 120,45 160,45 160,15 200,15 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
+          </div>
+          <div class="property-body">
+            <div class="name">Heritage Square, Unit 22</div>
+            <div class="addr">8 Walter Sisulu Street, Potchefstroom</div>
+            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,450,000</span></div>
+            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">Vacant</span></div>
+            <div class="pstat-row"><span class="k">Yield</span><span class="v neg">0.0%</span></div>
+            <div class="pstat-row"><span class="k">Capital growth</span><span class="v pos">+11.3%</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="note">
+      <span>Figures shown are illustrative demo data for design review — not connected to live accounts.</span>
+      <span>Akker Portfolio · Private Client Dashboard</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const ranges = {
+    '1M': { labels:['W1','W2','W3','W4'], data:[8190,8225,8260,8280] },
+    '3M': { labels:['Apr','May','Jun'], data:[8050,8180,8280] },
+    '6M': { labels:['Jan','Feb','Mar','Apr','May','Jun'], data:[7820,7900,7960,8050,8180,8280] },
+    '1Y': { labels:['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'], data:[7810,7840,7790,7900,7950,7980,8020,7990,8060,8120,8290,8450] },
+    '3Y': { labels:['2024','2025','2026'], data:[6900,7650,8450] },
+  };
+
+  const ctx = document.getElementById('growthChart').getContext('2d');
+  const gradient = ctx.createLinearGradient(0,0,0,220);
+  gradient.addColorStop(0, 'rgba(182,134,47,0.22)');
+  gradient.addColorStop(1, 'rgba(182,134,47,0.0)');
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ranges['1Y'].labels,
+      datasets: [{
+        data: ranges['1Y'].data,
+        borderColor: '#B6862F',
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: '#B6862F',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1B1815', titleFont:{family:'Plus Jakarta Sans'},
+          bodyFont:{family:'IBM Plex Mono', size:12}, padding:10, displayColors:false,
+          callbacks:{ label: c => 'R ' + (c.parsed.y*1000).toLocaleString() }
+        }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{ font:{family:'Plus Jakarta Sans', size:11}, color:'#9A9285' } },
+        y:{ grid:{color:'#EFEBE2'}, ticks:{ font:{family:'IBM Plex Mono', size:10.5}, color:'#9A9285',
+              callback: v => 'R' + v + 'k' } }
+      },
+      interaction:{ intersect:false, mode:'index' }
+    }
   });
 
-  const byAgent=[
-    {name:'Zaviér',value:zComm,color:'#c9a84c'},
-    {name:'Maré',value:mComm,color:'#64b5f6'},
-  ];
-
-  return html`
-    <div>
-      <div class="grid-4">
-        <div class="card-sm">
-          <div class="kpi-label">Total Sales Volume</div>
-          <div class="kpi-value gold">${fmt(totalVol)}</div>
-          <span class="kpi-badge up">↑ YTD 2026</span>
-        </div>
-        <div class="card-sm">
-          <div class="kpi-label">Agent Commission Earned</div>
-          <div class="kpi-value gold">${fmt(totalComm)}</div>
-          <span class="kpi-badge up">${closed.length} closed deals</span>
-        </div>
-        <div class="card-sm">
-          <div class="kpi-label">Pipeline (Total Value)</div>
-          <div class="kpi-value">${fmt(pipelineVal)}</div>
-          <span class="kpi-badge neutral">Weighted: ${fmt(weightedPipeline)}</span>
-        </div>
-        <div class="card-sm">
-          <div class="kpi-label">Active Listings</div>
-          <div class="kpi-value">${pipeline.length}</div>
-          <span class="kpi-badge neutral">${pipeline.filter(p=>p.stage==='Signed').length} ready to close</span>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-header">
-            <div class="section-title">Monthly Sales Volume (ZAR M)</div>
-          </div>
-          <div class="chart-wrap">
-            ${h(ResponsiveContainer,{width:'100%',height:260},
-              h(BarChart,{data:monthlyData,margin:{top:5,right:20,left:0,bottom:5}},
-                h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
-                h(XAxis,{dataKey:'month',stroke:'#666',tick:{fill:'#888',fontSize:12}}),
-                h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:12}}),
-                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'}}),
-                h(Bar,{dataKey:'vol',fill:'#c9a84c',radius:[4,4,0,0],name:'Volume (M)'})
-              )
-            )}
-          </div>
-        </div>
-        <div class="card">
-          <div class="section-header">
-            <div class="section-title">Commission Split by Agent</div>
-          </div>
-          <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center">
-            ${h(ResponsiveContainer,{width:'100%',height:260},
-              h(PieChart,{},
-                h(Pie,{data:byAgent,dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:100,paddingAngle:3,label:({name,percent})=>`${name} ${(percent*100).toFixed(0)}%`,labelLine:true},
-                  byAgent.map((e,i)=>h(Cell,{key:i,fill:e.color}))
-                ),
-                h(Tooltip,{formatter:v=>fmt(v),contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}})
-              )
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-header">
-          <div class="section-title">Recent Closed Deals</div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Property</th><th>Agent</th><th>Sale Price</th><th>Agent Comm</th><th>Date</th><th>Status</th>
-            </tr></thead>
-            <tbody>
-              ${closed.slice(0,5).map(d=>{
-                const{agentShare}=calcCommission(d);
-                return html`<tr key=${d.id}>
-                  <td>${d.property}</td>
-                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
-                  <td>${fmt(d.salePrice)}</td>
-                  <td style="color:#c9a84c;font-weight:600">${fmt(agentShare)}</td>
-                  <td style="color:#888">${fmtDate(d.date)}</td>
-                  <td><span class="badge badge-green">Closed</span></td>
-                </tr>`;
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>`;
-};
-
-// ─── DEALS ───────────────────────────────────────────────────────────────────
-const Deals=({deals,setDeals})=>{
-  const[modal,setModal]=useState(null);
-  const[filter,setFilter]=useState('All');
-  const[agentFilter,setAgentFilter]=useState('All');
-
-  const filtered=deals.filter(d=>
-    (filter==='All'||d.status===filter)&&
-    (agentFilter==='All'||d.agent===agentFilter)
-  );
-
-  const save=deal=>{
-    setDeals(prev=>prev.some(d=>d.id===deal.id)?prev.map(d=>d.id===deal.id?deal:d):[...prev,deal]);
-    setModal(null);
-  };
-  const del=id=>{ if(confirm('Delete this deal?'))setDeals(prev=>prev.filter(d=>d.id!==id)); };
-
-  return html`
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          ${['All','Closed','Pending','Cancelled'].map(s=>html`
-            <button key=${s} class="tab ${filter===s?'active':''}" onClick=${()=>setFilter(s)}>${s}</button>`)}
-          <select style="padding:8px 14px;border-radius:20px;font-size:13px;background:#1a1a1a;border:1px solid #333;color:#aaa" onChange=${e=>setAgentFilter(e.target.value)}>
-            <option value="All">All Agents</option>
-            <option value="Zaviér">Zaviér</option>
-            <option value="Maré">Maré</option>
-          </select>
-        </div>
-        <button class="btn btn-gold" onClick=${()=>setModal({})}>
-          ${h(Icon,{name:'plus',size:16,color:'#111'})}
-          <span class="nav-label">New Deal</span>
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Property</th><th>Area</th><th>Agent</th><th>Sale Price</th><th>Comm %</th><th>Agent Comm</th><th>Date</th><th>Status</th><th></th>
-            </tr></thead>
-            <tbody>
-              ${filtered.length===0?html`<tr><td colspan="9" style="text-align:center;color:#555;padding:40px">No deals found.</td></tr>`:
-              filtered.map(d=>{
-                const{agentShare}=calcCommission(d);
-                return html`<tr key=${d.id}>
-                  <td style="font-weight:500">${d.property}</td>
-                  <td style="color:#888">${d.area}</td>
-                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
-                  <td>${fmt(d.salePrice)}</td>
-                  <td style="color:#888">${d.commPct}%</td>
-                  <td style="color:#c9a84c;font-weight:700">${fmt(agentShare)}</td>
-                  <td style="color:#888">${fmtDate(d.date)}</td>
-                  <td><span class="badge ${d.status==='Closed'?'badge-green':d.status==='Pending'?'badge-gold':'badge-red'}">${d.status}</span></td>
-                  <td>
-                    <div style="display:flex;gap:8px">
-                      <button class="btn btn-outline btn-sm" onClick=${()=>setModal(d)}>${h(Icon,{name:'edit',size:13})}</button>
-                      <button class="btn btn-outline btn-sm" style="color:#ef5350" onClick=${()=>del(d.id)}>${h(Icon,{name:'trash',size:13,color:'#ef5350'})}</button>
-                    </div>
-                  </td>
-                </tr>`;
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      ${modal!==null?h(DealModal,{deal:Object.keys(modal).length?modal:null,onSave:save,onClose:()=>setModal(null)}):null}
-    </div>`;
-};
-
-// ─── PIPELINE ────────────────────────────────────────────────────────────────
-const STAGES=['Lead','Viewing','Offer','Negotiation','Due Diligence','Signed'];
-const STAGE_COLORS={Lead:'#555',Viewing:'#1565c0',Offer:'#6a1b9a',Negotiation:'#e65100',['Due Diligence']:'#2e7d32',Signed:'#c9a84c'};
-
-const Pipeline=({pipeline,setPipeline})=>{
-  const[modal,setModal]=useState(null);
-  const save=item=>{
-    setPipeline(prev=>prev.some(p=>p.id===item.id)?prev.map(p=>p.id===item.id?item:p):[...prev,item]);
-    setModal(null);
-  };
-  const del=id=>{ if(confirm('Remove from pipeline?'))setPipeline(prev=>prev.filter(p=>p.id!==id)); };
-  const total=pipeline.reduce((s,p)=>s+p.value,0);
-  const weighted=pipeline.reduce((s,p)=>s+p.value*(p.probability/100),0);
-
-  const stageData=STAGES.map(s=>({
-    stage:s,
-    count:pipeline.filter(p=>p.stage===s).length,
-    value:pipeline.filter(p=>p.stage===s).reduce((a,p)=>a+p.value,0),
-  }));
-
-  return html`
-    <div>
-      <div class="grid-3" style="margin-bottom:24px">
-        <div class="card-sm">
-          <div class="kpi-label">Pipeline Value</div>
-          <div class="kpi-value gold">${fmt(total)}</div>
-        </div>
-        <div class="card-sm">
-          <div class="kpi-label">Weighted Value</div>
-          <div class="kpi-value">${fmt(weighted)}</div>
-        </div>
-        <div class="card-sm">
-          <div class="kpi-label">Active Listings</div>
-          <div class="kpi-value">${pipeline.length}</div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:24px">
-        <div class="section-header">
-          <div class="section-title">Pipeline by Stage</div>
-        </div>
-        <div class="chart-wrap">
-          ${h(ResponsiveContainer,{width:'100%',height:220},
-            h(BarChart,{data:stageData,margin:{top:5,right:20,left:0,bottom:5}},
-              h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
-              h(XAxis,{dataKey:'stage',stroke:'#666',tick:{fill:'#888',fontSize:11}}),
-              h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:11}}),
-              h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`${v} listings`}),
-              h(Bar,{dataKey:'count',fill:'#c9a84c',radius:[4,4,0,0],name:'Listings'})
-            )
-          )}
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
-        <button class="btn btn-gold" onClick=${()=>setModal({})}>
-          ${h(Icon,{name:'plus',size:16,color:'#111'})}
-          <span class="nav-label">Add Listing</span>
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Property</th><th>Stage</th><th>Agent</th><th>Value</th><th>Probability</th><th>Notes</th><th></th>
-            </tr></thead>
-            <tbody>
-              ${pipeline.map(p=>html`
-                <tr key=${p.id}>
-                  <td style="font-weight:500">${p.property}</td>
-                  <td><span class="badge" style="background:${STAGE_COLORS[p.stage]}22;color:${STAGE_COLORS[p.stage]}">${p.stage}</span></td>
-                  <td><span class="badge ${p.agent==='Zaviér'?'badge-gold':'badge-blue'}">${p.agent}</span></td>
-                  <td>${fmt(p.value)}</td>
-                  <td>
-                    <div style="display:flex;align-items:center;gap:10px">
-                      <div class="progress-bar" style="width:80px">
-                        <div class="progress-fill" style="width:${p.probability}%"/>
-                      </div>
-                      <span style="font-size:12px;color:#888">${p.probability}%</span>
-                    </div>
-                  </td>
-                  <td style="color:#888;font-size:13px;max-width:180px">${p.notes}</td>
-                  <td>
-                    <div style="display:flex;gap:8px">
-                      <button class="btn btn-outline btn-sm" onClick=${()=>setModal(p)}>${h(Icon,{name:'edit',size:13})}</button>
-                      <button class="btn btn-outline btn-sm" style="color:#ef5350" onClick=${()=>del(p.id)}>${h(Icon,{name:'trash',size:13,color:'#ef5350'})}</button>
-                    </div>
-                  </td>
-                </tr>`)}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      ${modal!==null?h(PipelineModal,{item:Object.keys(modal).length?modal:null,onSave:save,onClose:()=>setModal(null)}):null}
-    </div>`;
-};
-
-// ─── COMMISSION CALCULATOR ───────────────────────────────────────────────────
-const CommCalc=()=>{
-  const[price,setPrice]=useState(10000000);
-  const[commPct,setCommPct]=useState(5);
-  const[agencySplit,setAgencySplit]=useState(50);
-  const[agent,setAgent]=useState('Zaviér');
-
-  const totalComm=price*(commPct/100);
-  const agencyShare=totalComm*(agencySplit/100);
-  const agentShare=totalComm-agencyShare;
-
-  return html`
-    <div style="max-width:680px;margin:0 auto">
-      <div class="card">
-        <div class="section-title" style="margin-bottom:24px">Commission Calculator</div>
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div class="form-group">
-            <label>Sale Price: ${fmt(price)}</label>
-            <input type="range" min="500000" max="100000000" step="100000" value=${price} onInput=${e=>setPrice(Number(e.target.value))}/>
-            <input type="number" value=${price} onInput=${e=>setPrice(Number(e.target.value))} placeholder="10000000"/>
-          </div>
-          <div class="form-group">
-            <label>Commission Rate: ${commPct}%</label>
-            <input type="range" min="1" max="10" step="0.5" value=${commPct} onInput=${e=>setCommPct(Number(e.target.value))}/>
-          </div>
-          <div class="form-group">
-            <label>Agency Split: ${agencySplit}%</label>
-            <input type="range" min="0" max="100" step="5" value=${agencySplit} onInput=${e=>setAgencySplit(Number(e.target.value))}/>
-          </div>
-          <div class="form-group">
-            <label>Agent</label>
-            <select value=${agent} onChange=${e=>setAgent(e.target.value)}>
-              <option>Zaviér</option><option>Maré</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="calc-result">
-          <div class="calc-row">
-            <span class="calc-label">Sale Price</span>
-            <span class="calc-value">${fmt(price)}</span>
-          </div>
-          <div class="calc-row">
-            <span class="calc-label">Total Commission (${commPct}%)</span>
-            <span class="calc-value">${fmt(totalComm)}</span>
-          </div>
-          <div class="calc-row">
-            <span class="calc-label">Agency Share (${agencySplit}%)</span>
-            <span class="calc-value">${fmt(agencyShare)}</span>
-          </div>
-          <div class="calc-row total">
-            <span>${agent}'s Commission</span>
-            <span>${fmt(agentShare)}</span>
-          </div>
-        </div>
-
-        <div style="margin-top:24px">
-          ${h(ResponsiveContainer,{width:'100%',height:200},
-            h(PieChart,{},
-              h(Pie,{
-                data:[
-                  {name:'Agency Share',value:agencyShare,color:'#555'},
-                  {name:`${agent}'s Commission`,value:agentShare,color:'#c9a84c'},
-                ],
-                dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:80,
-              },
-                [
-                  h(Cell,{key:0,fill:'#555'}),
-                  h(Cell,{key:1,fill:'#c9a84c'}),
-                ]
-              ),
-              h(Tooltip,{formatter:v=>fmt(v),contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}}),
-              h(Legend,{})
-            )
-          )}
-        </div>
-      </div>
-    </div>`;
-};
-
-// ─── INCOME REPORT ───────────────────────────────────────────────────────────
-const Income=({deals})=>{
-  const closed=deals.filter(d=>d.status==='Closed');
-  const zDeals=closed.filter(d=>d.agent==='Zaviér');
-  const mDeals=closed.filter(d=>d.agent==='Maré');
-  const zComm=zDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
-  const mComm=mDeals.reduce((s,d)=>s+calcCommission(d).agentShare,0);
-  const total=zComm+mComm;
-  const zTarget=TARGETS['zaviér'].annual;
-  const mTarget=TARGETS['maré'].annual;
-
-  const monthlyComparison=['Jan','Feb','Mar','Apr','May'].map((month,i)=>{
-    const zM=zDeals.filter(d=>new Date(d.date).getMonth()===i).reduce((s,d)=>s+calcCommission(d).agentShare,0);
-    const mM=mDeals.filter(d=>new Date(d.date).getMonth()===i).reduce((s,d)=>s+calcCommission(d).agentShare,0);
-    return{month,Zaviér:zM/1000,Maré:mM/1000};
+  document.querySelectorAll('.range-toggle button').forEach(btn=>{
+    btn.addEventListener('click', () => {
+      document.querySelector('.range-toggle .active').classList.remove('active');
+      btn.classList.add('active');
+      const r = ranges[btn.dataset.range];
+      chart.data.labels = r.labels;
+      chart.data.datasets[0].data = r.data;
+      chart.update();
+    });
   });
-
-  return html`
-    <div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="kpi-label">Zaviér — YTD Commission</div>
-          <div class="kpi-value gold">${fmt(zComm)}</div>
-          <div style="margin-top:12px">
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px">
-              <span>Annual Target: ${fmt(zTarget)}</span>
-              <span>${((zComm/zTarget)*100).toFixed(0)}%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${Math.min((zComm/zTarget)*100,100)}%"/>
-            </div>
-          </div>
-          <div style="margin-top:12px;font-size:13px;color:#888">${zDeals.length} deals closed · Avg ${fmt(zComm/Math.max(zDeals.length,1))}/deal</div>
-        </div>
-        <div class="card">
-          <div class="kpi-label">Maré — YTD Commission</div>
-          <div class="kpi-value" style="color:#64b5f6">${fmt(mComm)}</div>
-          <div style="margin-top:12px">
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px">
-              <span>Annual Target: ${fmt(mTarget)}</span>
-              <span>${((mComm/mTarget)*100).toFixed(0)}%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${Math.min((mComm/mTarget)*100,100)}%;background:linear-gradient(90deg,#1565c0,#64b5f6)"/>
-            </div>
-          </div>
-          <div style="margin-top:12px;font-size:13px;color:#888">${mDeals.length} deals closed · Avg ${fmt(mComm/Math.max(mDeals.length,1))}/deal</div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:24px">
-        <div class="section-title" style="margin-bottom:16px">Monthly Commission Comparison (ZAR '000)</div>
-        <div class="chart-wrap">
-          ${h(ResponsiveContainer,{width:'100%',height:280},
-            h(BarChart,{data:monthlyComparison,margin:{top:5,right:20,left:0,bottom:5}},
-              h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
-              h(XAxis,{dataKey:'month',stroke:'#666',tick:{fill:'#888',fontSize:12}}),
-              h(YAxis,{stroke:'#666',tick:{fill:'#888',fontSize:12}}),
-              h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`R ${v}k`}),
-              h(Legend,{}),
-              h(Bar,{dataKey:'Zaviér',fill:'#c9a84c',radius:[4,4,0,0]}),
-              h(Bar,{dataKey:'Maré',fill:'#64b5f6',radius:[4,4,0,0]})
-            )
-          )}
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title" style="margin-bottom:16px">Combined Household Income</div>
-        <div class="calc-result" style="max-width:400px">
-          <div class="calc-row"><span class="calc-label">Zaviér</span><span class="calc-value">${fmt(zComm)}</span></div>
-          <div class="calc-row"><span class="calc-label">Maré</span><span class="calc-value">${fmt(mComm)}</span></div>
-          <div class="calc-row total"><span>Total Household</span><span>${fmt(total)}</span></div>
-        </div>
-      </div>
-    </div>`;
-};
-
-// ─── REPORTS ─────────────────────────────────────────────────────────────────
-const Reports=({deals,pipeline})=>{
-  const closed=deals.filter(d=>d.status==='Closed');
-  const totalVol=closed.reduce((s,d)=>s+d.salePrice,0);
-  const totalComm=closed.reduce((s,d)=>s+calcCommission(d).agentShare,0);
-  const avgDealSize=totalVol/Math.max(closed.length,1);
-
-  const byArea=Object.entries(
-    closed.reduce((acc,d)=>{
-      acc[d.area]=(acc[d.area]||0)+d.salePrice;
-      return acc;
-    },{})
-  ).map(([area,value])=>({area,value:value/1e6})).sort((a,b)=>b.value-a.value);
-
-  const byStatus=[
-    {name:'Closed',value:deals.filter(d=>d.status==='Closed').length,color:'#4caf50'},
-    {name:'Pending',value:deals.filter(d=>d.status==='Pending').length,color:'#c9a84c'},
-    {name:'Cancelled',value:deals.filter(d=>d.status==='Cancelled').length,color:'#ef5350'},
-  ];
-
-  return html`
-    <div>
-      <div class="grid-4" style="margin-bottom:24px">
-        <div class="card-sm"><div class="kpi-label">Total Deals</div><div class="kpi-value">${deals.length}</div></div>
-        <div class="card-sm"><div class="kpi-label">Closed Volume</div><div class="kpi-value gold">${fmt(totalVol)}</div></div>
-        <div class="card-sm"><div class="kpi-label">Total Agent Comm</div><div class="kpi-value gold">${fmt(totalComm)}</div></div>
-        <div class="card-sm"><div class="kpi-label">Avg Deal Size</div><div class="kpi-value">${fmt(avgDealSize)}</div></div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-title" style="margin-bottom:16px">Volume by Area (ZAR M)</div>
-          <div class="chart-wrap">
-            ${h(ResponsiveContainer,{width:'100%',height:280},
-              h(BarChart,{data:byArea,layout:'vertical',margin:{top:5,right:20,left:60,bottom:5}},
-                h(CartesianGrid,{strokeDasharray:'3 3',stroke:'#2a2a2a'}),
-                h(XAxis,{type:'number',stroke:'#666',tick:{fill:'#888',fontSize:11}}),
-                h(YAxis,{type:'category',dataKey:'area',stroke:'#666',tick:{fill:'#888',fontSize:11},width:80}),
-                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px',color:'#f0ede6'},formatter:v=>`R ${v.toFixed(1)}M`}),
-                h(Bar,{dataKey:'value',fill:'#c9a84c',radius:[0,4,4,0],name:'Volume (M)'})
-              )
-            )}
-          </div>
-        </div>
-        <div class="card">
-          <div class="section-title" style="margin-bottom:16px">Deal Status Breakdown</div>
-          <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center">
-            ${h(ResponsiveContainer,{width:'100%',height:280},
-              h(PieChart,{},
-                h(Pie,{data:byStatus,dataKey:'value',nameKey:'name',cx:'50%',cy:'50%',outerRadius:100,paddingAngle:3,label:({name,value})=>`${name}: ${value}`,labelLine:true},
-                  byStatus.map((s,i)=>h(Cell,{key:i,fill:s.color}))
-                ),
-                h(Tooltip,{contentStyle:{background:'#222',border:'1px solid #333',borderRadius:'8px'}}),
-                h(Legend,{})
-              )
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:24px">
-        <div class="section-title" style="margin-bottom:16px">Full Deal Ledger</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Property</th><th>Agent</th><th>Sale Price</th><th>Comm%</th><th>Total Comm</th><th>Agency</th><th>Agent Earn</th><th>Date</th><th>Status</th>
-            </tr></thead>
-            <tbody>
-              ${deals.map(d=>{
-                const{total,agencyShare,agentShare}=calcCommission(d);
-                return html`<tr key=${d.id}>
-                  <td>${d.property}</td>
-                  <td><span class="badge ${d.agent==='Zaviér'?'badge-gold':'badge-blue'}">${d.agent}</span></td>
-                  <td>${fmt(d.salePrice)}</td>
-                  <td style="color:#888">${d.commPct}%</td>
-                  <td>${fmt(total)}</td>
-                  <td style="color:#888">${fmt(agencyShare)}</td>
-                  <td style="color:#c9a84c;font-weight:700">${fmt(agentShare)}</td>
-                  <td style="color:#888">${fmtDate(d.date)}</td>
-                  <td><span class="badge ${d.status==='Closed'?'badge-green':d.status==='Pending'?'badge-gold':'badge-red'}">${d.status}</span></td>
-                </tr>`;
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>`;
-};
-
-// ─── APP SHELL ───────────────────────────────────────────────────────────────
-const NAV=[
-  {id:'dashboard',label:'Dashboard',icon:'dashboard'},
-  {id:'deals',label:'Deals',icon:'deals'},
-  {id:'pipeline',label:'Pipeline',icon:'pipeline'},
-  {id:'calculator',label:'Calculator',icon:'calc'},
-  {id:'income',label:'Income',icon:'income'},
-  {id:'reports',label:'Reports',icon:'reports'},
-];
-
-const PAGE_TITLES={
-  dashboard:{title:'Dashboard',sub:'Overview for 2026 YTD'},
-  deals:{title:'Deal Tracker',sub:'All residential transactions'},
-  pipeline:{title:'Pipeline',sub:'Active listings & prospects'},
-  calculator:{title:'Commission Calculator',sub:'Quick commission breakdown'},
-  income:{title:'Income Report',sub:'Zaviér & Maré earnings'},
-  reports:{title:'Reports',sub:'Full analytics & ledger'},
-};
-
-function App(){
-  const[page,setPage]=useState('dashboard');
-  const[deals,setDeals]=useState(SAMPLE_DEALS);
-  const[pipeline,setPipeline]=useState(SAMPLE_PIPELINE);
-  const{title,sub}=PAGE_TITLES[page];
-
-  return html`
-    <div id="root" style="display:flex;min-height:100vh">
-      <aside class="sidebar">
-        <div class="sidebar-logo">
-          <div class="logo-title">AgentOS</div>
-          <div class="logo-sub">Engel &amp; Völkers · CPT</div>
-        </div>
-        <nav class="sidebar-nav">
-          ${NAV.map(n=>html`
-            <div key=${n.id} class="nav-item ${page===n.id?'active':''}" onClick=${()=>setPage(n.id)}>
-              ${h(Icon,{name:n.icon,size:18,color:page===n.id?'#c9a84c':'currentColor'})}
-              <span class="nav-label">${n.label}</span>
-            </div>`)}
-        </nav>
-        <div class="sidebar-footer">
-          <div style="color:#c9a84c;font-weight:600;margin-bottom:2px">Zaviér &amp; Maré</div>
-          <div>Engel &amp; Völkers</div>
-          <div style="margin-top:8px;color:#333;font-size:10px">AgentOS v1.0</div>
-        </div>
-      </aside>
-
-      <div class="main">
-        <div class="topbar">
-          <div>
-            <div class="topbar-title">${title}</div>
-            <div class="topbar-sub">${sub}</div>
-          </div>
-          <div style="font-size:13px;color:#555">${new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
-        </div>
-        <div class="content">
-          ${page==='dashboard'?h(Dashboard,{deals,pipeline}):null}
-          ${page==='deals'?h(Deals,{deals,setDeals}):null}
-          ${page==='pipeline'?h(Pipeline,{pipeline,setPipeline}):null}
-          ${page==='calculator'?h(CommCalc,{}):null}
-          ${page==='income'?h(Income,{deals}):null}
-          ${page==='reports'?h(Reports,{deals,pipeline}):null}
-        </div>
-      </div>
-    </div>`;
-}
-
-createRoot(document.getElementById('root')).render(h(App,null));
 </script>
+
 </body>
 </html>
