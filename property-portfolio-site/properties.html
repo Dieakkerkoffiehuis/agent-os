@@ -5,201 +5,163 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Properties — Akker Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <div class="shell">
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="mark">Akker <span>Portfolio</span></div>
-      <div class="sub">Private Client Access</div>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="mark">Akker <span>Portfolio</span></div>
+    <div class="sub">Private Client Access</div>
+  </div>
+  <nav class="primary">
+    <a class="nav-item" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
+    <a class="nav-item active" href="properties.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg><span>Properties</span></a>
+    <a class="nav-item" href="documents.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Documents</span></a>
+    <a class="nav-item" href="financials.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span>Financials</span></a>
+    <a class="nav-item" href="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.7 6.6 7.1.6-5.4 4.6 1.7 6.9L12 17l-6.1 3.7 1.7-6.9-5.4-4.6 7.1-.6z"/></svg><span>Insights</span></a>
+    <a class="nav-item" href="action-centre.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Action Centre</span></a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>Client Profile</span></a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="avatar">MJ</div>
+    <div>
+      <div class="who">Marco Jansen</div>
+      <div class="role">Client since 2021</div>
     </div>
-    <nav class="primary">
-      <a class="nav-item" href="index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item active" href="properties.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-        <span>Properties</span>
-      </a>
-      <a class="nav-item" href="documents.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l4 4v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M14 2v5h5"/><path d="M8 13h7M8 17h7"/></svg>
-        <span>Documents</span>
-      </a>
-      <a class="nav-item" href="financials.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17 9 9l4 4 8-9"/><path d="M3 21h18"/></svg>
-        <span>Financials</span>
-      </a>
-      <a class="nav-item" href="insights.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 14.6 8.8 22 9.3l-5.6 4.7L18 21l-6-3.9L6 21l1.6-7-5.6-4.7 7.4-.5Z"/></svg>
-        <span>Insights</span>
-      </a>
-      <a class="nav-item" href="action-centre.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-        <span>Action Centre</span>
-      </a>
-      <div class="nav-label">Account</div>
-      <a class="nav-item" href="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
-        <span>Client Profile</span>
-      </a>
-    </nav>
-    <div class="sidebar-foot">
-      <div class="avatar">MJ</div>
-      <div>
-        <div class="who">Marco Jansen</div>
-        <div class="role">Client since 2021</div>
-      </div>
-    </div>
-  </aside>
+  </div>
+</aside>
 
-  <main>
-    <div class="topbar">
-      <div>
-        <h1>Your Properties</h1>
-        <div class="date">7 properties · 2 cities · combined value R 8,450,000</div>
+<main>
+  <div class="topbar">
+    <div>
+      <h1>Properties</h1>
+      <div class="date">7 properties · 2 cities · R8,450,000 combined value</div>
+    </div>
+    <div class="advisor-pill">
+      <span class="dot"></span>
+      <span class="txt">Advised by <b>Zaviér</b></span>
+      <button>Message</button>
+    </div>
+  </div>
+
+  <div class="property-grid">
+
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#3A332A"/><path d="M0 90 L60 60 L120 80 L180 50 L240 75 L300 55 L300 120 L0 120 Z" fill="#4A4030"/></svg>
+        <span class="status-chip excellent">Excellent</span>
       </div>
-      <div class="advisor-pill">
-        <span class="dot"></span>
-        <span class="txt">Advisor <b>Zaviér</b> · last reviewed 3 days ago</span>
-        <button>Message advisor</button>
+      <div class="property-body">
+        <div class="name">The Oaks, Unit 14B</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R1,250,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R9,800</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">9.4%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
       </div>
     </div>
 
-    <section>
-      <div class="property-grid">
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip excellent">Excellent</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,55 30,55 30,35 70,35 70,55 100,55 100,20 140,20 140,55 200,55 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">The Oaks, Unit 14B</div>
-            <div class="addr">12 Vrede Street, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,250,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 9,800</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">9.4%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+6.8%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip excellent">Excellent</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,60 40,60 40,40 80,40 80,60 120,60 120,25 160,25 160,55 200,55 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Riverside Views, Unit 7</div>
-            <div class="addr">45 Beyers Naudé Drive, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 980,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 7,200</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">8.8%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+5.2%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip action">Action Required</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,50 40,50 40,60 80,60 80,30 120,30 120,45 160,45 160,15 200,15 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Heritage Square, Unit 22</div>
-            <div class="addr">8 Walter Sisulu Street, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,450,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">Vacant</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v neg">Vacant — 18 days</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v neg">0.0%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+11.3%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip excellent">Excellent</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,58 35,58 35,38 75,38 75,50 115,50 115,22 155,22 155,48 200,48 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Willow Park, Unit 3</div>
-            <div class="addr">22 Lombard Street, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,120,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 8,400</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">9.0%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+4.1%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip monitor">Monitor</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,52 35,52 35,58 75,58 75,42 115,42 115,50 155,50 155,38 200,38 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Stonebridge Mews, Unit 9</div>
-            <div class="addr">67 Albert Street, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 890,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 6,100</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v">8.2%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+3.4%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip excellent">Excellent</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,60 30,60 30,30 70,30 70,45 110,45 110,18 150,18 150,40 200,40 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Northgate Residences, Unit 5</div>
-            <div class="addr">14 Borrius Street, Potchefstroom</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,380,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 10,200</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v pos">8.9%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+7.9%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
-        <div class="property-card">
-          <div class="property-thumb">
-            <span class="status-chip monitor">Monitor</span>
-            <svg viewBox="0 0 200 90"><polyline points="0,90 0,55 35,55 35,48 75,48 75,58 115,58 115,35 155,35 155,50 200,50 200,90" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.7"/></svg>
-          </div>
-          <div class="property-body">
-            <div class="name">Cedar Court, Unit 11</div>
-            <div class="addr">3 Mooi Street, Klerksdorp</div>
-            <div class="pstat-row"><span class="k">Current value</span><span class="v">R 1,380,000</span></div>
-            <div class="pstat-row"><span class="k">Monthly rental</span><span class="v">R 9,600</span></div>
-            <div class="pstat-row"><span class="k">Occupancy</span><span class="v pos">Tenanted</span></div>
-            <div class="pstat-row"><span class="k">Yield</span><span class="v">8.3%</span></div>
-            <div class="pstat-row"><span class="k">Capital growth (YTD)</span><span class="v pos">+5.6%</span></div>
-            <a class="card-cta" href="property-detail.html">View details</a>
-          </div>
-        </div>
-
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#332E28"/><path d="M0 95 L70 65 L140 85 L210 60 L300 80 L300 120 L0 120 Z" fill="#453B2E"/></svg>
+        <span class="status-chip excellent">Excellent</span>
       </div>
-    </section>
+      <div class="property-body">
+        <div class="name">Riverside Views, Unit 7</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R980,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R7,200</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">8.8%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
 
-    <footer class="note">
-      <span>Figures shown are illustrative demo data for design review — not connected to live accounts.</span>
-      <span>Akker Portfolio · Private Client Dashboard</span>
-    </footer>
-  </main>
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#3D3128"/><path d="M0 85 L80 70 L150 90 L220 65 L300 85 L300 120 L0 120 Z" fill="#4F4031"/></svg>
+        <span class="status-chip action">Action Required</span>
+      </div>
+      <div class="property-body">
+        <div class="name">Heritage Square, Unit 22</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R1,450,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v neg">Vacant</span></div>
+        <div class="pstat-row"><span class="k">Capital growth</span><span class="v pos">+11.3%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
+
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#362F27"/><path d="M0 92 L65 68 L130 82 L200 58 L300 78 L300 120 L0 120 Z" fill="#473D2F"/></svg>
+        <span class="status-chip excellent">Excellent</span>
+      </div>
+      <div class="property-body">
+        <div class="name">Willow Park, Unit 3</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R1,120,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R8,400</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">9.0%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
+
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#332C24"/><path d="M0 88 L75 72 L145 88 L215 62 L300 82 L300 120 L0 120 Z" fill="#443A2C"/></svg>
+        <span class="status-chip monitor">Monitor</span>
+      </div>
+      <div class="property-body">
+        <div class="name">Stonebridge Mews, Unit 9</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R890,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R6,100</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">8.2%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
+
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#3E3329"/><path d="M0 90 L60 65 L130 85 L190 55 L260 75 L300 60 L300 120 L0 120 Z" fill="#4F4232"/></svg>
+        <span class="status-chip excellent">Excellent</span>
+      </div>
+      <div class="property-body">
+        <div class="name">Northgate Residences, Unit 5</div>
+        <div class="addr">Potchefstroom</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R1,380,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R10,200</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">8.9%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
+
+    <div class="property-card">
+      <div class="property-thumb">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><rect width="300" height="120" fill="#352E25"/><path d="M0 95 L70 70 L140 90 L210 60 L300 85 L300 120 L0 120 Z" fill="#463C2E"/></svg>
+        <span class="status-chip monitor">Monitor</span>
+      </div>
+      <div class="property-body">
+        <div class="name">Cedar Court, Unit 11</div>
+        <div class="addr">Klerksdorp</div>
+        <div class="pstat-row"><span class="k">Current value</span><span class="v">R1,380,000</span></div>
+        <div class="pstat-row"><span class="k">Monthly rental</span><span class="v pos">R9,600</span></div>
+        <div class="pstat-row"><span class="k">Net yield</span><span class="v">8.3%</span></div>
+        <a class="card-cta" href="property-detail.html">View details</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="note">
+    <span>Akker Portfolio · Demo data for preview purposes only</span>
+    <span>Advisor: Zaviér · akkerkoffiehuis@gmail.com</span>
+  </footer>
+</main>
 </div>
 
 <script src="assets/app.js"></script>

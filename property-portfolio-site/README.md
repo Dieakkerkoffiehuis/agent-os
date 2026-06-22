@@ -1,61 +1,38 @@
-# Akker Portfolio — Client Dashboard (Demo)
+# Akker Portfolio — Client Dashboard Mockup
 
-A static, multi-page mockup of the property portfolio client dashboard concept. Plain HTML/CSS/JS,
-no build step, no backend — every number on every page is invented demo data so you can click
-through all the planned sections and get a feel for the structure before any real design or
-engineering work starts.
+A static, multi-page demo of the property portfolio client dashboard. No backend, no build step — plain HTML/CSS/JS, deployable as-is to GitHub Pages or Cloudflare Pages. All data is invented for preview purposes.
 
-## What's here
+## Files
 
-| File | Page |
+| File | Purpose |
 |---|---|
-| `index.html` | Dashboard — portfolio value, KPIs, growth chart, recent insights, property snapshot |
-| `properties.html` | All 7 demo properties as cards |
-| `property-detail.html` | Single property deep-dive — Overview / Financials / Documents / Maintenance tabs |
-| `documents.html` | Document repository grouped by property |
-| `financials.html` | Income vs. expenses, bond/equity trend, monthly breakdown table |
-| `insights.html` | Performance / Attention / Opportunity insight cards + strategic recommendations |
-| `action-centre.html` | Request tiles (valuation, sell, consult, etc.) + a request-tracker table |
-| `profile.html` | Client details, portfolio health score, personal dates &amp; notes |
-| `assets/styles.css` | All design tokens and component styles — **edit here first** when the visual redesign pass happens |
-| `assets/app.js` | Shared interactivity (tab switching, demo tile clicks) |
+| `index.html` | Dashboard — portfolio KPIs, growth chart, recent insights, sample properties |
+| `properties.html` | All 7 properties as cards |
+| `property-detail.html` | Single representative property detail page (The Oaks, Unit 14B) with Overview / Financials / Documents / Maintenance tabs |
+| `documents.html` | All contracts/records grouped by property |
+| `financials.html` | Income vs. expenses chart, bond reduction chart, current-month breakdown table |
+| `insights.html` | Advisor insights (Performance / Attention / Opportunity) and strategic recommendations |
+| `action-centre.html` | Client request tiles + request history table |
+| `profile.html` | Client overview, portfolio health score, and personal/important-dates notes (advisor-only) |
+| `assets/styles.css` | Shared design tokens and component styles for every page |
+| `assets/app.js` | Shared interactivity (tabs, chart range toggle, request-tile demo clicks) |
 
 ## Known limitations (by design, for this pass)
 
-- This is the first functional draft, not the final visual design — the look is still close to
-  the original mockup. Redesign work should start from the CSS variables at the top of
-  `assets/styles.css`.
-- `property-detail.html` represents one property (The Oaks, Unit 14B) as a working example —
-  every "View details" link on `properties.html` points to it for now rather than to 7 separate
-  detail pages.
-- Numbers are internally consistent within each page but are illustrative, not derived from a
-  real ledger — see the note on `financials.html` explaining the deliberate gap between the
-  trailing-12-month averages (shown on the Dashboard) and the current month's snapshot.
-- Nothing here is wired to Supabase or any backend. It's a static demo of structure and content.
+- Visual design is intentionally close to the original mockup — a redesign pass should start by editing the CSS variables at the top of `assets/styles.css`.
+- `property-detail.html` represents one property only, not all 7 — the rest link here as a stand-in.
+- Financial figures are internally consistent within each page but illustrative. The dashboard's trailing-12-month averages and the financials page's current-month totals differ on purpose (one vacant unit) — this is explained in a note on `financials.html`.
+- Nothing is wired to a real backend. Buttons on `action-centre.html` show a demo alert.
 
 ## Running it locally
 
-No install needed — just open `index.html` in a browser, or serve the folder:
-
-```bash
-cd property-portfolio-site
+```
 python3 -m http.server 8000
-# then visit http://localhost:8000
 ```
+Then open `http://localhost:8000`.
 
-## Publishing to GitHub Pages
+## Deploying
 
-1. Create a new GitHub repository and push this folder's contents to it (the contents of
-   `property-portfolio-site/`, not a parent folder — `index.html` should sit at the repo root).
-2. In the repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch**.
-3. Pick the branch (usually `main`) and folder `/ (root)`, then **Save**.
-4. GitHub will publish at `https://<your-username>.github.io/<repo-name>/` within a minute or two.
+**Important:** every file in this folder — including the `assets/` subfolder — must be uploaded. If you upload `.html` files one at a time through GitHub's web UI, it's easy to skip `assets/styles.css` and `assets/app.js`, which makes every page render unstyled.
 
-```bash
-git init
-git add .
-git commit -m "Akker Portfolio dashboard demo"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<repo-name>.git
-git push -u origin main
-```
+The most reliable way to avoid that: on your repo's GitHub page, click **Add file → Upload files**, then drag the *entire* `property-portfolio-site` folder (or all its files and the `assets` folder together) into the upload box in one go. GitHub preserves the folder structure, so `assets/styles.css` and `assets/app.js` end up in the right place automatically. Commit, and your Pages/Cloudflare Pages deployment will pick it up on the next build.

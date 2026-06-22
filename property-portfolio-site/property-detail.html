@@ -5,189 +5,156 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Oaks, Unit 14B — Akker Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <div class="shell">
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="mark">Akker <span>Portfolio</span></div>
-      <div class="sub">Private Client Access</div>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="mark">Akker <span>Portfolio</span></div>
+    <div class="sub">Private Client Access</div>
+  </div>
+  <nav class="primary">
+    <a class="nav-item" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
+    <a class="nav-item active" href="properties.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg><span>Properties</span></a>
+    <a class="nav-item" href="documents.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>Documents</span></a>
+    <a class="nav-item" href="financials.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span>Financials</span></a>
+    <a class="nav-item" href="insights.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.7 6.6 7.1.6-5.4 4.6 1.7 6.9L12 17l-6.1 3.7 1.7-6.9-5.4-4.6 7.1-.6z"/></svg><span>Insights</span></a>
+    <a class="nav-item" href="action-centre.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Action Centre</span></a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>Client Profile</span></a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="avatar">MJ</div>
+    <div>
+      <div class="who">Marco Jansen</div>
+      <div class="role">Client since 2021</div>
     </div>
-    <nav class="primary">
-      <a class="nav-item" href="index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item active" href="properties.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-        <span>Properties</span>
-      </a>
-      <a class="nav-item" href="documents.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l4 4v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M14 2v5h5"/><path d="M8 13h7M8 17h7"/></svg>
-        <span>Documents</span>
-      </a>
-      <a class="nav-item" href="financials.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17 9 9l4 4 8-9"/><path d="M3 21h18"/></svg>
-        <span>Financials</span>
-      </a>
-      <a class="nav-item" href="insights.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 14.6 8.8 22 9.3l-5.6 4.7L18 21l-6-3.9L6 21l1.6-7-5.6-4.7 7.4-.5Z"/></svg>
-        <span>Insights</span>
-      </a>
-      <a class="nav-item" href="action-centre.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-        <span>Action Centre</span>
-      </a>
-      <div class="nav-label">Account</div>
-      <a class="nav-item" href="profile.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
-        <span>Client Profile</span>
-      </a>
-    </nav>
-    <div class="sidebar-foot">
-      <div class="avatar">MJ</div>
-      <div>
-        <div class="who">Marco Jansen</div>
-        <div class="role">Client since 2021</div>
+  </div>
+</aside>
+
+<main>
+  <div class="breadcrumb"><a href="properties.html">Properties</a> / The Oaks, Unit 14B</div>
+
+  <div class="hero">
+    <svg viewBox="0 0 1000 220" preserveAspectRatio="none"><rect width="1000" height="220" fill="#2B2722"/><path d="M0 170 L150 110 L300 150 L450 90 L600 140 L750 100 L1000 130 L1000 220 L0 220 Z" fill="#4A4030"/></svg>
+    <div class="hero-info">
+      <span class="status-chip excellent" style="position:static; display:inline-block; margin-bottom:10px;">Excellent</span>
+      <div class="name">The Oaks, Unit 14B</div>
+      <div class="addr">Potchefstroom, North West</div>
+      <div class="hero-stats">
+        <div><span class="k">Current value</span><span class="v">R1,250,000</span></div>
+        <div><span class="k">Monthly rental</span><span class="v pos">R9,800</span></div>
+        <div><span class="k">Net yield</span><span class="v">9.4%</span></div>
+        <div><span class="k">Equity</span><span class="v pos">R640,000</span></div>
       </div>
     </div>
-  </aside>
+  </div>
 
-  <main>
-    <div class="breadcrumb"><a href="properties.html">Properties</a> <span>/</span> <span>The Oaks, Unit 14B</span></div>
+  <div data-tabs>
+    <div class="tabbar">
+      <button class="active" data-tab="tab-overview">Overview</button>
+      <button data-tab="tab-financials">Financials</button>
+      <button data-tab="tab-documents">Documents</button>
+      <button data-tab="tab-maintenance">Maintenance</button>
+    </div>
 
-    <section class="hero">
-      <svg viewBox="0 0 400 160"><polyline points="0,160 0,95 60,95 60,60 130,60 130,95 190,95 190,35 260,35 260,95 400,95 400,160" fill="none" stroke="#C9A84C" stroke-width="2" opacity="0.6"/></svg>
-      <div class="hero-info">
-        <span class="status-chip excellent" style="position:static; display:inline-block; margin-bottom:10px;">Excellent</span>
-        <div class="name">The Oaks, Unit 14B</div>
-        <div class="addr">12 Vrede Street, Potchefstroom · Sectional title apartment · 2 bed / 2 bath</div>
-        <div class="hero-stats">
-          <div><span class="k">Current value</span><span class="v">R 1,250,000</span></div>
-          <div><span class="k">Monthly rental</span><span class="v">R 9,800</span></div>
-          <div><span class="k">Net yield</span><span class="v pos">9.4%</span></div>
-          <div><span class="k">Equity</span><span class="v pos">R 640,000</span></div>
-        </div>
+    <div class="tab-panel active" id="tab-overview">
+      <div class="fact-grid">
+        <div class="fact"><div class="k">Purchase price</div><div class="v">R980,000</div></div>
+        <div class="fact"><div class="k">Purchase date</div><div class="v">Aug 2021</div></div>
+        <div class="fact"><div class="k">Current value</div><div class="v">R1,250,000</div></div>
+        <div class="fact"><div class="k">Bond balance</div><div class="v">R610,000</div></div>
+        <div class="fact"><div class="k">Equity</div><div class="v pos">R640,000</div></div>
+        <div class="fact"><div class="k">Capital growth</div><div class="v pos">+27.6%</div></div>
+        <div class="fact"><div class="k">Monthly rental</div><div class="v">R9,800</div></div>
+        <div class="fact"><div class="k">Rates & taxes</div><div class="v">R1,180</div></div>
+        <div class="fact"><div class="k">Levies</div><div class="v">R1,450</div></div>
+        <div class="fact"><div class="k">Maintenance YTD</div><div class="v neg">R4,200</div></div>
+        <div class="fact"><div class="k">Net monthly income</div><div class="v pos">R6,170</div></div>
+        <div class="fact"><div class="k">Tenant since</div><div class="v">Feb 2024</div></div>
       </div>
-    </section>
-
-    <div data-tabs>
-      <div class="tabbar">
-        <button class="active" data-tab="tab-overview">Overview</button>
-        <button data-tab="tab-financials">Financials</button>
-        <button data-tab="tab-documents">Documents</button>
-        <button data-tab="tab-maintenance">Maintenance</button>
+      <div class="insight-card opportunity">
+        <span class="tag">Advisor note</span>
+        <p>This unit has outperformed the rest of the portfolio on yield for six consecutive quarters. No action needed — hold and continue annual escalation at lease renewal.</p>
+        <div class="meta">Rental agent: Potch Letting Co.</div>
       </div>
+    </div>
 
-      <div id="tab-overview" class="tab-panel active">
-        <div class="fact-grid">
-          <div class="fact"><span class="k">Purchase price (Aug 2021)</span><span class="v">R 980,000</span></div>
-          <div class="fact"><span class="k">Current market value</span><span class="v">R 1,250,000</span></div>
-          <div class="fact"><span class="k">Bond balance outstanding</span><span class="v">R 610,000</span></div>
-          <div class="fact"><span class="k">Estimated equity</span><span class="v pos">R 640,000</span></div>
-          <div class="fact"><span class="k">Capital growth since purchase</span><span class="v pos">+27.6%</span></div>
-          <div class="fact"><span class="k">Monthly rental income</span><span class="v">R 9,800</span></div>
-          <div class="fact"><span class="k">Rates &amp; taxes (monthly)</span><span class="v">R 1,180</span></div>
-          <div class="fact"><span class="k">Levies (monthly)</span><span class="v">R 1,450</span></div>
-          <div class="fact"><span class="k">Maintenance costs (YTD)</span><span class="v neg">R 4,200</span></div>
-          <div class="fact"><span class="k">Net monthly income</span><span class="v pos">R 6,170</span></div>
-          <div class="fact"><span class="k">Tenant</span><span class="v">Lease since Feb 2024</span></div>
-          <div class="fact"><span class="k">Rental agent</span><span class="v">Potch Letting Co.</span></div>
-        </div>
+    <div class="tab-panel" id="tab-financials">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; margin:0 0 12px;">Income & Expenses — last 6 months</h3>
+      <table class="data-table">
+        <thead><tr><th>Month</th><th>Rental income</th><th>Rates & levies</th><th>Maintenance</th><th>Net income</th></tr></thead>
+        <tbody>
+          <tr><td>Jan 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R0</td><td class="mono pos">R7,170</td></tr>
+          <tr><td>Feb 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R0</td><td class="mono pos">R7,170</td></tr>
+          <tr><td>Mar 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R1,200</td><td class="mono pos">R5,970</td></tr>
+          <tr><td>Apr 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R0</td><td class="mono pos">R7,170</td></tr>
+          <tr><td>May 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R3,000</td><td class="mono pos">R4,170</td></tr>
+          <tr><td>Jun 2026</td><td class="mono">R9,800</td><td class="mono">R2,630</td><td class="mono">R0</td><td class="mono pos">R7,170</td></tr>
+        </tbody>
+      </table>
+      <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; margin:22px 0 12px;">Bond Payment Tracking</h3>
+      <table class="data-table">
+        <thead><tr><th>Month</th><th>Payment</th><th>Capital</th><th>Interest</th><th>Balance</th></tr></thead>
+        <tbody>
+          <tr><td>Apr 2026</td><td class="mono">R8,450</td><td class="mono">R3,150</td><td class="mono">R5,300</td><td class="mono">R616,400</td></tr>
+          <tr><td>May 2026</td><td class="mono">R8,450</td><td class="mono">R3,150</td><td class="mono">R5,300</td><td class="mono">R613,250</td></tr>
+          <tr><td>Jun 2026</td><td class="mono">R8,450</td><td class="mono">R3,180</td><td class="mono">R5,270</td><td class="mono">R610,070</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Advisor note</div></div>
-          <div class="insight-card">
-            <span class="tag">Performance</span>
-            <p>This unit has outperformed the Potchefstroom sectional-title market by 6.2% this year. Current bond rate and rental growth support an early refinance review in the next 6–9 months — see Insights for the full recommendation.</p>
-          </div>
+    <div class="tab-panel" id="tab-documents">
+      <div class="data-table" style="padding:6px 0;">
+        <div class="doc-row">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-meta"><div class="title">Sale Agreement</div><div class="sub">Signed 12 Aug 2021 · 14 pages</div></div>
+          <button class="doc-dl">Download</button>
         </div>
-      </div>
-
-      <div id="tab-financials" class="tab-panel">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Income &amp; Expenses — last 6 months</div></div>
-          <table class="data-table">
-            <thead><tr><th>Month</th><th>Rental Income</th><th>Rates &amp; Levies</th><th>Maintenance</th><th>Net Income</th></tr></thead>
-            <tbody>
-              <tr><td>January</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 0</td><td class="mono pos">R 7,170</td></tr>
-              <tr><td>February</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 1,850</td><td class="mono pos">R 5,320</td></tr>
-              <tr><td>March</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 0</td><td class="mono pos">R 7,170</td></tr>
-              <tr><td>April</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 2,350</td><td class="mono pos">R 4,820</td></tr>
-              <tr><td>May</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 0</td><td class="mono pos">R 7,170</td></tr>
-              <tr><td>June</td><td class="mono">R 9,800</td><td class="mono">R 2,630</td><td class="mono">R 0</td><td class="mono pos">R 7,170</td></tr>
-            </tbody>
-          </table>
+        <div class="doc-row">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-meta"><div class="title">Lease Agreement</div><div class="sub">Current tenant · Feb 2024 – Feb 2027</div></div>
+          <button class="doc-dl">Download</button>
         </div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Bond Payment Tracking</div></div>
-          <table class="data-table">
-            <thead><tr><th>Date</th><th>Payment</th><th>Capital</th><th>Interest</th><th>Balance</th></tr></thead>
-            <tbody>
-              <tr><td>1 Apr 2026</td><td class="mono">R 8,950</td><td class="mono">R 3,120</td><td class="mono">R 5,830</td><td class="mono">R 616,400</td></tr>
-              <tr><td>1 May 2026</td><td class="mono">R 8,950</td><td class="mono">R 3,150</td><td class="mono">R 5,800</td><td class="mono">R 613,250</td></tr>
-              <tr><td>1 Jun 2026</td><td class="mono">R 8,950</td><td class="mono">R 3,180</td><td class="mono">R 5,770</td><td class="mono">R 610,070</td></tr>
-            </tbody>
-          </table>
+        <div class="doc-row">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-meta"><div class="title">Municipal Rates Statement</div><div class="sub">Jun 2026</div></div>
+          <button class="doc-dl">Download</button>
         </div>
-      </div>
-
-      <div id="tab-documents" class="tab-panel">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Property Documents</div></div>
-          <div class="doc-row">
-            <div class="doc-icon">PDF</div>
-            <div class="doc-meta"><div class="title">Sale Agreement — signed</div><div class="sub">Uploaded 14 Aug 2021 · 2.1 MB</div></div>
-            <button class="doc-dl">Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">PDF</div>
-            <div class="doc-meta"><div class="title">Lease Agreement — current tenant</div><div class="sub">Uploaded 2 Feb 2024 · 860 KB</div></div>
-            <button class="doc-dl">Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">PDF</div>
-            <div class="doc-meta"><div class="title">Municipal Rates Statement — June 2026</div><div class="sub">Uploaded 5 days ago · 410 KB</div></div>
-            <button class="doc-dl">Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">PDF</div>
-            <div class="doc-meta"><div class="title">Compliance Certificate — Electrical</div><div class="sub">Uploaded 18 Nov 2025 · 1.4 MB</div></div>
-            <button class="doc-dl">Download</button>
-          </div>
-          <div class="doc-row">
-            <div class="doc-icon">PDF</div>
-            <div class="doc-meta"><div class="title">Valuation Report</div><div class="sub">Uploaded 10 Jan 2026 · 3.2 MB</div></div>
-            <button class="doc-dl">Download</button>
-          </div>
+        <div class="doc-row">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-meta"><div class="title">Compliance Certificate</div><div class="sub">Electrical · Valid until Mar 2028</div></div>
+          <button class="doc-dl">Download</button>
         </div>
-      </div>
-
-      <div id="tab-maintenance" class="tab-panel">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Maintenance &amp; Contractor Activity</div></div>
-          <table class="data-table">
-            <thead><tr><th>Date</th><th>Item</th><th>Contractor</th><th>Status</th><th>Cost</th></tr></thead>
-            <tbody>
-              <tr><td>11 Apr 2026</td><td>Geyser replacement</td><td>Potch Plumbing Services</td><td><span class="pill done">Completed</span></td><td class="mono">R 2,350</td></tr>
-              <tr><td>3 Feb 2026</td><td>Repaint — main bedroom water stain</td><td>Coetzee Painters</td><td><span class="pill done">Completed</span></td><td class="mono">R 1,850</td></tr>
-              <tr><td>19 Jun 2026</td><td>Aircon service — annual</td><td>CoolAir Maintenance</td><td><span class="pill pending">Quote requested</span></td><td class="mono">—</td></tr>
-            </tbody>
-          </table>
-          <p class="muted-note">Each completed job includes contractor quote, approval record, and before/after photos in the full platform build — shown here as a summary table for this demo.</p>
+        <div class="doc-row">
+          <div class="doc-icon">PDF</div>
+          <div class="doc-meta"><div class="title">Valuation Report</div><div class="sub">Independent valuation · May 2026</div></div>
+          <button class="doc-dl">Download</button>
         </div>
       </div>
     </div>
 
-    <footer class="note">
-      <span>Figures shown are illustrative demo data for design review — not connected to live accounts.</span>
-      <span>Akker Portfolio · Private Client Dashboard</span>
-    </footer>
-  </main>
+    <div class="tab-panel" id="tab-maintenance">
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>Job</th><th>Contractor</th><th>Cost</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>03 Mar 2026</td><td>Geyser replacement</td><td>Potch Plumbing Services</td><td class="mono">R1,200</td><td><span class="pill done">Done</span></td></tr>
+          <tr><td>18 May 2026</td><td>Roof gutter repair</td><td>NW Roofing Co.</td><td class="mono">R3,000</td><td><span class="pill done">Done</span></td></tr>
+          <tr><td>20 Jun 2026</td><td>Garden service quote</td><td>GreenScape Maintenance</td><td class="mono">Pending</td><td><span class="pill pending">Pending</span></td></tr>
+        </tbody>
+      </table>
+      <p class="muted-note">In the full platform build, each job will include contractor quotes and before/after photos attached by your rental agent.</p>
+    </div>
+  </div>
+
+  <footer class="note">
+    <span>Akker Portfolio · Demo data for preview purposes only</span>
+    <span>Advisor: Zaviér · akkerkoffiehuis@gmail.com</span>
+  </footer>
+</main>
 </div>
 
 <script src="assets/app.js"></script>
